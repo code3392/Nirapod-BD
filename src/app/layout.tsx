@@ -4,6 +4,8 @@ import { AppProvider } from '@/context/AppContext';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import OfflineBanner from '@/components/pwa/OfflineBanner';
+import BackgroundCyberCanvas from '@/components/common/BackgroundCyberCanvas';
+import NirapodAiAssistant from '@/components/common/NirapodAiAssistant';
 
 export const viewport: Viewport = {
   themeColor: '#0B1F33',
@@ -43,12 +45,14 @@ export default function RootLayout({
           rel="stylesheet" 
         />
       </head>
-      <body className="min-h-screen flex flex-col font-sans bg-surface text-darktext antialiased">
+      <body className="min-h-screen flex flex-col font-sans bg-surface text-darktext antialiased relative overflow-x-hidden selection:bg-safety/20 selection:text-navy">
         <AppProvider>
+          <BackgroundCyberCanvas />
           <OfflineBanner />
           <Navbar />
-          <main className="flex-1 w-full">{children}</main>
+          <main className="flex-1 w-full relative z-10">{children}</main>
           <Footer />
+          <NirapodAiAssistant />
         </AppProvider>
       </body>
     </html>

@@ -19,14 +19,34 @@ import {
   User,
   Building2,
   Sliders,
-  ExternalLink
+  ExternalLink,
+  MessageSquare,
+  Users,
+  Search,
+  LogIn,
+  LogOut,
+  ShieldCheck,
+  UserCheck
 } from 'lucide-react';
 
 export default function Navbar() {
-  const { language, setLanguage, t, notifications, unreadNotificationsCount, markNotificationAsRead, markAllNotificationsAsRead, user } = useApp();
+  const { 
+    language, 
+    setLanguage, 
+    t, 
+    notifications, 
+    unreadNotificationsCount, 
+    markNotificationAsRead, 
+    markAllNotificationsAsRead, 
+    user,
+    allUsers,
+    switchUser
+  } = useApp();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authEmailInput, setAuthEmailInput] = useState('');
   const notifRef = useRef<HTMLDivElement>(null);
 
   // Close notifications on outside click
@@ -44,7 +64,9 @@ export default function Navbar() {
     { href: '/', label: t.nav.home },
     { href: '/map', label: t.nav.safetyMap, badge: 'Live' },
     { href: '/reports', label: t.nav.reports },
-    { href: '/organization', label: t.nav.organizations },
+    { href: '/community', label: language === 'en' ? 'Community' : 'কমিউনিটি', badge: 'Areas' },
+    { href: '/lost-and-found', label: language === 'en' ? 'Lost & Found' : 'হারানো ও প্রাপ্তি' },
+    { href: '/messages', label: language === 'en' ? 'Messages' : 'বার্তা' },
     { href: '/admin', label: t.nav.admin },
   ];
 
@@ -249,24 +271,42 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* User Profile Mini-Chip */}
-          <Link
-            href="/profile"
-            className="hidden sm:flex items-center gap-2 pl-2 pr-3 py-1 rounded-full border border-surface-border bg-slate-50 hover:bg-slate-100 transition-colors"
-            title="User Profile & Reputation"
-          >
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="w-6 h-6 rounded-full object-cover border border-white shadow-sm"
-            />
-            <span className="text-xs font-bold text-navy max-w-[100px] truncate">
-              {user.name.split(' ')[0]}
-            </span>
-            <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-safety text-white">
-              {user.points}p
-            </span>
-          </Link>
+          {/* User Profile & Account Switcher */}
+          <div className="flex items-center gap-1.5">
+            <Link
+              href="/profile"
+              className="hidden sm:flex items-center gap-2 pl-2 pr-3 py-1 rounded-full border border-surface-border bg-slate-50 hover:bg-slate-100 transition-colors"
+              title="User Profile & Reputation"
+            >
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-6 h-6 rounded-full object-cover border border-white shadow-sm"
+              />
+              <span className="text-xs font-bold text-navy max-w-[90px] truncate">
+                {user.name.split(' ')[0]}
+              </span>
+              {user.isSuperAdmin ? (
+                <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500 text-white shadow-2xs">
+                  SUPER
+                </span>
+              ) : (
+                <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-safety text-white">
+                  {user.points}p
+                </span>
+              )}
+            </Link>
+
+            {/* Quick Switch / Sign In Modal Trigger */}
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className="px-2.5 py-1 text-xs font-extrabold rounded-lg bg-slate-100 hover:bg-slate-200 text-navy border border-slate-200 transition flex items-center gap-1"
+              title="Sign In / Register / Switch Account"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-navy" />
+              <span className="hidden md:inline">Account</span>
+            </button>
+          </div>
 
           {/* Report CTA Button */}
           <Link
@@ -363,6 +403,149 @@ export default function Navbar() {
               >
                 বাংলা
               </button>
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setAuthModalOpen(true);
+            }}
+            className="w-full py-2 px-3 rounded-xl bg-slate-100 text-navy font-bold text-xs flex items-center justify-center gap-1.5"
+          >
+            <UserCheck className="w-4 h-4" />
+            <span>Switch Account / Sign In</span>
+          </button>
+        </div>
+      )}
+
+      {/* Auth & Account Switcher Modal (Rule 13 & Rule 21) */}
+      {authModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/70 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-surface-border space-y-5 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-navy text-white flex items-center justify-center">
+                  <ShieldCheck className="w-4 h-4 text-safety" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-navy text-base">Account Authentication</h3>
+                  <p className="text-[11px] text-slate-500">Bangladeshi Citizen & Guardian Verification</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setAuthModalOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Current Active User Profile Banner */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-3 min-w-0">
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-safety shrink-0"
+                />
+                <div className="min-w-0">
+                  <p className="text-xs font-black text-navy truncate flex items-center gap-1">
+                    <span>{user.name}</span>
+                    {user.isSuperAdmin && (
+                      <span className="text-[9px] bg-amber-500 text-white font-black px-1.5 py-0.2 rounded">
+                        ROOT
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
+                  <p className="text-[10px] text-safety font-bold">{user.role} • {user.livingPlace}</p>
+                </div>
+              </div>
+              <span className="text-xs font-black text-safety font-mono shrink-0">
+                {user.points} pts
+              </span>
+            </div>
+
+            {/* Fast Switcher Options */}
+            <div className="space-y-2">
+              <span className="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider block">
+                Quick Test Switcher
+              </span>
+              <div className="space-y-2">
+                {allUsers.map((u) => {
+                  const isCurrent = u.id === user.id;
+                  return (
+                    <button
+                      key={u.id}
+                      onClick={() => {
+                        switchUser(u.email);
+                        setAuthModalOpen(false);
+                      }}
+                      className={`w-full p-2.5 rounded-xl border text-left flex items-center justify-between transition ${
+                        isCurrent
+                          ? 'border-safety bg-safety/5 ring-1 ring-safety'
+                          : 'border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <img
+                          src={u.avatar}
+                          alt={u.name}
+                          className="w-8 h-8 rounded-full object-cover shrink-0"
+                        />
+                        <div className="min-w-0 text-left">
+                          <p className="text-xs font-bold text-navy truncate">
+                            {u.name}
+                            {u.isSuperAdmin && (
+                              <span className="ml-1 text-[9px] bg-amber-500 text-white font-extrabold px-1 rounded">
+                                Super Admin
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-[10px] text-slate-500 truncate">{u.email}</p>
+                        </div>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        isCurrent ? 'bg-safety text-white' : 'bg-slate-100 text-slate-600'
+                      }`}>
+                        {isCurrent ? 'Active' : 'Switch'}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Custom Sign In / Registration Form */}
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <span className="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider block">
+                Sign In with Custom Email
+              </span>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="e.g. smdsami59@gmail.com"
+                  value={authEmailInput}
+                  onChange={(e) => setAuthEmailInput(e.target.value)}
+                  className="flex-1 px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-safety focus:outline-none"
+                />
+                <button
+                  onClick={() => {
+                    if (authEmailInput.trim()) {
+                      switchUser(authEmailInput.trim());
+                      setAuthModalOpen(false);
+                      setAuthEmailInput('');
+                    }
+                  }}
+                  className="px-4 py-2 bg-navy hover:bg-navy-dark text-white rounded-xl text-xs font-bold shadow-sm transition"
+                >
+                  Sign In
+                </button>
+              </div>
+              <p className="text-[10px] text-slate-400">
+                Tip: Enter <span className="font-mono text-navy font-bold">smdsami59@gmail.com</span> for root Super Admin control.
+              </p>
             </div>
           </div>
         </div>

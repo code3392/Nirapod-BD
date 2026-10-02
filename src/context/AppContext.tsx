@@ -8,9 +8,25 @@ import {
   Language, 
   ReportStatus, 
   SeverityLevel,
-  ResolutionData
+  ResolutionData,
+  UserRole,
+  CommunityMessage,
+  DirectMessage,
+  LostAndFoundItem,
+  SuspensionAuditLog
 } from '@/types';
-import { INITIAL_REPORTS, INITIAL_USER, INITIAL_NOTIFICATIONS } from '@/lib/data/mockReports';
+import { 
+  INITIAL_REPORTS, 
+  INITIAL_USER, 
+  SUPER_ADMIN_USER,
+  INITIAL_USER_REGISTRY,
+  INITIAL_NOTIFICATIONS,
+  INITIAL_COMMUNITY_MESSAGES,
+  INITIAL_DIRECT_MESSAGES,
+  INITIAL_LOST_AND_FOUND
+} from '@/lib/data/mockReports';
+import { getNearestPolice, getNearestAmbulance, getNearbyHelpers } from '@/lib/data/emergencyDirectory';
+import { scanTextForViolations } from '@/lib/moderation';
 import { translations } from '@/lib/translations';
 
 interface AppContextType {
@@ -19,22 +35,50 @@ interface AppContextType {
   t: typeof translations.en;
   reports: Report[];
   user: UserProfile;
+  allUsers: UserProfile[];
   notifications: NotificationItem[];
   unreadNotificationsCount: number;
   isOffline: boolean;
   offlineQueueCount: number;
-  addReport: (reportData: Partial<Report>) => Report;
+  
+  // Auth & Roles
+  switchUser: (email: string) => void;
+  updateUserRole: (targetUserId: string, newRole: UserRole) => { success: boolean; message: string };
+  updateUserProfile: (data: Partial<UserProfile>) => void;
+  
+  // Moderation & Suspensions
+  suspendUser: (targetUserId: string, reason: string, durationDays: number) => { success: boolean; message: string };
+  revokeSuspension: (targetUserId: string) => { success: boolean; message: string };
+  banUserFromCommunity: (targetUserId: string, ban: boolean) => void;
+  suspensionLogs: SuspensionAuditLog[];
+  
+  // Reports
+  addReport: (reportData: Partial<Report>) => { success: boolean; report?: Report; errorReason?: string };
   verifyReport: (reportId: string, voteType: 'confirm' | 'not_sure' | 'incorrect') => void;
   updateReportStatus: (reportId: string, status: ReportStatus, note?: string) => void;
   submitResolution: (reportId: string, resolution: Omit<ResolutionData, 'id' | 'reportId' | 'verifiedByCommunityCount'>) => void;
   confirmResolution: (reportId: string) => void;
+  submitCitizenProofOfWork: (reportId: string, mediaUrl: string, mediaType: 'image' | 'video', comments: string) => void;
   flagDuplicate: (reportId: string, originalId: string) => void;
-  addComment: (reportId: string, content: string, isOfficial?: boolean) => void;
+  addComment: (reportId: string, content: string, isOfficial?: boolean) => { success: boolean; message?: string };
+  getReportById: (id: string) => Report | undefined;
+  checkDuplicateReport: (lat: number, lng: number, categoryId: string) => { isDuplicate: boolean; matchedReport?: Report; distanceMeters?: number };
+  
+  // Community Hub & Direct Messages
+  communityMessages: CommunityMessage[];
+  directMessages: DirectMessage[];
+  sendCommunityMessage: (area: string, content: string, fileAttachment?: CommunityMessage['fileAttachment']) => { success: boolean; violationReason?: string };
+  sendDirectMessage: (recipientId: string, recipientName: string, content: string, fileAttachment?: DirectMessage['fileAttachment']) => { success: boolean; violationReason?: string };
+  
+  // Lost & Found
+  lostAndFoundItems: LostAndFoundItem[];
+  addLostAndFoundItem: (item: Omit<LostAndFoundItem, 'id' | 'createdAt'>) => void;
+  searchLostAndFound: (query: string, area?: string, category?: string) => LostAndFoundItem[];
+  
+  // Notifications & Privacy
   updatePrivacySettings: (settings: Partial<UserProfile['privacySettings']>) => void;
   markNotificationAsRead: (id: string) => void;
   markAllNotificationsAsRead: () => void;
-  getReportById: (id: string) => Report | undefined;
-  checkDuplicateReport: (lat: number, lng: number, categoryId: string) => { isDuplicate: boolean; matchedReport?: Report; distanceMeters?: number };
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -42,51 +86,51 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>('en');
   const [reports, setReports] = useState<Report[]>(INITIAL_REPORTS);
+  const [allUsers, setAllUsers] = useState<UserProfile[]>(INITIAL_USER_REGISTRY);
   const [user, setUser] = useState<UserProfile>(INITIAL_USER);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [isOffline, setIsOffline] = useState<boolean>(false);
   const [offlineQueue, setOfflineQueue] = useState<Partial<Report>[]>([]);
+  const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>(INITIAL_COMMUNITY_MESSAGES);
+  const [directMessages, setDirectMessages] = useState<DirectMessage[]>(INITIAL_DIRECT_MESSAGES);
+  const [lostAndFoundItems, setLostAndFoundItems] = useState<LostAndFoundItem[]>(INITIAL_LOST_AND_FOUND);
+  const [suspensionLogs, setSuspensionLogs] = useState<SuspensionAuditLog[]>([]);
 
   // Load state from localStorage on client mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
         const savedLang = localStorage.getItem('nirapod_lang') as Language;
-        if (savedLang && (savedLang === 'en' || savedLang === 'bn')) {
-          setLanguageState(savedLang);
-        }
+        if (savedLang && (savedLang === 'en' || savedLang === 'bn')) setLanguageState(savedLang);
 
         const savedReports = localStorage.getItem('nirapod_reports');
-        if (savedReports) {
-          const parsed = JSON.parse(savedReports);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setReports(parsed);
-          }
-        }
+        if (savedReports) setReports(JSON.parse(savedReports));
+
+        const savedUsers = localStorage.getItem('nirapod_users');
+        if (savedUsers) setAllUsers(JSON.parse(savedUsers));
 
         const savedUser = localStorage.getItem('nirapod_user');
-        if (savedUser) {
-          setUser(JSON.parse(savedUser));
-        }
+        if (savedUser) setUser(JSON.parse(savedUser));
 
         const savedNotifs = localStorage.getItem('nirapod_notifications');
-        if (savedNotifs) {
-          setNotifications(JSON.parse(savedNotifs));
-        }
+        if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
 
-        const savedOfflineQueue = localStorage.getItem('nirapod_offline_queue');
-        if (savedOfflineQueue) {
-          setOfflineQueue(JSON.parse(savedOfflineQueue));
-        }
+        const savedMsgs = localStorage.getItem('nirapod_community_msgs');
+        if (savedMsgs) setCommunityMessages(JSON.parse(savedMsgs));
+
+        const savedDms = localStorage.getItem('nirapod_direct_msgs');
+        if (savedDms) setDirectMessages(JSON.parse(savedDms));
+
+        const savedLaf = localStorage.getItem('nirapod_lost_and_found');
+        if (savedLaf) setLostAndFoundItems(JSON.parse(savedLaf));
+
+        const savedLogs = localStorage.getItem('nirapod_suspension_logs');
+        if (savedLogs) setSuspensionLogs(JSON.parse(savedLogs));
       } catch (e) {
         console.error('Error loading localStorage state', e);
       }
 
-      // Online/Offline listeners
-      const handleOnline = () => {
-        setIsOffline(false);
-        syncOfflineReports();
-      };
+      const handleOnline = () => { setIsOffline(false); syncOfflineReports(); };
       const handleOffline = () => setIsOffline(true);
 
       setIsOffline(!navigator.onLine);
@@ -102,35 +146,148 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('nirapod_lang', lang);
-    }
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_lang', lang);
   };
 
   const persistReports = (newReports: Report[]) => {
     setReports(newReports);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('nirapod_reports', JSON.stringify(newReports));
-    }
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_reports', JSON.stringify(newReports));
   };
 
-  const persistUser = (updatedUser: UserProfile) => {
-    setUser(updatedUser);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('nirapod_user', JSON.stringify(updatedUser));
+  const persistUsers = (newUsers: UserProfile[], activeUser?: UserProfile) => {
+    setAllUsers(newUsers);
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_users', JSON.stringify(newUsers));
+    if (activeUser) {
+      setUser(activeUser);
+      if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(activeUser));
     }
   };
 
   const persistNotifications = (newNotifs: NotificationItem[]) => {
     setNotifications(newNotifs);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('nirapod_notifications', JSON.stringify(newNotifs));
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_notifications', JSON.stringify(newNotifs));
+  };
+
+  // Switch Active User / Login simulation (e.g. to smdsami59@gmail.com)
+  const switchUser = (email: string) => {
+    const target = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (target) {
+      setUser(target);
+      if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(target));
+    } else if (email === 'smdsami59@gmail.com') {
+      const updated = [SUPER_ADMIN_USER, ...allUsers];
+      persistUsers(updated, SUPER_ADMIN_USER);
     }
   };
 
-  // Distance helper (Haversine formula in meters)
+  // Rule 13: Super admin can make someone Admin or Super Admin. Admin CANNOT make an Admin.
+  const updateUserRole = (targetUserId: string, newRole: UserRole): { success: boolean; message: string } => {
+    if (!user.isSuperAdmin && user.email !== 'smdsami59@gmail.com') {
+      return {
+        success: false,
+        message: 'Permission Denied: Only Super Admin (smdsami59@gmail.com) is authorized to appoint Admins or Super Admins.',
+      };
+    }
+
+    const updated = allUsers.map(u => {
+      if (u.id === targetUserId) {
+        return {
+          ...u,
+          role: newRole,
+          isSuperAdmin: newRole === 'Super Admin' || u.email === 'smdsami59@gmail.com',
+        };
+      }
+      return u;
+    });
+
+    const activeUser = updated.find(u => u.id === user.id) || user;
+    persistUsers(updated, activeUser);
+
+    return { success: true, message: `User role updated successfully to ${newRole}.` };
+  };
+
+  // Rule 14 & 15: Suspend User with Email Log and Revocation
+  const suspendUser = (targetUserId: string, reason: string, durationDays: number): { success: boolean; message: string } => {
+    if (user.role !== 'Admin' && user.role !== 'Super Admin') {
+      return { success: false, message: 'Only authorized Admins or Super Admin can suspend accounts.' };
+    }
+
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + durationDays);
+    const expiryIso = expiryDate.toISOString();
+
+    const targetUser = allUsers.find(u => u.id === targetUserId);
+    if (!targetUser) return { success: false, message: 'User not found.' };
+
+    const emailBody = `Dear ${targetUser.name},\n\nYour account has been suspended for ${durationDays} days until ${expiryDate.toLocaleDateString()}.\nReason: ${reason}\n\nUnder Nirapod BD Civic Community Standards, violations result in temporary access restriction.\nIf you believe this is in error, contact support@nirapodbd.gov.bd.`;
+
+    const updated = allUsers.map(u => {
+      if (u.id === targetUserId) {
+        return {
+          ...u,
+          suspendedUntil: expiryIso,
+          suspensionReason: reason,
+        };
+      }
+      return u;
+    });
+
+    const newLog: SuspensionAuditLog = {
+      id: `log-${Date.now()}`,
+      targetUserId: targetUser.id,
+      targetUserName: targetUser.name,
+      targetUserEmail: targetUser.email,
+      action: 'SUSPENDED',
+      reason,
+      durationDays,
+      issuedByEmail: user.email,
+      emailSentContent: emailBody,
+      timestamp: new Date().toISOString(),
+    };
+
+    const newLogs = [newLog, ...suspensionLogs];
+    setSuspensionLogs(newLogs);
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_suspension_logs', JSON.stringify(newLogs));
+
+    persistUsers(updated, updated.find(u => u.id === user.id));
+    return { success: true, message: `Suspension notice email sent to ${targetUser.email}. Account locked for ${durationDays} days.` };
+  };
+
+  const revokeSuspension = (targetUserId: string): { success: boolean; message: string } => {
+    if (user.role !== 'Admin' && user.role !== 'Super Admin') {
+      return { success: false, message: 'Unauthorized action.' };
+    }
+
+    const updated = allUsers.map(u => {
+      if (u.id === targetUserId) {
+        return {
+          ...u,
+          suspendedUntil: null,
+          suspensionReason: null,
+        };
+      }
+      return u;
+    });
+
+    persistUsers(updated, updated.find(u => u.id === user.id));
+    return { success: true, message: 'User suspension cancelled and account restored.' };
+  };
+
+  const banUserFromCommunity = (targetUserId: string, ban: boolean) => {
+    if (user.role !== 'Admin' && user.role !== 'Super Admin') return;
+    const updated = allUsers.map(u => u.id === targetUserId ? { ...u, bannedFromCommunities: ban } : u);
+    persistUsers(updated, updated.find(u => u.id === user.id));
+  };
+
+  const updateUserProfile = (data: Partial<UserProfile>) => {
+    const updated = { ...user, ...data };
+    const all = allUsers.map(u => u.id === user.id ? updated : u);
+    persistUsers(all, updated);
+  };
+
+  // Proximity Distance helper (Haversine formula in meters)
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-    const R = 6371e3; // Earth radius in metres
+    const R = 6371e3;
     const φ1 = (lat1 * Math.PI) / 180;
     const φ2 = (lat2 * Math.PI) / 180;
     const Δφ = ((lat2 - lat1) * Math.PI) / 180;
@@ -146,7 +303,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     for (const report of reports) {
       if (report.status === 'RESOLVED' || report.status === 'REJECTED') continue;
       const distance = calculateDistance(lat, lng, report.latitude, report.longitude);
-      // If within 120 meters and matching category
       if (distance < 120 && report.categoryId === categoryId) {
         return { isDuplicate: true, matchedReport: report, distanceMeters: distance };
       }
@@ -154,51 +310,99 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return { isDuplicate: false };
   };
 
-  const addReport = (reportData: Partial<Report>): Report => {
+  // Rule 25: Mandatory Resolution Work Proof & Automated Helper Dispatch
+  const addReport = (reportData: Partial<Report>): { success: boolean; report?: Report; errorReason?: string } => {
+    // Check if user is suspended
+    if (user.suspendedUntil && new Date(user.suspendedUntil) > new Date()) {
+      return {
+        success: false,
+        errorReason: `Your account is currently suspended until ${new Date(user.suspendedUntil).toLocaleDateString()}. Reason: ${user.suspensionReason}`,
+      };
+    }
+
+    // Check Rule 25: Must provide photo/video proof for previous done work before making another request
+    if (user.unresolvedReportIdForWorkProof) {
+      return {
+        success: false,
+        errorReason: `Work Completion Proof Required: You have a previously resolved request (${user.unresolvedReportIdForWorkProof}) awaiting your photo/video verification. You must submit completion evidence before submitting a new issue.`,
+      };
+    }
+
+    // Check content moderation
+    const modTitle = scanTextForViolations(reportData.title || '');
+    const modDesc = scanTextForViolations(reportData.description || '');
+    const violation = modTitle.flagged ? modTitle : modDesc.flagged ? modDesc : null;
+
+    if (violation) {
+      // Strike system
+      handleModerationViolation(violation.category || 'bad_words');
+      return {
+        success: false,
+        errorReason: `Report rejected: ${violation.reasonEn}`,
+      };
+    }
+
     const now = new Date().toISOString();
     const randomNum = Math.floor(10000 + Math.random() * 90000);
     const publicId = `NRP-${randomNum}`;
     const reportId = `rep-${Date.now()}`;
+    const areaName = reportData.area || 'Mirpur';
 
-    // If currently offline, queue it
-    if (typeof window !== 'undefined' && !navigator.onLine) {
-      const queuedItem = { ...reportData, id: reportId, publicId, createdAt: now };
-      const newQueue = [...offlineQueue, queuedItem];
-      setOfflineQueue(newQueue);
-      localStorage.setItem('nirapod_offline_queue', JSON.stringify(newQueue));
-    }
+    // Auto lookup nearest Police & Ambulance
+    const nearestPolice = getNearestPolice(areaName);
+    const nearestAmbulance = getNearestAmbulance(areaName);
+
+    // Auto dispatch email & WhatsApp to nearby volunteers
+    const localHelpers = getNearbyHelpers(areaName);
+    const dispatchedVolunteers = localHelpers.map((h, idx) => ({
+      id: `disp-${Date.now()}-${idx}`,
+      volunteerName: h.name,
+      volunteerPhone: h.phone,
+      volunteerEmail: h.email,
+      area: h.area,
+      distanceMeters: Math.floor(300 + Math.random() * 500),
+      emailSent: true,
+      whatsappUrl: `https://wa.me/${h.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`[Nirapod BD Alert] ${reportData.title || 'Civic Hazard'} reported at ${reportData.locationName || areaName}. Public ID: ${publicId}. Details: https://nirapodbd.gov.bd/report/${reportId}`)}`,
+      dispatchedAt: now,
+    }));
 
     const newReport: Report = {
       id: reportId,
       publicId,
       userId: user.id,
       userName: user.privacySettings.hideIdentityPublicly ? 'Anonymous Citizen' : user.name,
+      userEmail: user.email,
+      userPhone: user.phone,
       userAvatar: user.avatar,
       categoryId: reportData.categoryId || 'road_traffic',
       title: reportData.title || 'Reported Civic Issue',
       description: reportData.description || '',
-      latitude: reportData.latitude || 23.8103,
-      longitude: reportData.longitude || 90.4125,
-      locationName: reportData.locationName || 'Dhaka Metropolitan Area',
+      latitude: reportData.latitude || 23.8041,
+      longitude: reportData.longitude || 90.3667,
+      locationName: reportData.locationName || `${areaName}, Dhaka`,
       district: 'Dhaka',
-      area: reportData.area || 'Mirpur',
+      area: areaName,
       severity: reportData.severity || 'medium',
       status: 'SUBMITTED',
-      imageUrl: reportData.imageUrl || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      mediaType: reportData.mediaType || 'image',
+      mediaUrl: reportData.mediaUrl || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
       timeNoticed: reportData.timeNoticed || 'today',
       aiCategory: reportData.aiCategory,
       aiCategoryName: reportData.aiCategoryName,
-      aiConfidence: reportData.aiConfidence || 92,
+      aiConfidence: reportData.aiConfidence || 94,
       aiRisks: reportData.aiRisks || ['Public safety hazard', 'Disruption risk'],
       aiSuggestedSeverity: reportData.aiSuggestedSeverity || reportData.severity || 'medium',
-      confirmationsCount: 1, // Author confirms
+      confirmationsCount: 1,
       notSureCount: 0,
       incorrectCount: 0,
+      nearestPolice,
+      nearestAmbulance,
+      dispatchedVolunteers,
       timeline: [
         {
           id: `t-${Date.now()}-1`,
           status: 'SUBMITTED',
-          titleEn: `Report submitted by ${user.name}`,
+          titleEn: `Report created by ${user.name}`,
           titleBn: `${user.name} কর্তৃক রিপোর্ট দাখিল`,
           timestamp: now,
           actor: 'Citizen',
@@ -206,11 +410,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         {
           id: `t-${Date.now()}-2`,
           status: 'AI_ANALYZED',
-          titleEn: `AI hazard classification complete (${reportData.aiConfidence || 92}% confidence)`,
-          titleBn: `এআই দ্বারা সমস্যা শনাক্তকরণ সম্পন্ন (${reportData.aiConfidence || 92}% নির্ভুলতা)`,
+          titleEn: `AI hazard classification complete (${reportData.aiConfidence || 94}% confidence)`,
+          titleBn: `এআই দ্বারা সমস্যা শনাক্তকরণ সম্পন্ন (${reportData.aiConfidence || 94}% নির্ভুলতা)`,
           timestamp: now,
           actor: 'Nirapod Vision AI',
-        }
+        },
       ],
       comments: [],
       createdAt: now,
@@ -220,47 +424,76 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const updatedReports = [newReport, ...reports];
     persistReports(updatedReports);
 
-    // Update user stats and points (+25 points)
+    // Update user stats
     const updatedUser: UserProfile = {
       ...user,
       points: user.points + 25,
       reputationScore: user.reputationScore + 25,
       reportsSubmitted: user.reportsSubmitted + 1,
     };
-    persistUser(updatedUser);
+    persistUsers(allUsers.map(u => u.id === user.id ? updatedUser : u), updatedUser);
 
-    // Add notification
+    // Add Notification
     const newNotif: NotificationItem = {
       id: `notif-${Date.now()}`,
-      titleEn: 'Report Broadcasted',
-      titleBn: 'রিপোর্ট সফলভাবে সম্প্রচারিত',
-      messageEn: `Your report ${publicId} is now live and waiting for nearby guardians to verify.`,
-      messageBn: `আপনার রিপোর্ট ${publicId} মানচিত্রে প্রকাশিত হয়েছে এবং নাগরিক যাচাইয়ের জন্য উন্মুক্ত।`,
+      titleEn: 'Report Broadcasted & Helpers Alerted',
+      titleBn: 'রিপোর্ট সম্প্রচারিত ও স্বেচ্ছাসেবকদের সতর্কবার্তা পাঠানো হয়েছে',
+      messageEn: `Ticket ${publicId} is live. Auto-sent email alert to ${localHelpers.length} nearest volunteers in ${areaName}.`,
+      messageBn: `টিকেট ${publicId} সক্রিয় হয়েছে। ${areaName}-এর নিকটবর্তী ${localHelpers.length} জন স্বেচ্ছাসেবককে ইমেইল পাঠানো হয়েছে।`,
       timestamp: 'Just now',
       isRead: false,
-      type: 'points',
+      type: 'email_sent',
       link: `/report/${newReport.id}`,
     };
     persistNotifications([newNotif, ...notifications]);
 
-    return newReport;
+    return { success: true, report: newReport };
+  };
+
+  const handleModerationViolation = (category: 'bad_words' | 'racism' | 'commercial_ad') => {
+    const strikes = { ...user.warningStrikes };
+    let newSuspendedUntil: string | null = null;
+    let reason: string | null = null;
+
+    if (category === 'bad_words') {
+      strikes.badWordsCount += 1;
+      if (strikes.badWordsCount >= 3) {
+        const d = new Date();
+        d.setDate(d.getDate() + 5);
+        newSuspendedUntil = d.toISOString();
+        reason = 'Suspended for 5 days: Repeated profanity / bad words in violation of community rules.';
+      }
+    } else if (category === 'racism') {
+      strikes.racismCount += 1;
+      if (strikes.racismCount >= 3) {
+        const d = new Date();
+        d.setDate(d.getDate() + 5);
+        newSuspendedUntil = d.toISOString();
+        reason = 'Suspended for 5 days: Zero-tolerance violation of anti-racism / hate speech policy.';
+      }
+    }
+
+    const updatedUser = {
+      ...user,
+      warningStrikes: strikes,
+      suspendedUntil: newSuspendedUntil || user.suspendedUntil,
+      suspensionReason: reason || user.suspensionReason,
+    };
+
+    persistUsers(allUsers.map(u => u.id === user.id ? updatedUser : u), updatedUser);
   };
 
   const syncOfflineReports = () => {
     if (offlineQueue.length === 0) return;
     const queued = [...offlineQueue];
     setOfflineQueue([]);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('nirapod_offline_queue');
-    }
-    // Convert each to live report
-    queued.forEach((item) => {
-      addReport(item);
-    });
+    if (typeof window !== 'undefined') localStorage.removeItem('nirapod_offline_queue');
+    queued.forEach(item => addReport(item));
   };
 
+  // Rule 12: Fake Report Strike System
   const verifyReport = (reportId: string, voteType: 'confirm' | 'not_sure' | 'incorrect') => {
-    const reportIndex = reports.findIndex((r) => r.id === reportId);
+    const reportIndex = reports.findIndex(r => r.id === reportId);
     if (reportIndex === -1) return;
 
     const report = { ...reports[reportIndex] };
@@ -268,7 +501,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     if (voteType === 'confirm') {
       report.confirmationsCount += 1;
-      // Upgrade to VERIFIED if reaches threshold
       if (report.confirmationsCount >= 3 && report.status === 'SUBMITTED') {
         report.status = 'VERIFIED';
         report.timeline.push({
@@ -284,8 +516,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       report.notSureCount += 1;
     } else if (voteType === 'incorrect') {
       report.incorrectCount += 1;
-      if (report.incorrectCount >= 5 && report.confirmationsCount < 3) {
+      if (report.incorrectCount >= 4) {
         report.status = 'FALSE_REPORT';
+        // Give author a fake post warning strike!
+        const author = allUsers.find(u => u.id === report.userId);
+        if (author) {
+          const fakeCount = (author.warningStrikes.fakePostCount || 0) + 1;
+          let suspUntil = author.suspendedUntil;
+          let suspReason = author.suspensionReason;
+
+          if (fakeCount >= 3) {
+            const exp = new Date();
+            exp.setDate(exp.getDate() + 3);
+            suspUntil = exp.toISOString();
+            suspReason = 'Suspended for 3 days: 3 verified strikes for posting fabricated/fake reports.';
+          }
+
+          const updatedAuthor = {
+            ...author,
+            warningStrikes: { ...author.warningStrikes, fakePostCount: fakeCount },
+            suspendedUntil: suspUntil,
+            suspensionReason: suspReason,
+          };
+          persistUsers(allUsers.map(u => u.id === author.id ? updatedAuthor : u));
+        }
       }
     }
 
@@ -293,33 +547,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const updatedReports = [...reports];
     updatedReports[reportIndex] = report;
     persistReports(updatedReports);
-
-    // Reward user with 5 points for verification action
-    const updatedUser: UserProfile = {
-      ...user,
-      points: user.points + 5,
-      reputationScore: user.reputationScore + 5,
-      helpfulConfirmations: user.helpfulConfirmations + 1,
-    };
-    persistUser(updatedUser);
   };
 
   const updateReportStatus = (reportId: string, status: ReportStatus, note?: string) => {
-    const reportIndex = reports.findIndex((r) => r.id === reportId);
+    const reportIndex = reports.findIndex(r => r.id === reportId);
     if (reportIndex === -1) return;
 
     const report = { ...reports[reportIndex] };
-    const now = new Date().toISOString();
     report.status = status;
-    report.updatedAt = now;
-
+    report.updatedAt = new Date().toISOString();
     report.timeline.push({
       id: `t-${Date.now()}`,
       status,
       titleEn: `Status updated to ${status}${note ? `: ${note}` : ''}`,
       titleBn: `অবস্থা পরিবর্তিত হয়েছে: ${status}${note ? ` (${note})` : ''}`,
-      timestamp: now,
-      actor: 'Authorized Authority',
+      timestamp: new Date().toISOString(),
+      actor: user.name,
     });
 
     const updatedReports = [...reports];
@@ -331,7 +574,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     reportId: string,
     resolutionData: Omit<ResolutionData, 'id' | 'reportId' | 'verifiedByCommunityCount'>
   ) => {
-    const reportIndex = reports.findIndex((r) => r.id === reportId);
+    const reportIndex = reports.findIndex(r => r.id === reportId);
     if (reportIndex === -1) return;
 
     const report = { ...reports[reportIndex] };
@@ -343,7 +586,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       organizationId: resolutionData.organizationId,
       organizationName: resolutionData.organizationName,
       description: resolutionData.description,
-      beforeImage: resolutionData.beforeImage || report.imageUrl,
+      beforeImage: resolutionData.beforeImage || report.mediaUrl,
       afterImage: resolutionData.afterImage,
       resolvedAt: now,
       verifiedByCommunityCount: 1,
@@ -353,97 +596,86 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     report.resolution = fullResolution;
     report.resolvedAt = now;
     report.updatedAt = now;
+    report.requiresCitizenProofOfWork = true;
 
-    report.timeline.push({
-      id: `t-${Date.now()}`,
-      status: 'RESOLVED',
-      titleEn: `Resolved by ${resolutionData.organizationName} with Before/After proof`,
-      titleBn: `${resolutionData.organizationName} কর্তৃক মেরামত পূর্ব ও পরবর্তী প্রমাণসহ সমাধান সম্পন্ন`,
-      timestamp: now,
-      actor: resolutionData.organizationName,
-    });
+    // Rule 25: Tag author user as requiring proof of work completion
+    if (report.userId === user.id) {
+      updateUserProfile({ unresolvedReportIdForWorkProof: report.publicId });
+    }
+
+    const updatedReports = [...reports];
+    updatedReports[reportIndex] = report;
+    persistReports(updatedReports);
+  };
+
+  // Rule 25: Citizen uploads photos or videos of the done work to unlock future requests
+  const submitCitizenProofOfWork = (reportId: string, mediaUrl: string, mediaType: 'image' | 'video', comments: string) => {
+    const reportIndex = reports.findIndex(r => r.id === reportId || r.publicId === reportId);
+    if (reportIndex === -1 || !reports[reportIndex].resolution) return;
+
+    const report = { ...reports[reportIndex] };
+    report.resolution = {
+      ...report.resolution!,
+      citizenCompletionProof: {
+        mediaUrl,
+        mediaType,
+        uploadedAt: new Date().toISOString(),
+        comments,
+      },
+      verifiedByCommunityCount: report.resolution!.verifiedByCommunityCount + 1,
+    };
+    report.status = 'COMMUNITY_CONFIRMED';
+    report.requiresCitizenProofOfWork = false;
 
     const updatedReports = [...reports];
     updatedReports[reportIndex] = report;
     persistReports(updatedReports);
 
-    // Notify author
-    const newNotif: NotificationItem = {
-      id: `notif-${Date.now()}`,
-      titleEn: 'Your Report Was Resolved!',
-      titleBn: 'আপনার রিপোর্টটি সমাধান হয়েছে!',
-      messageEn: `Problem ${report.publicId} (${report.title.slice(0, 30)}...) has been officially repaired.`,
-      messageBn: `আপনার দাখিলকৃত সমস্যা ${report.publicId} আনুষ্ঠানিকভাবে সংস্কার করা হয়েছে।`,
-      timestamp: 'Just now',
-      isRead: false,
-      type: 'resolved',
-      link: `/report/${report.id}`,
-    };
-    persistNotifications([newNotif, ...notifications]);
+    // Clear user restriction & award points
+    updateUserProfile({
+      unresolvedReportIdForWorkProof: null,
+      points: user.points + 20,
+      reputationScore: user.reputationScore + 20,
+    });
   };
 
   const confirmResolution = (reportId: string) => {
-    const reportIndex = reports.findIndex((r) => r.id === reportId);
+    const reportIndex = reports.findIndex(r => r.id === reportId);
     if (reportIndex === -1 || !reports[reportIndex].resolution) return;
 
     const report = { ...reports[reportIndex] };
-    const now = new Date().toISOString();
-
     report.resolution = {
       ...report.resolution!,
       verifiedByCommunityCount: report.resolution!.verifiedByCommunityCount + 1,
     };
-
     if (report.resolution.verifiedByCommunityCount >= 3) {
       report.status = 'COMMUNITY_CONFIRMED';
     }
 
-    report.timeline.push({
-      id: `t-${Date.now()}`,
-      status: 'COMMUNITY_CONFIRMED',
-      titleEn: `Community member verified repair quality on site`,
-      titleBn: `নাগরিকরা সশরীরে কাজের মান পরীক্ষা করে সমাধান নিশ্চিত করেছেন`,
-      timestamp: now,
-      actor: user.name,
-    });
-
     const updatedReports = [...reports];
     updatedReports[reportIndex] = report;
     persistReports(updatedReports);
-
-    // Award 10 points
-    persistUser({
-      ...user,
-      points: user.points + 10,
-      reputationScore: user.reputationScore + 10,
-    });
   };
 
   const flagDuplicate = (reportId: string, originalId: string) => {
-    const reportIndex = reports.findIndex((r) => r.id === reportId);
+    const reportIndex = reports.findIndex(r => r.id === reportId);
     if (reportIndex === -1) return;
-
-    const report = { ...reports[reportIndex] };
-    report.status = 'DUPLICATE';
-    const now = new Date().toISOString();
-
-    report.timeline.push({
-      id: `t-${Date.now()}`,
-      status: 'DUPLICATE',
-      titleEn: `Flagged as duplicate of report ${originalId}`,
-      titleBn: `রিপোর্ট ${originalId}-এর অনুরূপ বা ডুপ্লিকেট হিসেবে চিহ্নিত`,
-      timestamp: now,
-      actor: 'Community Consensus',
-    });
-
+    const report = { ...reports[reportIndex], status: 'DUPLICATE' as ReportStatus };
     const updatedReports = [...reports];
     updatedReports[reportIndex] = report;
     persistReports(updatedReports);
   };
 
-  const addComment = (reportId: string, content: string, isOfficial = false) => {
-    const reportIndex = reports.findIndex((r) => r.id === reportId);
-    if (reportIndex === -1) return;
+  const addComment = (reportId: string, content: string, isOfficial = false): { success: boolean; message?: string } => {
+    // Moderation scan
+    const scan = scanTextForViolations(content);
+    if (scan.flagged) {
+      handleModerationViolation(scan.category || 'bad_words');
+      return { success: false, message: scan.reasonEn };
+    }
+
+    const reportIndex = reports.findIndex(r => r.id === reportId);
+    if (reportIndex === -1) return { success: false, message: 'Report not found' };
 
     const report = { ...reports[reportIndex] };
     const newComment = {
@@ -454,39 +686,119 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       content,
       createdAt: new Date().toISOString(),
     };
-
     report.comments = [...report.comments, newComment];
     const updatedReports = [...reports];
     updatedReports[reportIndex] = report;
     persistReports(updatedReports);
+    return { success: true };
+  };
+
+  // Community Hub Messaging with File Support & Moderation
+  const sendCommunityMessage = (area: string, content: string, fileAttachment?: CommunityMessage['fileAttachment']): { success: boolean; violationReason?: string } => {
+    if (user.bannedFromCommunities) {
+      return { success: false, violationReason: 'You have been restricted from participating in community discussion rooms by administration.' };
+    }
+
+    const scan = scanTextForViolations(content);
+    if (scan.flagged) {
+      handleModerationViolation(scan.category || 'bad_words');
+      return { success: false, violationReason: scan.reasonEn };
+    }
+
+    const newMsg: CommunityMessage = {
+      id: `msg-${Date.now()}`,
+      area,
+      senderId: user.id,
+      senderName: user.name,
+      senderAvatar: user.avatar,
+      senderBadge: user.verificationBadge,
+      content,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      fileAttachment,
+    };
+
+    const updated = [...communityMessages, newMsg];
+    setCommunityMessages(updated);
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_community_msgs', JSON.stringify(updated));
+    return { success: true };
+  };
+
+  // Direct P2P Messaging
+  const sendDirectMessage = (recipientId: string, recipientName: string, content: string, fileAttachment?: DirectMessage['fileAttachment']): { success: boolean; violationReason?: string } => {
+    const scan = scanTextForViolations(content);
+    if (scan.flagged) {
+      handleModerationViolation(scan.category || 'bad_words');
+      return { success: false, violationReason: scan.reasonEn };
+    }
+
+    const convId = [user.id, recipientId].sort().join('-');
+    const newDm: DirectMessage = {
+      id: `dm-${Date.now()}`,
+      conversationId: convId,
+      senderId: user.id,
+      senderName: user.name,
+      senderAvatar: user.avatar,
+      recipientId,
+      recipientName,
+      content,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      fileAttachment,
+    };
+
+    const updated = [...directMessages, newDm];
+    setDirectMessages(updated);
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_direct_msgs', JSON.stringify(updated));
+    return { success: true };
+  };
+
+  // Lost & Found
+  const addLostAndFoundItem = (item: Omit<LostAndFoundItem, 'id' | 'createdAt'>) => {
+    const newItem: LostAndFoundItem = {
+      ...item,
+      id: `laf-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [newItem, ...lostAndFoundItems];
+    setLostAndFoundItems(updated);
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_lost_and_found', JSON.stringify(updated));
+  };
+
+  const searchLostAndFound = (query: string, area?: string, category?: string) => {
+    return lostAndFoundItems.filter(item => {
+      if (area && area !== 'all' && item.area.toLowerCase() !== area.toLowerCase()) return false;
+      if (category && category !== 'all' && item.category !== category) return false;
+      if (query.trim()) {
+        const q = query.toLowerCase();
+        return (
+          item.itemName.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q) ||
+          item.specificLocation.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
   };
 
   const updatePrivacySettings = (settings: Partial<UserProfile['privacySettings']>) => {
-    const updated = {
-      ...user,
-      privacySettings: {
-        ...user.privacySettings,
-        ...settings,
-      },
-    };
-    persistUser(updated);
+    const updated = { ...user, privacySettings: { ...user.privacySettings, ...settings } };
+    persistUsers(allUsers.map(u => u.id === user.id ? updated : u), updated);
   };
 
   const markNotificationAsRead = (id: string) => {
-    const updated = notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n));
+    const updated = notifications.map(n => n.id === id ? { ...n, isRead: true } : n);
     persistNotifications(updated);
   };
 
   const markAllNotificationsAsRead = () => {
-    const updated = notifications.map((n) => ({ ...n, isRead: true }));
+    const updated = notifications.map(n => ({ ...n, isRead: true }));
     persistNotifications(updated);
   };
 
   const getReportById = (id: string) => {
-    return reports.find((r) => r.id === id || r.publicId.toLowerCase() === id.toLowerCase());
+    return reports.find(r => r.id === id || r.publicId.toLowerCase() === id.toLowerCase());
   };
 
-  const unreadNotificationsCount = notifications.filter((n) => !n.isRead).length;
+  const unreadNotificationsCount = notifications.filter(n => !n.isRead).length;
 
   return (
     <AppContext.Provider
@@ -496,22 +808,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         t: translations[language],
         reports,
         user,
+        allUsers,
         notifications,
         unreadNotificationsCount,
         isOffline,
         offlineQueueCount: offlineQueue.length,
+        switchUser,
+        updateUserRole,
+        updateUserProfile,
+        suspendUser,
+        revokeSuspension,
+        banUserFromCommunity,
+        suspensionLogs,
         addReport,
         verifyReport,
         updateReportStatus,
         submitResolution,
         confirmResolution,
+        submitCitizenProofOfWork,
         flagDuplicate,
         addComment,
+        getReportById,
+        checkDuplicateReport,
+        communityMessages,
+        directMessages,
+        sendCommunityMessage,
+        sendDirectMessage,
+        lostAndFoundItems,
+        addLostAndFoundItem,
+        searchLostAndFound,
         updatePrivacySettings,
         markNotificationAsRead,
         markAllNotificationsAsRead,
-        getReportById,
-        checkDuplicateReport,
       }}
     >
       {children}

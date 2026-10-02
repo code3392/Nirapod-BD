@@ -7,6 +7,7 @@ import { Report } from '@/types';
 import StatusBadge from '@/components/common/StatusBadge';
 import SeverityBadge from '@/components/common/SeverityBadge';
 import BeforeAfterSlider from '@/components/common/BeforeAfterSlider';
+import { getNearestPolice, getNearestAmbulance } from '@/lib/data/emergencyDirectory';
 import { 
   MapPin, 
   Clock, 
@@ -25,7 +26,13 @@ import {
   ChevronRight,
   ExternalLink,
   Building2,
-  Copy
+  Copy,
+  MessageCircle,
+  PhoneCall,
+  Hospital,
+  Building,
+  Video,
+  FileCheck
 } from 'lucide-react';
 
 interface ReportDetailProps {
@@ -58,7 +65,13 @@ export default function ReportDetail({ report }: ReportDetailProps) {
     }
   };
 
-  // Calculate community verification consensus percentage
+  const isVideoMedia = report.mediaType === 'video' || (report.mediaUrl && (report.mediaUrl.endsWith('.mp4') || report.mediaUrl.includes('video')));
+
+  // Lookup nearest Police & Ambulance for this area
+  const police = report.nearestPolice || getNearestPolice(report.area);
+  const ambulance = report.nearestAmbulance || getNearestAmbulance(report.area);
+
+  // Community verification consensus percentage
   const totalVotes = report.confirmationsCount + report.notSureCount + report.incorrectCount;
   const confidencePercent = totalVotes > 0 ? Math.round((report.confirmationsCount / totalVotes) * 100) : 100;
 
@@ -74,7 +87,18 @@ export default function ReportDetail({ report }: ReportDetailProps) {
           <span>{language === 'en' ? 'Back to All Reports' : 'সকল রিপোর্টে ফিরে যান'}</span>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* WhatsApp Share Button */}
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(`[Nirapod BD Hazard Alert] ${report.title} at ${report.locationName}. Public ID: ${report.publicId}. View report: https://nirapodbd.gov.bd/report/${report.id}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white text-xs font-bold shadow-2xs transition"
+          >
+            <MessageCircle className="w-3.5 h-3.5" />
+            <span>Share WhatsApp</span>
+          </a>
+
           <button
             onClick={handleShare}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 text-xs font-bold shadow-2xs transition"
@@ -93,7 +117,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
       </div>
 
       {/* Main Report Header Card */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-surface-border space-y-6">
+      <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-card border border-surface-border space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="text-xs uppercase font-black px-2.5 py-1 rounded-lg bg-navy/5 text-navy font-mono">
@@ -131,20 +155,20 @@ export default function ReportDetail({ report }: ReportDetailProps) {
           </span>
         </div>
 
-        {/* Evidence Photo OR Before/After Slider if Resolved */}
+        {/* Evidence Media: Photo OR Video OR Before/After Slider if Resolved */}
         {report.status === 'RESOLVED' || report.status === 'COMMUNITY_CONFIRMED' ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-black text-navy uppercase tracking-wider">
                 {t.detail.officialResolutionTitle}
               </h3>
               <span className="text-xs font-bold text-safety bg-safety/10 px-2.5 py-0.5 rounded-full">
-                ✓ Repaired by {report.assignedOrganization?.name || 'Local Authority'}
+                ✓ Repaired by {report.assignedOrganization?.name || 'Municipal Agency'}
               </span>
             </div>
             <BeforeAfterSlider
-              beforeImage={report.resolution?.beforeImage || report.imageUrl}
-              afterImage={report.resolution?.afterImage || report.imageUrl}
+              beforeImage={report.resolution?.beforeImage || report.mediaUrl || report.imageUrl || ''}
+              afterImage={report.resolution?.afterImage || report.mediaUrl || report.imageUrl || ''}
               communityConfirmed={report.status === 'COMMUNITY_CONFIRMED' || (report.resolution?.verifiedByCommunityCount || 0) > 0}
               confirmedCount={report.resolution?.verifiedByCommunityCount || 24}
             />
@@ -156,17 +180,52 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                 <p className="text-slate-800">{report.resolution.description}</p>
               </div>
             )}
+
+            {/* Rule 25: Citizen completion proof display */}
+            {report.resolution?.citizenCompletionProof && (
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="flex items-center gap-2">
+                  <FileCheck className="w-4 h-4 text-safety" />
+                  <span className="text-xs font-black text-navy uppercase">
+                    Citizen Work Verification (Rule 25 Evidence)
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+                  <div className="sm:col-span-4 h-32 rounded-xl overflow-hidden bg-black">
+                    {report.resolution.citizenCompletionProof.mediaType === 'video' ? (
+                      <video src={report.resolution.citizenCompletionProof.mediaUrl} controls className="w-full h-full object-cover" />
+                    ) : (
+                      <img src={report.resolution.citizenCompletionProof.mediaUrl} alt="Citizen proof" className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <div className="sm:col-span-8 space-y-1 text-xs text-slate-700">
+                    <p className="italic font-medium">"{report.resolution.citizenCompletionProof.comments}"</p>
+                    <p className="text-[10px] text-muted">
+                      Uploaded on {new Date(report.resolution.citizenCompletionProof.uploadedAt).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
-          <div className="relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm max-h-[460px]">
-            <img
-              src={report.imageUrl}
-              alt={report.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-4 left-4">
+          <div className="relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm max-h-[460px] flex items-center justify-center">
+            {isVideoMedia ? (
+              <video
+                src={report.mediaUrl || report.imageUrl}
+                controls
+                className="w-full h-full max-h-[460px] object-cover"
+              />
+            ) : (
+              <img
+                src={report.mediaUrl || report.imageUrl}
+                alt={report.title}
+                className="w-full h-full object-cover"
+              />
+            )}
+            <div className="absolute top-4 left-4 pointer-events-none">
               <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20">
-                {t.detail.evidencePhoto}
+                {isVideoMedia ? '🎥 Video Evidence' : t.detail.evidencePhoto}
               </span>
             </div>
           </div>
@@ -180,6 +239,66 @@ export default function ReportDetail({ report }: ReportDetailProps) {
           <p className="text-sm sm:text-base text-darktext leading-relaxed">
             {report.description}
           </p>
+        </div>
+
+        {/* REQUIREMENT 11: NEAREST POLICE & AMBULANCE CARD */}
+        <div className="p-5 rounded-2xl bg-navy text-white space-y-3 shadow-md border border-navy-subtle">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <PhoneCall className="w-4 h-4 text-emergency animate-pulse" />
+              <h4 className="text-xs font-black uppercase tracking-wider">
+                Emergency & First Responder Dispatch For {report.area}
+              </h4>
+            </div>
+            <a
+              href="tel:999"
+              className="px-2.5 py-0.5 rounded-full bg-emergency text-white text-[10px] font-black uppercase hover:bg-emergency-hover"
+            >
+              National 999
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            {/* Police */}
+            <div className="p-3 rounded-xl bg-white/10 border border-white/10 space-y-1">
+              <div className="flex items-center gap-1.5 text-safety font-bold">
+                <Building className="w-3.5 h-3.5" />
+                <span>{police.thanaName}</span>
+              </div>
+              <p className="text-[11px] text-slate-300">
+                Officer: <strong className="text-white">{police.dutyOfficerName || 'Duty Officer'}</strong>
+              </p>
+              <div className="pt-1 flex items-center justify-between">
+                <span className="font-mono text-white font-bold text-[11px]">{police.hotlineMobile || police.dutyOfficerMobile}</span>
+                <a
+                  href={`tel:${police.hotlineMobile || police.dutyOfficerMobile}`}
+                  className="px-2 py-0.5 bg-emergency text-white text-[10px] font-bold rounded"
+                >
+                  Call
+                </a>
+              </div>
+            </div>
+
+            {/* Ambulance */}
+            <div className="p-3 rounded-xl bg-white/10 border border-white/10 space-y-1">
+              <div className="flex items-center gap-1.5 text-sky-400 font-bold">
+                <Hospital className="w-3.5 h-3.5" />
+                <span>{ambulance.hospitalName}</span>
+              </div>
+              <p className="text-[11px] text-slate-300">
+                Ambulance Hotline: <strong className="text-white">{ambulance.emergencyHotline || ambulance.emergencyPhone}</strong>
+              </p>
+              <div className="pt-1 flex items-center justify-between">
+                <span className="font-mono text-white font-bold text-[11px]">{ambulance.ambulanceHotline || '16263'}</span>
+                <a
+                  href={`tel:${ambulance.emergencyHotline || ambulance.emergencyPhone}`}
+                  className="px-2 py-0.5 bg-safety text-white text-[10px] font-bold rounded"
+                >
+                  Call
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* AI Analysis Card */}
@@ -318,7 +437,6 @@ export default function ReportDetail({ report }: ReportDetailProps) {
           <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
             {report.timeline.map((event, idx) => (
               <div key={event.id} className="relative group">
-                {/* Dot */}
                 <div className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-white border-2 border-navy group-last:border-safety group-last:bg-safety" />
                 <div>
                   <div className="flex items-center gap-2">

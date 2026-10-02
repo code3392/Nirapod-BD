@@ -303,11 +303,21 @@ export default function SafetyMap() {
             </div>
 
             <div className="relative h-36 rounded-2xl overflow-hidden mb-3 bg-slate-100 border border-slate-200">
-              <img
-                src={activeReport.imageUrl}
-                alt={activeReport.title}
-                className="w-full h-full object-cover"
-              />
+              {activeReport.mediaType === 'video' ? (
+                <video
+                  src={activeReport.mediaUrl || activeReport.imageUrl}
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                />
+              ) : (
+                <img
+                  src={activeReport.mediaUrl || activeReport.imageUrl}
+                  alt={activeReport.title}
+                  className="w-full h-full object-cover"
+                />
+              )}
               <div className="absolute top-2.5 left-2.5">
                 <StatusBadge status={activeReport.status} size="sm" />
               </div>
@@ -382,7 +392,7 @@ export default function SafetyMap() {
                   className="p-4 rounded-2xl bg-white border border-surface-border shadow-subtle flex gap-4 cursor-pointer hover:border-slate-300"
                 >
                   <img
-                    src={report.imageUrl}
+                    src={report.mediaUrl || report.imageUrl}
                     alt={report.title}
                     className="w-20 h-20 rounded-xl object-cover shrink-0"
                   />

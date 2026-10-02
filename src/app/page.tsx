@@ -5,6 +5,7 @@ import Hero from '@/components/home/Hero';
 import LiveStatistics from '@/components/home/LiveStatistics';
 import HowItWorks from '@/components/home/HowItWorks';
 import MapPreviewSection from '@/components/home/MapPreviewSection';
+import AboutUsSection from '@/components/home/AboutUsSection';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { ShieldCheck, PhoneCall, ArrowRight, CheckCircle2, Users, MapPin } from 'lucide-react';
@@ -64,6 +65,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 6. Authentic About Us Section (Requirement 7) */}
+      <AboutUsSection />
     </div>
   );
 }

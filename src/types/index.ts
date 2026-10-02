@@ -27,6 +27,8 @@ export type ReportStatus =
   | 'DUPLICATE'
   | 'FALSE_REPORT';
 
+export type UserRole = 'Super Admin' | 'Admin' | 'Moderator' | 'Community Guardian' | 'Citizen';
+
 export interface CategoryInfo {
   id: CategoryId;
   nameEn: string;
@@ -60,6 +62,12 @@ export interface ResolutionData {
   afterImage: string;
   resolvedAt: string;
   verifiedByCommunityCount: number;
+  citizenCompletionProof?: {
+    mediaUrl: string;
+    mediaType: 'image' | 'video';
+    uploadedAt: string;
+    comments: string;
+  };
 }
 
 export interface VerificationVote {
@@ -77,11 +85,46 @@ export interface ReportComment {
   createdAt: string;
 }
 
+export interface PoliceStationInfo {
+  thanaName: string;
+  zone: string;
+  dutyOfficerMobile: string;
+  dutyOfficerName?: string;
+  hotlineMobile?: string;
+  landline: string;
+  distanceKm: number;
+  address: string;
+}
+
+export interface HospitalAmbulanceInfo {
+  hospitalName: string;
+  ambulanceHotline: string;
+  emergencyPhone: string;
+  emergencyHotline?: string;
+  icuAvailable?: boolean;
+  distanceKm: number;
+  address: string;
+}
+
+export interface VolunteerDispatchLog {
+  id: string;
+  volunteerName: string;
+  volunteerPhone: string;
+  volunteerEmail: string;
+  area: string;
+  distanceMeters: number;
+  emailSent: boolean;
+  whatsappUrl: string;
+  dispatchedAt: string;
+}
+
 export interface Report {
   id: string;
   publicId: string; // e.g. NRP-10482
   userId: string;
   userName: string;
+  userEmail?: string;
+  userPhone?: string;
   userAvatar?: string;
   categoryId: CategoryId;
   title: string;
@@ -93,7 +136,11 @@ export interface Report {
   area: string; // e.g. Mirpur, Uttara, Dhanmondi
   severity: SeverityLevel;
   status: ReportStatus;
-  imageUrl: string;
+  
+  // Photo or Video (Supports both mediaUrl and backwards-compatible imageUrl)
+  mediaType: 'image' | 'video';
+  mediaUrl: string;
+  imageUrl?: string;
   timeNoticed: 'just_now' | 'today' | 'yesterday' | 'week_ago';
   
   // AI analysis metadata
@@ -109,6 +156,13 @@ export interface Report {
   incorrectCount: number;
   userVotes?: VerificationVote[];
   
+  // Emergency Contacts Auto Computed
+  nearestPolice?: PoliceStationInfo;
+  nearestAmbulance?: HospitalAmbulanceInfo;
+  
+  // Nearby Helper & Volunteer Auto Notifications
+  dispatchedVolunteers?: VolunteerDispatchLog[];
+  
   // Organizations & Resolution
   assignedOrganization?: {
     id: string;
@@ -117,6 +171,7 @@ export interface Report {
     assignedAt: string;
   };
   resolution?: ResolutionData;
+  requiresCitizenProofOfWork?: boolean;
   
   // Timeline and comments
   timeline: TimelineEvent[];
@@ -131,12 +186,35 @@ export interface Report {
   resolvedAt?: string;
 }
 
+export interface WarningStrikes {
+  fakePostCount: number;
+  badWordsCount: number;
+  racismCount: number;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
   avatar: string;
-  role: string;
+  role: UserRole;
+  isSuperAdmin: boolean;
+  phone: string;
+  livingPlace: string;
+  area: string;
+  age: number;
+  bloodGroup: string;
+  occupation: string;
+  
+  // Great Verification Status
+  isEmailVerified: boolean;
+  isPhoneVerified: boolean;
+  isIdVerified: boolean;
+  verificationBadge: 'Unverified' | 'Phone Verified' | 'Greatly Verified Guardian';
+  verificationStatus?: 'GREATLY_VERIFIED' | 'VERIFIED' | 'UNVERIFIED';
+  nidNumber?: string;
+  nidVerified?: boolean;
+  
   reputationScore: number;
   verificationLevel: string;
   reportsSubmitted: number;
@@ -144,6 +222,17 @@ export interface UserProfile {
   helpfulConfirmations: number;
   points: number;
   badges: Badge[];
+  
+  // Moderation & Suspension
+  warningStrikes: WarningStrikes;
+  suspendedUntil: string | null; // ISO string if suspended
+  suspensionReason: string | null;
+  bannedFromCommunities: boolean;
+  bannedFromCreatingCommunity?: boolean;
+  
+  // Rule 25: Unresolved request pending resolution proof
+  unresolvedReportIdForWorkProof: string | null;
+  
   privacySettings: {
     showApproximateLocation: boolean;
     hideIdentityPublicly: boolean;
@@ -172,7 +261,7 @@ export interface NotificationItem {
   messageBn: string;
   timestamp: string;
   isRead: boolean;
-  type: 'verified' | 'confirmation' | 'resolved' | 'points' | 'emergency';
+  type: 'verified' | 'confirmation' | 'resolved' | 'points' | 'emergency' | 'suspension' | 'email_sent';
   link?: string;
 }
 
@@ -191,4 +280,78 @@ export interface DuplicateCheckResult {
   matchedReport?: Report;
   distanceMeters?: number;
   similarityPercentage?: number;
+}
+
+// Community Discussion & Messaging (Area-wise)
+export interface CommunityMessage {
+  id: string;
+  area: string; // 'Mirpur', 'Dhanmondi', 'Uttara', etc.
+  senderId: string;
+  senderName: string;
+  senderAvatar: string;
+  senderBadge: string;
+  content: string;
+  timestamp: string;
+  fileAttachment?: {
+    name: string;
+    size: string;
+    type: string;
+    url: string;
+  };
+}
+
+// User-to-User Direct Message
+export interface DirectMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderAvatar: string;
+  recipientId: string;
+  recipientName: string;
+  content: string;
+  timestamp: string;
+  fileAttachment?: {
+    name: string;
+    size: string;
+    type: string;
+    url: string;
+  };
+}
+
+// Lost & Found
+export interface LostAndFoundItem {
+  id: string;
+  type: 'lost' | 'found';
+  itemName: string;
+  description: string;
+  category: 'electronics' | 'documents' | 'wallet' | 'keys' | 'pets' | 'jewelry' | 'other';
+  area: string; // Mirpur, Uttara, Dhanmondi, etc.
+  specificLocation: string;
+  date: string;
+  mediaUrl: string;
+  mediaType: 'image' | 'video';
+  contactPerson: string;
+  contactPhone: string;
+  contactEmail: string;
+  reward?: string;
+  status: 'active' | 'claimed' | 'returned';
+  createdAt: string;
+}
+
+// Suspension Audit Log
+export interface SuspensionAuditLog {
+  id: string;
+  targetUserId: string;
+  targetUserName: string;
+  targetUserEmail: string;
+  userName?: string;
+  userEmail?: string;
+  authorizedBy?: string;
+  action: 'SUSPENDED' | 'RESTORED' | 'WARNING_ISSUED' | 'COMMUNITY_BAN';
+  reason: string;
+  durationDays?: number;
+  issuedByEmail: string;
+  emailSentContent: string;
+  timestamp: string;
 }

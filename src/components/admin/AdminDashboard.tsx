@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
-import { Report, ReportStatus, SeverityLevel } from '@/types';
+import { Report, ReportStatus, SeverityLevel, UserRole } from '@/types';
 import StatusBadge from '@/components/common/StatusBadge';
 import SeverityBadge from '@/components/common/SeverityBadge';
 import { 
@@ -22,7 +22,16 @@ import {
   Check,
   X,
   UserCheck,
-  Building
+  Building,
+  ShieldAlert,
+  Crown,
+  Mail,
+  Slash,
+  UserX,
+  RefreshCcw,
+  MessageSquare,
+  Ban,
+  Send
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -38,16 +47,38 @@ import {
 } from 'recharts';
 
 export default function AdminDashboard() {
-  const { language, t, reports, updateReportStatus } = useApp();
+  const { 
+    language, 
+    t, 
+    user,
+    allUsers,
+    reports, 
+    updateReportStatus,
+    updateUserRole,
+    suspendUser,
+    revokeSuspension,
+    banUserFromCommunity,
+    suspensionLogs,
+    switchUser
+  } = useApp();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  // Suspension dialog state
+  const [suspensionModalUser, setSuspensionModalUser] = useState<any | null>(null);
+  const [suspensionDays, setSuspensionDays] = useState(3);
+  const [suspensionReason, setSuspensionReason] = useState('Repeated violation of Nirapod BD community safety rules.');
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  const isSuperAdminUser = user.email.toLowerCase() === 'smdsami59@gmail.com' || user.isSuperAdmin;
 
   // KPI Metrics
   const totalReportsCount = 1284;
   const resolvedReportsCount = 923;
   const verifiedReportsCount = 973;
   const activeReportsCount = 361;
-  const totalUsersCount = 4521;
+  const totalUsersCount = allUsers.length || 4521;
 
   // Chart Data: Categories
   const categoryData = [
@@ -83,36 +114,110 @@ export default function AdminDashboard() {
     return true;
   });
 
+  const handleRoleChange = (targetUserId: string, newRole: UserRole) => {
+    const res = updateUserRole(targetUserId, newRole);
+    setActionMessage(res.message);
+    setTimeout(() => setActionMessage(null), 4000);
+  };
+
+  const handleConfirmSuspension = () => {
+    if (!suspensionModalUser) return;
+    const res = suspendUser(suspensionModalUser.id, suspensionReason, suspensionDays);
+    setActionMessage(res.message);
+    setSuspensionModalUser(null);
+    setTimeout(() => setActionMessage(null), 4000);
+  };
+
+  const handleRevoke = (targetUserId: string) => {
+    const res = revokeSuspension(targetUserId);
+    setActionMessage(res.message);
+    setTimeout(() => setActionMessage(null), 4000);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy/10 text-xs font-bold text-navy uppercase tracking-wider mb-2">
-            <ShieldCheck className="w-4 h-4 text-safety" />
-            <span>Civic Control Centre</span>
+      {/* Toast Notice */}
+      {actionMessage && (
+        <div className="p-4 rounded-2xl bg-navy text-white text-xs font-bold shadow-lg border border-safety/30 flex items-center justify-between animate-in fade-in duration-200">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-safety" />
+            <span>{actionMessage}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-navy tracking-tight">
-            {t.admin.title}
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {t.admin.subtitle}
-          </p>
+          <button onClick={() => setActionMessage(null)} className="text-slate-400 hover:text-white">✕</button>
+        </div>
+      )}
+
+      {/* Header & Super Admin Privilege Card */}
+      <div className="space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy/10 text-xs font-bold text-navy uppercase tracking-wider mb-2">
+              <ShieldCheck className="w-4 h-4 text-safety" />
+              <span>Civic Control Centre & Root Administration</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-black text-navy tracking-tight">
+              {t.admin.title}
+            </h1>
+            <p className="text-sm text-slate-500 mt-1">
+              Super Admin root controls, citizen moderation, warning strikes, and agency dispatch.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/organization"
+              className="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-navy hover:bg-slate-100 transition shadow-2xs"
+            >
+              Agency Portal →
+            </Link>
+            <Link
+              href="/map"
+              className="px-4 py-2.5 rounded-xl bg-navy text-white text-xs font-bold shadow-md hover:bg-navy-dark transition"
+            >
+              Live Map Monitor
+            </Link>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href="/organization"
-            className="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-navy hover:bg-slate-100 transition shadow-2xs"
-          >
-            Agency Portal →
-          </Link>
-          <Link
-            href="/map"
-            className="px-4 py-2.5 rounded-xl bg-navy text-white text-xs font-bold shadow-md hover:bg-navy-dark transition"
-          >
-            Live Map Monitor
-          </Link>
+        {/* SUPER ADMIN STATUS CALLOUT (Rule 13) */}
+        <div className="p-5 rounded-3xl bg-gradient-to-r from-navy via-navy to-navy-dark text-white border border-navy-subtle shadow-elevated flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
+              isSuperAdminUser ? 'bg-amber-500 text-white' : 'bg-slate-700 text-slate-300'
+            }`}>
+              <Crown className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500 text-white">
+                  {isSuperAdminUser ? 'Super Admin Mode Active' : 'Restricted Admin View'}
+                </span>
+                <span className="text-xs font-mono text-slate-300">
+                  {user.email}
+                </span>
+              </div>
+              <h3 className="text-base font-black text-white mt-1">
+                {isSuperAdminUser
+                  ? 'Root Authority: smdsami59@gmail.com'
+                  : 'Ordinary Admin Mode: Limited User Promotion'}
+              </h3>
+              <p className="text-xs text-slate-300 mt-0.5">
+                {isSuperAdminUser
+                  ? 'You possess full authority to appoint Admins/Super Admins, moderate strikes, and manage suspensions.'
+                  : 'Notice: Ordinary Admins can suspend users and moderate content, but ONLY Super Admin (smdsami59@gmail.com) can appoint Admins.'}
+              </p>
+            </div>
+          </div>
+
+          {!isSuperAdminUser && (
+            <button
+              onClick={() => switchUser('smdsami59@gmail.com')}
+              className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow transition shrink-0 flex items-center gap-2"
+            >
+              <Crown className="w-4 h-4" />
+              <span>Switch to smdsami59@gmail.com</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -151,7 +256,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Analytics Charts (Recharts) */}
+      {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Category Breakdown Donut */}
         <div className="lg:col-span-5 p-6 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-4">
@@ -221,6 +326,215 @@ export default function AdminDashboard() {
             <span className="text-safety font-bold">Real-time Telemetry</span>
           </div>
         </div>
+      </div>
+
+      {/* USER MANAGEMENT & SUPER ADMIN RBAC TABLE (Rules 12, 13, 14, 15, 16, 17) */}
+      <div className="bg-white rounded-3xl border border-surface-border shadow-subtle overflow-hidden space-y-4 p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-navy" />
+              <h3 className="text-lg font-black text-navy">
+                Citizen Registry & Super Admin Moderation Panel
+              </h3>
+            </div>
+            <p className="text-xs text-slate-500">
+              Manage roles, 3-strike violations, email suspensions, and community creation bans.
+            </p>
+          </div>
+
+          <div className="text-xs font-mono bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+            Super Admin: <strong className="text-navy font-bold">smdsami59@gmail.com</strong>
+          </div>
+        </div>
+
+        {/* User Table */}
+        <div className="overflow-x-auto -mx-6">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 border-y border-surface-border text-navy uppercase font-extrabold text-[10px] tracking-wider">
+              <tr>
+                <th className="py-3 px-6">User</th>
+                <th className="py-3 px-4">Role</th>
+                <th className="py-3 px-4">Strikes Record</th>
+                <th className="py-3 px-4">Account Status</th>
+                <th className="py-3 px-4">Community Perms</th>
+                <th className="py-3 px-6 text-right">Moderation Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {allUsers.map((u) => {
+                const isSuspended = u.suspendedUntil && new Date(u.suspendedUntil) > new Date();
+                const isRootTarget = u.email.toLowerCase() === 'smdsami59@gmail.com';
+
+                return (
+                  <tr key={u.id} className="hover:bg-slate-50/80 transition">
+                    {/* User info */}
+                    <td className="py-3 px-6">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={u.avatar}
+                          alt={u.name}
+                          className="w-8 h-8 rounded-full object-cover border border-slate-200"
+                        />
+                        <div>
+                          <p className="font-bold text-navy flex items-center gap-1">
+                            <span>{u.name}</span>
+                            {u.isSuperAdmin && (
+                              <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                            )}
+                          </p>
+                          <p className="text-[11px] text-slate-500 font-mono">{u.email}</p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Role dropdown */}
+                    <td className="py-3 px-4">
+                      {isSuperAdminUser && !isRootTarget ? (
+                        <select
+                          value={u.role}
+                          onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
+                          className="text-[11px] font-bold py-1 px-2 rounded-lg border border-slate-300 bg-white"
+                        >
+                          <option value="Community Guardian">Community Guardian</option>
+                          <option value="Ward Coordinator Admin">Ward Coordinator Admin</option>
+                          <option value="Super Admin">Super Admin</option>
+                        </select>
+                      ) : (
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                          u.isSuperAdmin ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-slate-100 text-slate-700'
+                        }`}>
+                          {u.role}
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Strikes */}
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-1.5 text-[10px] font-mono">
+                        <span className={`px-1.5 py-0.5 rounded font-bold ${
+                          (u.warningStrikes?.fakePostCount || 0) > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-500'
+                        }`} title="Fake Report Strikes (Max 3 = 3-Day Suspension)">
+                          Fake: {u.warningStrikes?.fakePostCount || 0}/3
+                        </span>
+                        <span className={`px-1.5 py-0.5 rounded font-bold ${
+                          (u.warningStrikes?.badWordsCount || 0) > 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'
+                        }`} title="Bad Words Strikes (Max 3 = 5-Day Suspension)">
+                          Words: {u.warningStrikes?.badWordsCount || 0}/3
+                        </span>
+                        <span className={`px-1.5 py-0.5 rounded font-bold ${
+                          (u.warningStrikes?.racismCount || 0) > 0 ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-500'
+                        }`} title="Hate Speech Strikes (Max 3 = 5-Day Suspension)">
+                          Hate: {u.warningStrikes?.racismCount || 0}/3
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Account status */}
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      {isSuspended ? (
+                        <div>
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emergency text-white">
+                            Suspended
+                          </span>
+                          <p className="text-[10px] text-emergency mt-0.5 font-mono">
+                            Until {new Date(u.suspendedUntil!).toLocaleDateString()}
+                          </p>
+                        </div>
+                      ) : (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                          Active & Good Standing
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Community ban */}
+                    <td className="py-3 px-4">
+                      <button
+                        onClick={() => banUserFromCommunity(u.id, !(u.bannedFromCommunities || u.bannedFromCreatingCommunity))}
+                        className={`text-[10px] font-bold px-2 py-1 rounded-lg border transition ${
+                          (u.bannedFromCommunities || u.bannedFromCreatingCommunity)
+                            ? 'bg-rose-100 text-rose-800 border-rose-300'
+                            : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                        }`}
+                      >
+                        {(u.bannedFromCommunities || u.bannedFromCreatingCommunity) ? 'Banned from Community' : 'Normal Access'}
+                      </button>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="py-3 px-6 whitespace-nowrap text-right space-x-1.5">
+                      {isSuspended ? (
+                        <button
+                          onClick={() => handleRevoke(u.id)}
+                          className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow-sm transition"
+                        >
+                          Cancel Suspension
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setSuspensionModalUser(u)}
+                          disabled={isRootTarget}
+                          className="px-2.5 py-1 rounded-lg bg-emergency hover:bg-emergency-hover text-white font-bold text-[11px] shadow-sm transition disabled:opacity-30 disabled:pointer-events-none"
+                        >
+                          Suspend User
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* SUSPENSION AUDIT EMAIL LOGS (Rule 14) */}
+      <div className="bg-white rounded-3xl border border-surface-border shadow-subtle p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Mail className="w-5 h-5 text-navy" />
+            <h3 className="text-base font-black text-navy">
+              Automated Suspension Notice Email Dispatch Log
+            </h3>
+          </div>
+          <span className="text-xs text-muted">
+            {suspensionLogs.length} logged events
+          </span>
+        </div>
+
+        {suspensionLogs.length === 0 ? (
+          <p className="text-xs text-slate-400 py-3 text-center">
+            No suspensions have been executed yet in this session.
+          </p>
+        ) : (
+          <div className="space-y-2 max-h-60 overflow-y-auto divide-y divide-slate-100">
+            {suspensionLogs.map((log) => (
+              <div key={log.id} className="pt-2 flex items-start justify-between gap-4 text-xs">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.2 rounded ${
+                      log.action === 'SUSPENDED' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'
+                    }`}>
+                      {log.action}
+                    </span>
+                    <span className="font-bold text-navy">{log.targetUserName || log.userName}</span>
+                    <span className="text-[11px] text-slate-400 font-mono">({log.targetUserEmail || log.userEmail})</span>
+                  </div>
+                  <p className="text-[11px] text-slate-600">
+                    Reason: <em>{log.reason}</em>
+                  </p>
+                  <p className="text-[10px] text-slate-400">
+                    Authorized by: <strong className="text-navy">{log.issuedByEmail || log.authorizedBy}</strong> • Email Dispatch: <span className="text-safety font-bold">Delivered ✓</span>
+                  </p>
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                  {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Report Management Table */}
@@ -355,6 +669,75 @@ export default function AdminDashboard() {
           </table>
         </div>
       </div>
+
+      {/* SUSPENSION MODAL (Rule 14) */}
+      {suspensionModalUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/75 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-surface-border space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <UserX className="w-5 h-5 text-emergency" />
+                <h3 className="font-black text-navy text-base">Authorize Account Suspension</h3>
+              </div>
+              <button onClick={() => setSuspensionModalUser(null)} className="text-slate-400 hover:text-slate-600">✕</button>
+            </div>
+
+            <div className="p-3 bg-slate-50 rounded-xl text-xs space-y-1">
+              <p className="font-bold text-navy">Target: {suspensionModalUser.name}</p>
+              <p className="text-slate-500 font-mono">Email: {suspensionModalUser.email}</p>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-bold text-navy block mb-1">Suspension Duration</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSuspensionDays(3)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                      suspensionDays === 3 ? 'bg-navy text-white border-navy' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    3 Days (Rule 12: Fake Post)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSuspensionDays(5)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                      suspensionDays === 5 ? 'bg-navy text-white border-navy' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    5 Days (Rules 16/17)
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-navy block mb-1">Formal Reason (Emailed to User)</label>
+                <textarea
+                  rows={3}
+                  value={suspensionReason}
+                  onChange={(e) => setSuspensionReason(e.target.value)}
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emergency focus:outline-none"
+                />
+              </div>
+
+              <div className="p-3 rounded-xl bg-amber-50 text-[11px] text-amber-900 border border-amber-200">
+                Notice: An automated suspension email will be immediately dispatched to <strong>{suspensionModalUser.email}</strong>.
+              </div>
+
+              <button
+                type="button"
+                onClick={handleConfirmSuspension}
+                className="w-full py-2.5 bg-emergency hover:bg-emergency-hover text-white text-xs font-extrabold rounded-xl shadow transition flex items-center justify-center gap-1.5"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>Confirm Suspension & Dispatch Email Notice</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -59,7 +59,7 @@ export default function OrganizationDashboard() {
       organizationId: 'org-1',
       organizationName: 'Dhaka North City Corporation (Zone-4)',
       description: resolutionDesc,
-      beforeImage: resolvingReport.imageUrl,
+      beforeImage: resolvingReport.mediaUrl || resolvingReport.imageUrl || '',
       afterImage: afterImage,
       resolvedAt: new Date().toISOString(),
     });
@@ -301,7 +301,7 @@ export default function OrganizationDashboard() {
                   </label>
                   <div className="relative h-36 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900">
                     <img
-                      src={resolvingReport.imageUrl}
+                      src={resolvingReport.mediaUrl || resolvingReport.imageUrl}
                       alt="Original Hazard"
                       className="w-full h-full object-cover"
                     />

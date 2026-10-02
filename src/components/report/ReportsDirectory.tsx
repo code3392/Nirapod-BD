@@ -242,11 +242,20 @@ export default function ReportsDirectory() {
               <div>
                 {/* Image + Overlays */}
                 <div className="relative h-48 w-full bg-slate-900 overflow-hidden">
-                  <img
-                    src={report.imageUrl}
-                    alt={report.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                  {report.mediaType === 'video' ? (
+                    <video
+                      src={report.mediaUrl || report.imageUrl}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      muted
+                      loop
+                    />
+                  ) : (
+                    <img
+                      src={report.mediaUrl || report.imageUrl}
+                      alt={report.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  )}
                   <div className="absolute top-3 left-3">
                     <StatusBadge status={report.status} size="sm" />
                   </div>

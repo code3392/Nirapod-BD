@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
@@ -9,8 +9,10 @@ import { CategoryId, SeverityLevel, Report } from '@/types';
 import StatusBadge from '@/components/common/StatusBadge';
 import SeverityBadge from '@/components/common/SeverityBadge';
 import EmergencyAlertModal from '@/components/common/EmergencyAlertModal';
+import { getNearestPolice, getNearestAmbulance } from '@/lib/data/emergencyDirectory';
 import { 
   Camera, 
+  Video, 
   Upload, 
   Sparkles, 
   MapPin, 
@@ -25,19 +27,38 @@ import {
   CheckCircle2,
   RefreshCw,
   Copy,
-  Eye
+  Eye,
+  Share2,
+  MessageCircle,
+  Building,
+  Hospital,
+  ShieldCheck,
+  FileCheck,
+  Radio,
+  ExternalLink,
+  Flame,
+  AlertOctagon
 } from 'lucide-react';
 
 export default function ReportForm() {
   const router = useRouter();
-  const { language, t, addReport, verifyReport, checkDuplicateReport } = useApp();
+  const { 
+    language, 
+    t, 
+    user, 
+    addReport, 
+    verifyReport, 
+    checkDuplicateReport, 
+    submitCitizenProofOfWork 
+  } = useApp();
 
   // Current Step: 1 to 5, or 6 (Success)
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   // Form State
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('road_traffic');
-  const [imageUrl, setImageUrl] = useState<string>('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80');
+  const [mediaType, setMediaType] = useState<'image' | 'video'>('image');
+  const [mediaUrl, setMediaUrl] = useState<string>('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80');
   const [isAiAnalyzing, setIsAiAnalyzing] = useState<boolean>(false);
   const [aiAnalysisComplete, setAiAnalysisComplete] = useState<boolean>(false);
   const [aiConfidence, setAiConfidence] = useState<number>(93);
@@ -51,6 +72,7 @@ export default function ReportForm() {
   const [latitude, setLatitude] = useState<number>(23.8041);
   const [longitude, setLongitude] = useState<number>(90.3667);
   const [isLocating, setIsLocating] = useState<boolean>(false);
+  const [locationPill, setLocationPill] = useState<string>('Mirpur');
 
   // Details State
   const [title, setTitle] = useState<string>('');
@@ -61,44 +83,55 @@ export default function ReportForm() {
   // Modal / Warnings
   const [showEmergencyModal, setShowEmergencyModal] = useState<boolean>(false);
   const [duplicateMatch, setDuplicateMatch] = useState<{ isDuplicate: boolean; matchedReport?: Report; distanceMeters?: number } | null>(null);
-  const [showDuplicateModal, setShowDuplicateModal] = useState<boolean>(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   // Submission Result
   const [submittedReport, setSubmittedReport] = useState<Report | null>(null);
 
-  // Sample photos for instant user testing
-  const samplePhotos = [
+  // Rule 25: Proof of work submission modal state
+  const [showWorkProofModal, setShowWorkProofModal] = useState<boolean>(false);
+  const [workProofUrl, setWorkProofUrl] = useState<string>('https://images.unsplash.com/photo-1541888946425-d0fbb18615f8?auto=format&fit=crop&w=800&q=80');
+  const [workProofType, setWorkProofType] = useState<'image' | 'video'>('image');
+  const [workProofComment, setWorkProofComment] = useState<string>('Repaired and verified clear by neighborhood team.');
+  const [workProofSuccess, setWorkProofSuccess] = useState<boolean>(false);
+
+  // Sample media presets for testing
+  const sampleMediaItems = [
     {
+      type: 'image' as const,
       category: 'road_traffic' as CategoryId,
       url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-      label: 'Road Pothole',
+      label: '📷 Pothole (Photo)',
       detected: 'Road / Traffic Hazard',
-      risks: ['Vehicle wheel damage', 'Motorcycle collision', 'Commuter delay'],
+      risks: ['Vehicle wheel damage', 'Motorcycle crash hazard', 'Traffic bottleneck'],
       suggestedSev: 'high' as SeverityLevel,
       suggestedTitle: 'Dangerous Road Cave-in on Mirpur 10 Crossing',
     },
     {
+      type: 'video' as const,
       category: 'waterlogging' as CategoryId,
-      url: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80',
-      label: 'Waterlogging',
+      url: 'https://assets.mixkit.co/videos/preview/mixkit-rain-falling-on-the-water-of-a-lake-17482-large.mp4',
+      label: '🎥 Water Flow (Video)',
       detected: 'Urban Waterlogging / Blocked Drain',
       risks: ['Submerged manhole danger', 'Traffic standstill', 'Contaminated water'],
       suggestedSev: 'high' as SeverityLevel,
       suggestedTitle: 'Submerged Roadway & Clogged Stormwater Drain',
     },
     {
+      type: 'video' as const,
       category: 'electrical' as CategoryId,
-      url: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
-      label: 'Electrical Cable',
+      url: 'https://assets.mixkit.co/videos/preview/mixkit-hands-of-an-electrician-fixing-cables-42171-large.mp4',
+      label: '🎥 Cable Hazard (Video)',
       detected: 'Overhead High-Voltage Risk',
       risks: ['Electrocution danger', 'Short circuit spark', 'Transformer blowout'],
       suggestedSev: 'emergency' as SeverityLevel,
       suggestedTitle: 'Snapped Hanging Live Electric Cable Near Footpath',
     },
     {
+      type: 'image' as const,
       category: 'waste' as CategoryId,
       url: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
-      label: 'Waste Dump',
+      label: '📷 Waste Spill (Photo)',
       detected: 'Unsanitary Waste Spill',
       risks: ['Disease vector breeding', 'Drain obstruction', 'Public foul odor'],
       suggestedSev: 'medium' as SeverityLevel,
@@ -106,16 +139,15 @@ export default function ReportForm() {
     },
   ];
 
-  // Trigger AI Analysis Simulation when moving to Step 3
+  // AI analysis simulation
   const triggerAiAnalysis = () => {
     setIsAiAnalyzing(true);
     setAiAnalysisComplete(false);
 
-    // Find sample matching selectedCategory
-    const match = samplePhotos.find(p => p.category === selectedCategory) || samplePhotos[0];
+    const match = sampleMediaItems.find(p => p.category === selectedCategory) || sampleMediaItems[0];
 
     setTimeout(() => {
-      setAiConfidence(Math.floor(90 + Math.random() * 8));
+      setAiConfidence(Math.floor(91 + Math.random() * 7));
       setAiRisks(match.risks);
       setAiSuggestedSeverity(match.suggestedSev);
       setAiSuggestedCategory(match.category);
@@ -125,7 +157,6 @@ export default function ReportForm() {
     }, 1400);
   };
 
-  // Check emergency when category changes
   const handleCategorySelect = (catId: CategoryId) => {
     setSelectedCategory(catId);
     if (catId === 'fire' || catId === 'medical') {
@@ -133,16 +164,19 @@ export default function ReportForm() {
     }
   };
 
-  // GPS Geolocation Handler
+  // GPS Auto-Locate Button with Radar Simulation
   const handleUseMyLocation = () => {
     setIsLocating(true);
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setLatitude(Number(position.coords.latitude.toFixed(4)));
-          setLongitude(Number(position.coords.longitude.toFixed(4)));
-          setLocationName('Mirpur Road, Sector 10, Dhaka 1216');
+          const lat = Number(position.coords.latitude.toFixed(4));
+          const lng = Number(position.coords.longitude.toFixed(4));
+          setLatitude(lat);
+          setLongitude(lng);
+          setLocationName(`Auto-Located GPS (${lat}, ${lng}), Mirpur Sector 10, Dhaka`);
           setArea('Mirpur');
+          setLocationPill('Mirpur');
           setIsLocating(false);
         },
         () => {
@@ -151,15 +185,16 @@ export default function ReportForm() {
           setLongitude(90.3667);
           setLocationName('Mirpur Road, Near Mirpur-10 Roundabout, Dhaka');
           setArea('Mirpur');
+          setLocationPill('Mirpur');
           setIsLocating(false);
-        }
+        },
+        { timeout: 7000 }
       );
     } else {
       setIsLocating(false);
     }
   };
 
-  // Step navigation with checks
   const handleNextStep = () => {
     if (currentStep === 2) {
       setCurrentStep(3);
@@ -168,11 +203,9 @@ export default function ReportForm() {
     }
 
     if (currentStep === 4) {
-      // Run duplicate check against existing reports
       const dup = checkDuplicateReport(latitude, longitude, selectedCategory);
       if (dup.isDuplicate) {
         setDuplicateMatch(dup);
-        setShowDuplicateModal(true);
       }
       setCurrentStep(5);
       return;
@@ -181,18 +214,24 @@ export default function ReportForm() {
     setCurrentStep(prev => Math.min(prev + 1, 5));
   };
 
-  // Submission Handler
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmissionError(null);
 
-    // Check emergency warning if severity is emergency
+    // Rule 25 check: if user has unresolvedReportIdForWorkProof, block immediately
+    if (user.unresolvedReportIdForWorkProof) {
+      setShowWorkProofModal(true);
+      return;
+    }
+
     if (severity === 'emergency' && !showEmergencyModal) {
       setShowEmergencyModal(true);
     }
 
-    const created = addReport({
+    const result = addReport({
       categoryId: selectedCategory,
-      imageUrl,
+      mediaType,
+      mediaUrl,
       title: title || `${selectedCategory.replace('_', ' ')} incident near ${area}`,
       description: description || 'Citizen reported civic hazard requiring prompt municipal inspection.',
       latitude,
@@ -207,9 +246,37 @@ export default function ReportForm() {
       aiSuggestedSeverity,
     });
 
-    setSubmittedReport(created);
-    setCurrentStep(6); // Success view
+    if (!result.success) {
+      setSubmissionError(result.errorReason || 'Report could not be submitted. Please check community guidelines.');
+      return;
+    }
+
+    if (result.report) {
+      setSubmittedReport(result.report);
+      setCurrentStep(6);
+    }
   };
+
+  // Rule 25 Proof-of-work submit handler
+  const handleResolveWorkProof = () => {
+    if (user.unresolvedReportIdForWorkProof) {
+      submitCitizenProofOfWork(
+        user.unresolvedReportIdForWorkProof,
+        workProofUrl,
+        workProofType,
+        workProofComment
+      );
+      setWorkProofSuccess(true);
+      setTimeout(() => {
+        setShowWorkProofModal(false);
+        setWorkProofSuccess(false);
+      }, 1500);
+    }
+  };
+
+  // Nearest Thana & Ambulance lookup for active area
+  const nearestPolice = getNearestPolice(area);
+  const nearestAmbulance = getNearestAmbulance(area);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -220,9 +287,169 @@ export default function ReportForm() {
         onContinue={() => setShowEmergencyModal(false)}
       />
 
+      {/* RULE 25 BLOCKING BANNER / MODAL */}
+      {user.unresolvedReportIdForWorkProof && (
+        <div className="mb-8 p-6 rounded-3xl bg-amber-500/10 border-2 border-amber-500/40 backdrop-blur-md shadow-card space-y-4">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-lg">
+              <FileCheck className="w-6 h-6" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-500 text-white tracking-wider">
+                  Mandatory Civic Rule 25
+                </span>
+                <span className="text-xs font-bold text-amber-700">Verification Pending</span>
+              </div>
+              <h3 className="text-lg font-black text-navy mt-1">
+                Upload Photo/Video Proof of Completed Work to Unlock New Reports
+              </h3>
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                You previously reported ticket <strong className="font-mono text-navy">{user.unresolvedReportIdForWorkProof}</strong> which was marked repaired/resolved. Under Nirapod BD civic integrity guidelines, citizens must submit photographic or video verification of the done work before creating any further civic hazard requests.
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-wrap gap-3">
+            <button
+              onClick={() => setShowWorkProofModal(true)}
+              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-md transition flex items-center gap-2"
+            >
+              <Upload className="w-4 h-4" />
+              <span>Submit Work Proof Now</span>
+            </button>
+            <Link
+              href={`/report/${user.unresolvedReportIdForWorkProof}`}
+              className="px-4 py-2.5 rounded-xl bg-white text-navy font-bold text-xs border border-slate-200 hover:bg-slate-50 transition"
+            >
+              View Ticket Details
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* RULE 25 PROOF UPLOAD MODAL */}
+      {showWorkProofModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/75 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-surface-border space-y-5 animate-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-black text-navy text-base">Civic Work Verification (Rule 25)</h3>
+                  <p className="text-[11px] text-slate-500">Ticket: {user.unresolvedReportIdForWorkProof}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowWorkProofModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            {workProofSuccess ? (
+              <div className="p-6 text-center space-y-3">
+                <div className="w-16 h-16 rounded-full bg-safety/10 text-safety mx-auto flex items-center justify-center">
+                  <CheckCircle2 className="w-8 h-8 animate-bounce" />
+                </div>
+                <h4 className="text-lg font-black text-navy">Work Proof Accepted!</h4>
+                <p className="text-xs text-slate-500">+20 Reputation Points Awarded. Reporting unlocked.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-navy">Media Type</label>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setWorkProofType('image')}
+                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                        workProofType === 'image' ? 'bg-navy text-white border-navy' : 'bg-slate-50 border-slate-200'
+                      }`}
+                    >
+                      📷 Photo Evidence
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setWorkProofType('video')}
+                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                        workProofType === 'video' ? 'bg-navy text-white border-navy' : 'bg-slate-50 border-slate-200'
+                      }`}
+                    >
+                      🎥 Video Evidence
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-navy">Upload Photo / Video or Use URL</label>
+                  <input
+                    type="text"
+                    value={workProofUrl}
+                    onChange={(e) => setWorkProofUrl(e.target.value)}
+                    placeholder="https://... or choose file below"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl"
+                  />
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setWorkProofUrl(URL.createObjectURL(file));
+                        setWorkProofType(file.type.startsWith('video') ? 'video' : 'image');
+                      }
+                    }}
+                    className="text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-navy file:text-white cursor-pointer"
+                  />
+                </div>
+
+                {/* Media Preview */}
+                <div className="h-40 rounded-2xl bg-black overflow-hidden flex items-center justify-center">
+                  {workProofType === 'video' ? (
+                    <video src={workProofUrl} controls className="w-full h-full object-cover" />
+                  ) : (
+                    <img src={workProofUrl} alt="Proof" className="w-full h-full object-cover" />
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-navy">Citizen Verification Comments</label>
+                  <textarea
+                    rows={2}
+                    value={workProofComment}
+                    onChange={(e) => setWorkProofComment(e.target.value)}
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleResolveWorkProof}
+                  className="w-full py-3 rounded-xl bg-safety hover:bg-safety-hover text-white font-extrabold text-xs shadow-md transition"
+                >
+                  Verify Work & Unlock Reporting
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ERROR BANNER */}
+      {submissionError && (
+        <div className="mb-6 p-4 rounded-2xl bg-emergency/10 border border-emergency/30 text-emergency text-xs font-bold flex items-center gap-3">
+          <AlertOctagon className="w-5 h-5 shrink-0" />
+          <span>{submissionError}</span>
+        </div>
+      )}
+
       {/* SUCCESS SCREEN (Step 6) */}
       {currentStep === 6 && submittedReport && (
-        <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-elevated border border-surface-border text-center space-y-6 animate-in zoom-in-95 duration-200">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 sm:p-12 shadow-elevated border border-surface-border text-center space-y-6 animate-in zoom-in-95 duration-200">
           <div className="w-20 h-20 rounded-full bg-safety/10 text-safety mx-auto flex items-center justify-center shadow-glow animate-bounce">
             <CheckCircle2 className="w-10 h-10" />
           </div>
@@ -252,10 +479,118 @@ export default function ReportForm() {
               <StatusBadge status={submittedReport.status} size="sm" />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted font-bold">Points Earned</span>
-              <span className="text-xs font-black text-safety bg-safety/10 px-2 py-0.5 rounded-full">
-                +25 Reputation Points
+              <span className="text-xs text-muted font-bold">Media Uploaded</span>
+              <span className="text-xs font-bold text-navy uppercase bg-slate-200 px-2 py-0.5 rounded">
+                {submittedReport.mediaType}
               </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted font-bold">Reputation Award</span>
+              <span className="text-xs font-black text-safety bg-safety/10 px-2 py-0.5 rounded-full">
+                +25 Points
+              </span>
+            </div>
+          </div>
+
+          {/* REQUIREMENT 11: NEAREST POLICE & AMBULANCE DISPATCH CARD */}
+          <div className="max-w-xl mx-auto p-5 rounded-2xl bg-gradient-to-r from-navy to-navy-dark text-white text-left space-y-4 shadow-lg border border-navy-subtle">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldAlert className="w-5 h-5 text-emergency" />
+                <h4 className="text-sm font-black tracking-wide">Emergency Services For {submittedReport.area}</h4>
+              </div>
+              <span className="text-[10px] bg-emergency text-white font-extrabold px-2 py-0.5 rounded-full uppercase">
+                Auto-Detected
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              {/* Nearest Police Thana */}
+              <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-safety font-bold">
+                  <Building className="w-4 h-4" />
+                  <span className="truncate">{submittedReport.nearestPolice?.thanaName || nearestPolice.thanaName}</span>
+                </div>
+                <p className="text-[11px] text-slate-300">
+                  Duty Officer: <strong className="text-white">{submittedReport.nearestPolice?.dutyOfficerName || nearestPolice.dutyOfficerName || 'Duty Officer'}</strong>
+                </p>
+                <div className="pt-1 flex items-center justify-between">
+                  <span className="font-mono text-[11px] text-white font-bold">
+                    {submittedReport.nearestPolice?.hotlineMobile || nearestPolice.hotlineMobile || nearestPolice.dutyOfficerMobile}
+                  </span>
+                  <a
+                    href={`tel:${submittedReport.nearestPolice?.hotlineMobile || nearestPolice.hotlineMobile || nearestPolice.dutyOfficerMobile}`}
+                    className="px-2 py-1 bg-emergency hover:bg-emergency-hover text-white text-[10px] font-bold rounded-lg transition"
+                  >
+                    Call Thana
+                  </a>
+                </div>
+              </div>
+
+              {/* Nearest Ambulance / Hospital */}
+              <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-sky-400 font-bold">
+                  <Hospital className="w-4 h-4" />
+                  <span className="truncate">{submittedReport.nearestAmbulance?.hospitalName || nearestAmbulance.hospitalName}</span>
+                </div>
+                <p className="text-[11px] text-slate-300">
+                  ICU Units: <strong className="text-white">{(submittedReport.nearestAmbulance?.icuAvailable || nearestAmbulance.icuAvailable) ? 'Available' : 'Limited'}</strong>
+                </p>
+                <div className="pt-1 flex items-center justify-between">
+                  <span className="font-mono text-[11px] text-white font-bold">
+                    {submittedReport.nearestAmbulance?.emergencyHotline || nearestAmbulance.emergencyHotline || nearestAmbulance.emergencyPhone}
+                  </span>
+                  <a
+                    href={`tel:${submittedReport.nearestAmbulance?.emergencyHotline || nearestAmbulance.emergencyHotline || nearestAmbulance.emergencyPhone}`}
+                    className="px-2 py-1 bg-safety hover:bg-safety-hover text-white text-[10px] font-bold rounded-lg transition"
+                  >
+                    Call 16263
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* REQUIREMENT 5 & 6: VOLUNTEER EMAIL DISPATCH & WHATSAPP SHARING */}
+          <div className="max-w-xl mx-auto p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-left space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Radio className="w-4 h-4 text-safety animate-pulse" />
+                <span className="text-xs font-black text-navy uppercase">
+                  Community Volunteer Dispatch
+                </span>
+              </div>
+              <span className="text-[10px] bg-safety text-white font-bold px-2 py-0.5 rounded-full">
+                Auto-Sent
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-600">
+              Email alert automatically dispatched to verified local helpers in <strong>{submittedReport.area}</strong>.
+            </p>
+
+            <div className="flex flex-wrap gap-2 pt-1">
+              {/* WhatsApp Share Button */}
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(`[Nirapod BD Hazard Alert] ${submittedReport.title} at ${submittedReport.locationName}. Public ID: ${submittedReport.publicId}. View report: https://nirapodbd.gov.bd/report/${submittedReport.id}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs shadow-sm transition"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Share Alert on WhatsApp</span>
+              </a>
+
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`https://nirapodbd.gov.bd/report/${submittedReport.id}`);
+                  alert('Report URL copied to clipboard!');
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50 transition"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                <span>Copy Link</span>
+              </button>
             </div>
           </div>
 
@@ -290,60 +625,60 @@ export default function ReportForm() {
 
       {/* STEPPED REPORT FORM (Steps 1 to 5) */}
       {currentStep <= 5 && (
-        <div className="bg-white rounded-3xl shadow-card border border-surface-border overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-elevated border border-surface-border overflow-hidden">
           {/* Form Header & Step Progress Bar */}
-          <div className="p-6 sm:p-8 bg-gradient-to-r from-navy to-navy-light text-white border-b border-navy-subtle">
+          <div className="p-6 sm:p-8 bg-gradient-to-r from-navy via-navy to-navy-light text-white border-b border-navy-subtle">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <span className="text-xs uppercase font-extrabold tracking-widest text-safety">
                   Civic Hazard Dispatch
                 </span>
-                <h1 className="text-2xl sm:text-3xl font-black text-white mt-1">
+                <h2 className="text-2xl font-black tracking-tight mt-0.5">
                   {t.report.newReportTitle}
-                </h1>
+                </h2>
               </div>
-              <span className="text-xs font-mono font-bold bg-white/10 px-3 py-1 rounded-full border border-white/20">
-                Step {currentStep} of 5
-              </span>
+              <div className="text-right">
+                <span className="text-xs text-slate-400 block">Step</span>
+                <span className="text-lg font-black text-safety font-mono">
+                  {currentStep} / 5
+                </span>
+              </div>
             </div>
 
-            {/* Stepper Dots */}
+            {/* Stepper Progress Bar */}
             <div className="grid grid-cols-5 gap-2 pt-2">
-              {[
-                t.report.step1,
-                t.report.step2,
-                t.report.step3,
-                t.report.step4,
-                t.report.step5,
-              ].map((name, idx) => {
+              {['Category', 'Media', 'AI Scan', 'Pin Location', 'Submit'].map((stepName, idx) => {
                 const stepNum = idx + 1;
                 const isCompleted = stepNum < currentStep;
                 const isCurrent = stepNum === currentStep;
 
                 return (
                   <div key={idx} className="space-y-1.5">
-                    <div
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        isCompleted
-                          ? 'bg-safety'
-                          : isCurrent
-                          ? 'bg-amber-400'
-                          : 'bg-white/20'
-                      }`}
-                    />
-                    <p
-                      className={`text-[11px] truncate font-bold hidden sm:block ${
-                        isCurrent ? 'text-white' : 'text-slate-400'
+                    <div className="h-1.5 rounded-full overflow-hidden bg-white/20">
+                      <div
+                        className={`h-full transition-all duration-300 ${
+                          isCompleted || isCurrent ? 'bg-safety' : ''
+                        }`}
+                      />
+                    </div>
+                    <span
+                      className={`text-[10px] font-bold block truncate ${
+                        isCurrent
+                          ? 'text-white'
+                          : isCompleted
+                          ? 'text-safety'
+                          : 'text-slate-400'
                       }`}
                     >
-                      {name}
-                    </p>
+                      {stepName}
+                    </span>
                   </div>
                 );
               })}
             </div>
           </div>
 
+          {/* Form Steps Body */}
           <div className="p-6 sm:p-8">
             {/* STEP 1: CATEGORY SELECTION */}
             {currentStep === 1 && (
@@ -404,109 +739,155 @@ export default function ReportForm() {
               </div>
             )}
 
-            {/* STEP 2: PHOTO UPLOAD */}
+            {/* STEP 2: PHOTO OR VIDEO UPLOAD (Requirement 1) */}
             {currentStep === 2 && (
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-extrabold text-navy">
-                    {t.report.uploadTitle}
-                  </h3>
-                  <p className="text-sm text-slate-500">
-                    {t.report.uploadSub}
-                  </p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-xl font-extrabold text-navy">
+                      Upload Photo or Video Evidence
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Snap or upload visual evidence of the civic problem.
+                    </p>
+                  </div>
+                  
+                  {/* Media Type Switcher */}
+                  <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+                    <button
+                      type="button"
+                      onClick={() => setMediaType('image')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                        mediaType === 'image' ? 'bg-navy text-white shadow-sm' : 'text-slate-600 hover:text-navy'
+                      }`}
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>Photo</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMediaType('video')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                        mediaType === 'video' ? 'bg-navy text-white shadow-sm' : 'text-slate-600 hover:text-navy'
+                      }`}
+                    >
+                      <Video className="w-3.5 h-3.5" />
+                      <span>Video</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Upload & Drag Drop Area */}
                 <div className="border-2 border-dashed border-slate-300 rounded-3xl p-6 sm:p-8 text-center bg-slate-50/50 hover:bg-slate-50 transition space-y-4">
                   <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-slate-200 mx-auto flex items-center justify-center text-navy">
-                    <Camera className="w-8 h-8 text-navy" />
+                    {mediaType === 'video' ? <Video className="w-8 h-8 text-navy" /> : <Camera className="w-8 h-8 text-navy" />}
                   </div>
 
                   <div className="space-y-1">
                     <p className="text-sm font-bold text-navy">
-                      {t.report.dragDropText}
+                      {mediaType === 'video' ? 'Drag & drop hazard video clip' : t.report.dragDropText}
                     </p>
                     <p className="text-xs text-muted">
-                      Supports JPG, PNG, WEBP up to 12MB. Geotag metadata extracted automatically.
+                      Supports MP4, MOV, WEBM, JPG, PNG up to 25MB.
                     </p>
                   </div>
 
                   <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                     <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition">
-                      <Camera className="w-4 h-4" />
-                      <span>{t.report.takePhoto}</span>
+                      {mediaType === 'video' ? <Video className="w-4 h-4" /> : <Camera className="w-4 h-4" />}
+                      <span>{mediaType === 'video' ? 'Upload Video Clip' : t.report.takePhoto}</span>
                       <input
                         type="file"
-                        accept="image/*"
-                        capture="environment"
+                        accept="image/*,video/*"
                         className="hidden"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const tempUrl = URL.createObjectURL(file);
-                            setImageUrl(tempUrl);
+                            const isVid = file.type.startsWith('video');
+                            setMediaType(isVid ? 'video' : 'image');
+                            setMediaUrl(URL.createObjectURL(file));
                           }
                         }}
                       />
                     </label>
 
-                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300 shadow-2xs transition">
+                    <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition">
                       <Upload className="w-4 h-4" />
                       <span>{t.report.uploadImage}</span>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,video/*"
                         className="hidden"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const tempUrl = URL.createObjectURL(file);
-                            setImageUrl(tempUrl);
+                            const isVid = file.type.startsWith('video');
+                            setMediaType(isVid ? 'video' : 'image');
+                            setMediaUrl(URL.createObjectURL(file));
                           }
                         }}
                       />
                     </label>
                   </div>
-                </div>
 
-                {/* Image Preview & Quick Sample Test Selector */}
-                <div className="space-y-3">
-                  <span className="text-xs font-bold text-slate-600">
-                    {t.report.useSamplePhoto}
-                  </span>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {samplePhotos.map((sample, idx) => (
-                      <button
-                        type="button"
-                        key={idx}
-                        onClick={() => {
-                          setImageUrl(sample.url);
-                          setSelectedCategory(sample.category);
-                        }}
-                        className={`relative rounded-2xl overflow-hidden border-2 text-left group transition-all ${
-                          imageUrl === sample.url
-                            ? 'border-safety ring-2 ring-safety shadow-md'
-                            : 'border-surface-border hover:border-slate-400'
-                        }`}
-                      >
-                        <img
-                          src={sample.url}
-                          alt={sample.label}
-                          className="h-24 w-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
-                          <span className="text-[11px] font-bold text-white">
-                            {sample.label}
-                          </span>
-                        </div>
-                      </button>
-                    ))}
+                  {/* Instant Test Presets */}
+                  <div className="pt-3 border-t border-slate-200">
+                    <span className="text-[11px] font-bold text-slate-400 block mb-2">
+                      Or select sample test evidence:
+                    </span>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {sampleMediaItems.map((item, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            setMediaType(item.type);
+                            setMediaUrl(item.url);
+                            setSelectedCategory(item.category);
+                          }}
+                          className={`text-xs px-3 py-1.5 rounded-xl border font-bold transition ${
+                            mediaUrl === item.url
+                              ? 'bg-navy text-white border-navy shadow-sm'
+                              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
+
+                {/* Evidence Preview Box */}
+                {mediaUrl && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-navy">
+                      <span>Evidence Preview ({mediaType.toUpperCase()})</span>
+                      <span className="text-safety flex items-center gap-1">
+                        <Check className="w-3.5 h-3.5" /> Media Ready
+                      </span>
+                    </div>
+                    <div className="relative h-64 sm:h-72 w-full rounded-2xl overflow-hidden bg-black border border-slate-200 shadow-md">
+                      {mediaType === 'video' ? (
+                        <video
+                          src={mediaUrl}
+                          controls
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={mediaUrl}
+                          alt="Hazard preview"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* STEP 3: AI ANALYSIS */}
+            {/* STEP 3: AI ANALYSIS & VISION */}
             {currentStep === 3 && (
               <div className="space-y-6">
                 <div>
@@ -514,41 +895,47 @@ export default function ReportForm() {
                     {t.report.aiAnalysisTitle}
                   </h3>
                   <p className="text-sm text-slate-500">
-                    Automated computer vision hazard triage
+                    Neural vision scanning for civic risk categorization and severity rating.
                   </p>
                 </div>
 
-                {/* Processing State Animation */}
-                {isAiAnalyzing ? (
-                  <div className="p-12 text-center rounded-3xl bg-slate-50 border border-slate-200 space-y-4">
+                {/* Loading / Scanning Simulation */}
+                {isAiAnalyzing && (
+                  <div className="p-8 sm:p-12 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4">
                     <div className="relative w-16 h-16 mx-auto">
-                      <div className="absolute inset-0 rounded-full border-4 border-safety/30 border-t-safety animate-spin" />
-                      <Sparkles className="w-8 h-8 text-safety absolute inset-0 m-auto animate-pulse" />
+                      <div className="absolute inset-0 rounded-full border-4 border-safety/20 animate-ping" />
+                      <div className="w-16 h-16 rounded-full border-4 border-safety border-t-transparent animate-spin flex items-center justify-center">
+                        <Sparkles className="w-6 h-6 text-safety" />
+                      </div>
                     </div>
                     <div>
                       <h4 className="text-base font-extrabold text-navy">
                         {t.report.aiAnalyzing}
                       </h4>
                       <p className="text-xs text-muted mt-1">
-                        Extracting pavement fissures, water boundaries, and obstacle vectors...
+                        Scanning Dhaka urban taxonomy, hazard boundaries, and depth...
                       </p>
                     </div>
                   </div>
-                ) : (
-                  /* AI Results Card */
-                  <div className="rounded-3xl bg-slate-50 border border-slate-200 overflow-hidden shadow-sm">
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-6">
-                      {/* Left: Analyzed Image with AI Bounding Overlay */}
-                      <div className="md:col-span-5 relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 h-56 md:h-auto">
-                        <img
-                          src={imageUrl}
-                          alt="Analyzed Evidence"
-                          className="w-full h-full object-cover"
-                        />
-                        {/* Simulated AI Detection Box Overlay */}
-                        <div className="absolute inset-6 border-2 border-emerald-400 rounded-xl bg-emerald-500/10 pointer-events-none flex items-start justify-between p-2">
+                )}
+
+                {/* Completed AI Analysis Card */}
+                {aiAnalysisComplete && !isAiAnalyzing && (
+                  <div className="bg-slate-50/70 border border-slate-200 rounded-3xl overflow-hidden space-y-0">
+                    <div className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                      {/* Left: Media Thumbnail */}
+                      <div className="md:col-span-5 relative h-48 rounded-2xl overflow-hidden bg-black border border-slate-200">
+                        {mediaType === 'video' ? (
+                          <video src={mediaUrl} className="w-full h-full object-cover" />
+                        ) : (
+                          <img src={mediaUrl} alt="Analyzed" className="w-full h-full object-cover" />
+                        )}
+                        <div className="absolute top-2 left-2 bg-navy/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                          AI SCANNED
+                        </div>
+                        <div className="absolute bottom-2 right-2">
                           <span className="bg-emerald-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded shadow">
-                            {aiConfidence}% MATCH
+                            {aiConfidence}% CONFIDENCE
                           </span>
                         </div>
                       </div>
@@ -642,7 +1029,7 @@ export default function ReportForm() {
               </div>
             )}
 
-            {/* STEP 4: LOCATION PINNING */}
+            {/* STEP 4: LOCATION PINNING (Requirement 2: Auto locate location button) */}
             {currentStep === 4 && (
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -651,18 +1038,19 @@ export default function ReportForm() {
                       {t.report.locationTitle}
                     </h3>
                     <p className="text-sm text-slate-500">
-                      {t.report.dragPinNotice}
+                      Auto-detect GPS or select your neighborhood ward.
                     </p>
                   </div>
 
+                  {/* REQUIREMENT 2: AUTO LOCATE LOCATION BUTTON */}
                   <button
                     type="button"
                     onClick={handleUseMyLocation}
                     disabled={isLocating}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-black shadow-md transition disabled:opacity-50 relative overflow-hidden group"
                   >
-                    <MapPin className="w-3.5 h-3.5 text-safety" />
-                    <span>{isLocating ? 'Detecting GPS...' : t.report.useMyLocation}</span>
+                    <Radio className={`w-4 h-4 ${isLocating ? 'animate-spin' : 'animate-pulse'}`} />
+                    <span>{isLocating ? 'Scanning GPS Radar...' : 'Auto-Locate GPS Position'}</span>
                   </button>
                 </div>
 
@@ -699,7 +1087,9 @@ export default function ReportForm() {
                       { name: 'Dhanmondi 27', lat: 23.7538, lng: 90.3752, area: 'Dhanmondi' },
                       { name: 'Uttara Sector 7', lat: 23.8759, lng: 90.3795, area: 'Uttara' },
                       { name: 'Gulshan Avenue', lat: 23.7897, lng: 90.4158, area: 'Gulshan' },
+                      { name: 'Mohammadpur Townhall', lat: 23.7658, lng: 90.3582, area: 'Mohammadpur' },
                       { name: 'Motijheel C/A', lat: 23.7289, lng: 90.4172, area: 'Motijheel' },
+                      { name: 'Old Dhaka Sadarghat', lat: 23.7099, lng: 90.4071, area: 'Old Dhaka' },
                     ].map((loc, idx) => (
                       <button
                         type="button"
@@ -709,10 +1099,11 @@ export default function ReportForm() {
                           setLatitude(loc.lat);
                           setLongitude(loc.lng);
                           setArea(loc.area);
+                          setLocationPill(loc.area);
                         }}
                         className={`text-[11px] font-bold px-3 py-1 rounded-full transition shadow-sm ${
                           area === loc.area
-                            ? 'bg-safety text-white'
+                            ? 'bg-safety text-white ring-2 ring-white/40'
                             : 'bg-navy-dark/80 text-slate-200 hover:bg-navy-dark border border-white/10'
                         }`}
                       >
@@ -746,7 +1137,7 @@ export default function ReportForm() {
                       </p>
                     </div>
                     <span className="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-1 rounded-md">
-                      Dhaka Zone
+                      Dhaka Zone ({area})
                     </span>
                   </div>
                 </div>
@@ -767,11 +1158,11 @@ export default function ReportForm() {
                     {t.report.detailsTitle}
                   </h3>
                   <p className="text-sm text-slate-500">
-                    Provide accurate details to help responders take quick action.
+                    Provide accurate details to help community and authorities take quick action.
                   </p>
                 </div>
 
-                {/* DUPLICATE WARNING CALLOUT (If detected) */}
+                {/* DUPLICATE WARNING CALLOUT */}
                 {duplicateMatch?.isDuplicate && duplicateMatch.matchedReport && (
                   <div className="p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 space-y-3 animate-in fade-in duration-200">
                     <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm">
@@ -810,7 +1201,7 @@ export default function ReportForm() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setDuplicateMatch({ isDuplicate: false })}
+                        onClick={() => setDuplicateMatch(null)}
                         className="py-2 px-3 rounded-xl bg-white text-slate-700 border border-slate-300 text-xs font-semibold hover:bg-slate-50 transition"
                       >
                         {t.duplicate.createSeparate}

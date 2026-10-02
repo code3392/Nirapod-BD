@@ -1,0 +1,409 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useApp } from '@/context/AppContext';
+import { Report } from '@/types';
+import StatusBadge from '@/components/common/StatusBadge';
+import SeverityBadge from '@/components/common/SeverityBadge';
+import BeforeAfterSlider from '@/components/common/BeforeAfterSlider';
+import { 
+  MapPin, 
+  Clock, 
+  Calendar, 
+  User, 
+  Share2, 
+  Sparkles, 
+  CheckCircle2, 
+  AlertTriangle, 
+  HelpCircle, 
+  XCircle, 
+  MessageSquare, 
+  Send, 
+  ShieldCheck, 
+  ArrowLeft,
+  ChevronRight,
+  ExternalLink,
+  Building2,
+  Copy
+} from 'lucide-react';
+
+interface ReportDetailProps {
+  report: Report;
+}
+
+export default function ReportDetail({ report }: ReportDetailProps) {
+  const { language, t, verifyReport, addComment, confirmResolution, user } = useApp();
+  const [commentText, setCommentText] = useState('');
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [userVoted, setUserVoted] = useState<string | null>(null);
+
+  const handleVote = (voteType: 'confirm' | 'not_sure' | 'incorrect') => {
+    verifyReport(report.id, voteType);
+    setUserVoted(voteType);
+  };
+
+  const handleCommentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+    addComment(report.id, commentText);
+    setCommentText('');
+  };
+
+  const handleShare = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(window.location.href);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  };
+
+  // Calculate community verification consensus percentage
+  const totalVotes = report.confirmationsCount + report.notSureCount + report.incorrectCount;
+  const confidencePercent = totalVotes > 0 ? Math.round((report.confirmationsCount / totalVotes) * 100) : 100;
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      {/* Back Link & Top Metadata Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <Link
+          href="/reports"
+          className="inline-flex items-center gap-2 text-xs font-bold text-navy hover:text-safety transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>{language === 'en' ? 'Back to All Reports' : 'সকল রিপোর্টে ফিরে যান'}</span>
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleShare}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 text-xs font-bold shadow-2xs transition"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            <span>{copiedLink ? (language === 'en' ? 'Link Copied!' : 'লিঙ্ক কপি হয়েছে!') : t.detail.share}</span>
+          </button>
+          <Link
+            href="/map"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition"
+          >
+            <MapPin className="w-3.5 h-3.5 text-safety" />
+            <span>{language === 'en' ? 'Locate on Map' : 'মানচিত্রে দেখুন'}</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Main Report Header Card */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-surface-border space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs uppercase font-black px-2.5 py-1 rounded-lg bg-navy/5 text-navy font-mono">
+              {report.publicId}
+            </span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              {report.categoryId.replace('_', ' ')}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <SeverityBadge severity={report.severity} size="md" />
+            <StatusBadge status={report.status} size="md" />
+          </div>
+        </div>
+
+        {/* Title */}
+        <h1 className="text-2xl sm:text-3xl font-black text-navy tracking-tight leading-snug">
+          {report.title}
+        </h1>
+
+        {/* Location & Metadata Bar */}
+        <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-slate-600 border-y border-slate-100 py-3.5">
+          <span className="flex items-center gap-1.5 font-semibold">
+            <MapPin className="w-4 h-4 text-emergency shrink-0" />
+            {report.locationName}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-slate-400" />
+            {new Date(report.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <User className="w-4 h-4 text-slate-400" />
+            {report.userName}
+          </span>
+        </div>
+
+        {/* Evidence Photo OR Before/After Slider if Resolved */}
+        {report.status === 'RESOLVED' || report.status === 'COMMUNITY_CONFIRMED' ? (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-black text-navy uppercase tracking-wider">
+                {t.detail.officialResolutionTitle}
+              </h3>
+              <span className="text-xs font-bold text-safety bg-safety/10 px-2.5 py-0.5 rounded-full">
+                ✓ Repaired by {report.assignedOrganization?.name || 'Local Authority'}
+              </span>
+            </div>
+            <BeforeAfterSlider
+              beforeImage={report.resolution?.beforeImage || report.imageUrl}
+              afterImage={report.resolution?.afterImage || report.imageUrl}
+              communityConfirmed={report.status === 'COMMUNITY_CONFIRMED' || (report.resolution?.verifiedByCommunityCount || 0) > 0}
+              confirmedCount={report.resolution?.verifiedByCommunityCount || 24}
+            />
+            {report.resolution?.description && (
+              <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 text-xs text-emerald-950 space-y-1">
+                <span className="font-extrabold uppercase text-[10px] tracking-wider text-emerald-800">
+                  Maintenance Report Summary:
+                </span>
+                <p className="text-slate-800">{report.resolution.description}</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm max-h-[460px]">
+            <img
+              src={report.imageUrl}
+              alt={report.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-4 left-4">
+              <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20">
+                {t.detail.evidencePhoto}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Description Section */}
+        <div className="space-y-2">
+          <h3 className="text-xs uppercase font-extrabold tracking-wider text-muted">
+            {t.detail.description}
+          </h3>
+          <p className="text-sm sm:text-base text-darktext leading-relaxed">
+            {report.description}
+          </p>
+        </div>
+
+        {/* AI Analysis Card */}
+        <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-navy uppercase tracking-wider">
+                  {t.detail.aiAnalysis}
+                </h4>
+                <p className="text-[11px] text-muted">
+                  Computer vision hazard confirmation
+                </p>
+              </div>
+            </div>
+            <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-safety">
+              {report.aiConfidence || 94}% Confidence
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-2 pt-1">
+            {(report.aiRisks || ['Public safety hazard', 'Vehicle disturbance']).map((risk, idx) => (
+              <span
+                key={idx}
+                className="text-xs bg-white border border-slate-200 px-2.5 py-1 rounded-lg text-slate-700 font-medium"
+              >
+                ⚠️ {risk}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* COMMUNITY VERIFICATION VOTING BAR */}
+        <div className="p-6 rounded-3xl bg-surface border border-surface-border space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="text-base font-extrabold text-navy">
+                {t.detail.communityVerification}
+              </h3>
+              <p className="text-xs text-slate-500">
+                {report.confirmationsCount} {t.detail.confirmedCount} ({confidencePercent}% Consensus)
+              </p>
+            </div>
+
+            {/* Voting Consensus Progress Bar */}
+            <div className="w-full sm:w-48 space-y-1">
+              <div className="h-2 rounded-full bg-slate-200 overflow-hidden flex">
+                <div
+                  className="bg-safety transition-all duration-500"
+                  style={{ width: `${confidencePercent}%` }}
+                />
+                <div
+                  className="bg-rose-400 transition-all duration-500"
+                  style={{ width: `${100 - confidencePercent}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[10px] text-muted font-bold">
+                <span>{report.confirmationsCount} Verified</span>
+                <span>{report.incorrectCount} Challenged</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Verification Buttons */}
+          <div className="pt-2">
+            <span className="text-xs font-bold text-navy block mb-2">
+              {t.detail.confirmPrompt}
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <button
+                type="button"
+                onClick={() => handleVote('confirm')}
+                className={`py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
+                  userVoted === 'confirm'
+                    ? 'bg-safety text-white shadow-sm ring-2 ring-safety'
+                    : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                }`}
+              >
+                <CheckCircle2 className="w-4 h-4 text-safety" />
+                <span>{t.detail.confirmYes} (+5 pts)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleVote('not_sure')}
+                className={`py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
+                  userVoted === 'not_sure'
+                    ? 'bg-slate-700 text-white'
+                    : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                }`}
+              >
+                <HelpCircle className="w-4 h-4 text-slate-400" />
+                <span>{t.detail.confirmNotSure}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleVote('incorrect')}
+                className={`py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
+                  userVoted === 'incorrect'
+                    ? 'bg-emergency text-white'
+                    : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                }`}
+              >
+                <XCircle className="w-4 h-4 text-emergency" />
+                <span>{t.detail.confirmIncorrect}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Resolution Button if Resolved */}
+          {report.status === 'RESOLVED' && (
+            <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-600">
+                Did the authority fix this problem satisfactorily?
+              </span>
+              <button
+                onClick={() => confirmResolution(report.id)}
+                className="px-4 py-2 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-bold shadow-sm transition"
+              >
+                {t.detail.confirmResolutionBtn}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* TIMELINE SECTION */}
+        <div className="space-y-4 pt-4 border-t border-slate-100">
+          <h3 className="text-base font-extrabold text-navy">
+            {t.detail.timelineTitle}
+          </h3>
+
+          <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+            {report.timeline.map((event, idx) => (
+              <div key={event.id} className="relative group">
+                {/* Dot */}
+                <div className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-white border-2 border-navy group-last:border-safety group-last:bg-safety" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-navy">
+                      {language === 'en' ? event.titleEn : event.titleBn}
+                    </span>
+                    {event.actor && (
+                      <span className="text-[10px] text-muted font-medium bg-slate-100 px-1.5 py-0.2 rounded">
+                        {event.actor}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[11px] text-muted font-mono block mt-0.5">
+                    {new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} •{' '}
+                    {new Date(event.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* COMMENTS & COMMUNITY UPDATES SECTION */}
+        <div className="space-y-4 pt-6 border-t border-slate-100">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-extrabold text-navy flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-safety" />
+              <span>{t.detail.commentsTitle} ({report.comments.length})</span>
+            </h3>
+          </div>
+
+          {/* Comment Form */}
+          <form onSubmit={handleCommentSubmit} className="flex gap-2">
+            <input
+              type="text"
+              placeholder={t.detail.addCommentPlaceholder}
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:ring-2 focus:ring-safety focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5 shrink-0"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{t.detail.postComment}</span>
+            </button>
+          </form>
+
+          {/* Comment list */}
+          <div className="space-y-3 pt-2">
+            {report.comments.length === 0 ? (
+              <p className="text-xs text-muted italic">
+                {language === 'en' ? 'No comments posted yet. Be the first to share an update.' : 'এখনও কোনো মন্তব্য নেই। প্রথম মন্তব্যটি আপনি করুন।'}
+              </p>
+            ) : (
+              report.comments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className={`p-3.5 rounded-2xl border text-xs space-y-1 ${
+                    comment.isOfficial
+                      ? 'bg-blue-50/60 border-blue-200'
+                      : 'bg-white border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-navy flex items-center gap-1.5">
+                      {comment.userName}
+                      {comment.isOfficial && (
+                        <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-extrabold">
+                          Official
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-[10px] text-muted">
+                      {new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <p className="text-slate-700 leading-relaxed">{comment.content}</p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

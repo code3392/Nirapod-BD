@@ -54,7 +54,7 @@ export default function Hero() {
       hazard: 'Snapped Overhead Electric Wire Shielded',
       tag: 'DESCO Response Completed',
       badge: '✓ RESOLVED',
-      color: 'border-safety/50 bg-safety/10 text-safety',
+      color: 'border-civic-blue/50 bg-civic-blue/10 text-sky-300',
       coords: '23.8759° N, 90.3795° E',
       confirmations: 24
     },
@@ -63,7 +63,7 @@ export default function Hero() {
       hazard: 'Open High-Risk Drain Pit Covered',
       tag: 'Community Guard Verified',
       badge: '✓ SAFEGUARDED',
-      color: 'border-teal-400/50 bg-teal-400/10 text-teal-300',
+      color: 'border-blue-400/50 bg-blue-400/10 text-blue-300',
       coords: '23.7658° N, 90.3582° E',
       confirmations: 15
     }
@@ -84,7 +84,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293d_1px,transparent_1px),linear-gradient(to_bottom,#1f293d_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-25 pointer-events-none" />
       
       {/* Ambient Cyber Luminous Orbs */}
-      <div className="absolute top-1/4 -left-48 w-96 h-96 bg-safety/20 rounded-full blur-[100px] pointer-events-none animate-pulse" />
+      <div className="absolute top-1/4 -left-48 w-96 h-96 bg-civic-blue/20 rounded-full blur-[100px] pointer-events-none animate-pulse" />
       <div className="absolute top-1/3 -right-48 w-96 h-96 bg-emergency/20 rounded-full blur-[100px] pointer-events-none animate-pulse" style={{ animationDuration: '6s' }} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -95,13 +95,13 @@ export default function Hero() {
             {/* Live Trust Pill with Rotating Alert */}
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md shadow-inner transition-all">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-safety opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-safety"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-civic-blue opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-civic-blue"></span>
               </span>
               <span className="text-xs font-bold text-slate-200 tracking-wide">
                 Community-Powered • AI-Assisted • Location-Aware
               </span>
-              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-safety/20 text-safety border border-safety/30 hidden sm:inline">
+              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-civic-blue/20 text-blue-300 border border-civic-blue/30 hidden sm:inline">
                 Dhaka Live Mesh
               </span>
             </div>
@@ -109,7 +109,7 @@ export default function Hero() {
             {/* Main Punchy Heading */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
               {t.hero.titleLine1}{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-safety via-emerald-400 to-teal-300 drop-shadow-[0_0_25px_rgba(24,165,88,0.4)]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-blue-200 drop-shadow-[0_0_25px_rgba(37,99,235,0.4)]">
                 {t.hero.titleHighlight}
               </span>
             </h1>
@@ -132,7 +132,7 @@ export default function Hero() {
 
               <Link
                 href="/map"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-white/10 hover:bg-white/20 border border-white/25 text-white text-base font-bold px-7 py-4 rounded-2xl backdrop-blur-md transition-all hover:border-safety/40 shadow-lg"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-white/10 hover:bg-white/20 border border-white/25 text-white text-base font-bold px-7 py-4 rounded-2xl backdrop-blur-md transition-all hover:border-civic-blue/40 shadow-lg"
               >
                 <span className="text-lg">🗺️</span>
                 <span>{t.hero.secondaryCta}</span>
@@ -180,7 +180,7 @@ export default function Hero() {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-safety" />
+                <CheckCircle2 className="w-4 h-4 text-civic-blue" />
                 <span>
                   <strong className="text-white font-bold">{verifiedCount}</strong> {language === 'en' ? 'Verified Incidents' : 'যাচাইকৃত সমস্যা'}
                 </span>
@@ -199,7 +199,7 @@ export default function Hero() {
             <div className="relative mx-auto max-w-md lg:max-w-none">
               
               {/* Outer Cyber Glow Ring */}
-              <div className="absolute -inset-1 rounded-[2.5rem] bg-gradient-to-r from-safety via-sky-500 to-emergency opacity-30 blur-xl animate-tilt" />
+              <div className="absolute -inset-1 rounded-[2.5rem] bg-gradient-to-r from-civic-blue via-sky-500 to-indigo-500 opacity-30 blur-xl animate-tilt" />
 
               {/* Glass Card Container */}
               <div className="relative rounded-3xl bg-navy-light/80 border border-white/20 p-6 backdrop-blur-2xl shadow-2xl overflow-hidden">
@@ -215,7 +215,7 @@ export default function Hero() {
                       Dhaka City Hazard Radar
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-safety bg-safety/20 px-2.5 py-0.5 rounded-full border border-safety/30 shadow-2xs">
+                  <span className="text-[10px] font-mono font-bold text-blue-300 bg-civic-blue/20 px-2.5 py-0.5 rounded-full border border-civic-blue/30 shadow-2xs">
                     Live Mesh 24/7
                   </span>
                 </div>
@@ -232,18 +232,18 @@ export default function Hero() {
                     </defs>
                     <rect width="100%" height="100%" fill="url(#radar-grid)" />
                     {/* Concentric Radar Rings */}
-                    <circle cx="50%" cy="50%" r="50" fill="none" stroke="#18A558" strokeWidth="1" strokeDasharray="4 4" />
-                    <circle cx="50%" cy="50%" r="100" fill="none" stroke="#18A558" strokeWidth="0.8" opacity="0.6" />
-                    <circle cx="50%" cy="50%" r="140" fill="none" stroke="#18A558" strokeWidth="0.5" opacity="0.4" />
+                    <circle cx="50%" cy="50%" r="50" fill="none" stroke="#3B82F6" strokeWidth="1" strokeDasharray="4 4" />
+                    <circle cx="50%" cy="50%" r="100" fill="none" stroke="#3B82F6" strokeWidth="0.8" opacity="0.6" />
+                    <circle cx="50%" cy="50%" r="140" fill="none" stroke="#3B82F6" strokeWidth="0.5" opacity="0.4" />
                   </svg>
 
                   {/* Animated Radar Sweep Cone */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div 
-                      className="w-72 h-72 rounded-full border border-safety/30 origin-center animate-spin"
+                      className="w-72 h-72 rounded-full border border-civic-blue/30 origin-center animate-spin"
                       style={{ 
                         animationDuration: '7s',
-                        background: 'conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(24, 165, 88, 0.25) 360deg)'
+                        background: 'conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(37, 99, 235, 0.25) 360deg)'
                       }}
                     />
                   </div>
@@ -281,11 +281,11 @@ export default function Hero() {
 
                   {/* Dhanmondi - Waterlogging (Resolved) */}
                   <div className="absolute top-[58%] left-[42%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-10">
-                    <div className="relative w-5 h-5 rounded-full bg-safety text-white flex items-center justify-center text-[10px] font-black shadow-glow">
+                    <div className="relative w-5 h-5 rounded-full bg-civic-blue text-white flex items-center justify-center text-[10px] font-black shadow-glow">
                       ✓
                     </div>
                     <div className="absolute left-6 -top-2 whitespace-nowrap bg-navy-dark/95 border border-white/20 text-white text-[11px] px-2.5 py-1 rounded-lg shadow-lg pointer-events-none backdrop-blur-md">
-                      <span className="font-bold text-safety">Dhanmondi:</span> Drain Cleared
+                      <span className="font-bold text-blue-400">Dhanmondi:</span> Drain Cleared
                     </div>
                   </div>
 
@@ -303,7 +303,7 @@ export default function Hero() {
                 {/* Bottom Card Summary */}
                 <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-safety/20 text-safety flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl bg-civic-blue/20 text-blue-300 flex items-center justify-center">
                       <Sparkles className="w-4 h-4" />
                     </div>
                     <div>
@@ -313,7 +313,7 @@ export default function Hero() {
                   </div>
                   <Link
                     href="/map"
-                    className="text-xs font-bold text-safety hover:underline inline-flex items-center gap-1"
+                    className="text-xs font-bold text-blue-400 hover:underline inline-flex items-center gap-1"
                   >
                     <span>View Map</span>
                     <ChevronRight className="w-3.5 h-3.5" />

@@ -35,16 +35,61 @@ import {
 } from 'lucide-react';
 
 export default function UserProfile() {
-  const { language, t, user, reports, updateUserProfile, submitCitizenProofOfWork } = useApp();
+  const { language, t, user, reports, updateUserProfile, submitCitizenProofOfWork, login } = useApp();
+
+  // Guest State handling
+  if (!user) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-blue-100 shadow-card text-center space-y-6">
+          <div className="w-20 h-20 rounded-3xl bg-blue-50 text-civic-blue flex items-center justify-center mx-auto border border-blue-200 shadow-sm">
+            <ShieldCheck className="w-10 h-10 text-civic-blue" />
+          </div>
+
+          <div className="space-y-2 max-w-lg mx-auto">
+            <span className="text-[11px] font-extrabold uppercase px-3 py-1 rounded-full bg-blue-50 text-civic-blue border border-blue-200">
+              {language === 'en' ? 'Guest Citizen Portal' : 'নাগরিক প্রোফাইল ডেস্ক'}
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black text-navy tracking-tight">
+              {language === 'en' ? 'Welcome to Nirapod BD' : 'নিরাপদ বিডিতে স্বাগতম'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              {language === 'en'
+                ? 'You are currently browsing as a guest. Sign in with your registered email or create an account with your living area and phone number to submit civic reports, verify community hazards, and unlock verified citizen badges.'
+                : 'আপনি অতিথি হিসেবে ব্রাউজ করছেন। সমস্যা রিপোর্ট করতে, যাচাই কার্যক্রমে অংশ নিতে এবং নাগরিক পয়েন্ট অর্জন করতে আপনার একাউন্টে লগইন বা নিবন্ধন করুন।'}
+            </p>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+            <button
+              onClick={() => {
+                login('smdsami59@gmail.com');
+              }}
+              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black shadow transition flex items-center justify-center gap-2"
+            >
+              <span>👑</span>
+              <span>Sign In as Super Admin (smdsami59@gmail.com)</span>
+            </button>
+            <Link
+              href="/map"
+              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow transition"
+            >
+              {language === 'en' ? 'Explore Safety Map' : 'নিরাপত্তা ম্যাপ দেখুন'}
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const userReports = reports.filter(r => r.userId === user.id || r.userName === user.name);
 
   // Edit Mode for profile details (Requirement 20)
   const [isEditing, setIsEditing] = useState(false);
-  const [phone, setPhone] = useState(user.phone || '01711-234567');
-  const [livingPlace, setLivingPlace] = useState(user.livingPlace || 'Mirpur-10, Dhaka 1216');
-  const [age, setAge] = useState(user.age || 29);
-  const [occupation, setOccupation] = useState(user.occupation || 'Software Engineer & Civic Activist');
+  const [phone, setPhone] = useState(user.phone || '+880 1700-000000');
+  const [livingPlace, setLivingPlace] = useState(user.livingPlace || 'Mirpur, Dhaka');
+  const [age, setAge] = useState(user.age || 28);
+  const [occupation, setOccupation] = useState(user.occupation || 'Civic Volunteer');
   const [bloodGroup, setBloodGroup] = useState(user.bloodGroup || 'B+');
   const [name, setName] = useState(user.name);
 
@@ -116,19 +161,19 @@ export default function UserProfile() {
       {/* Profile Overview Card */}
       <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-card border border-surface-border">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {/* Avatar with Greatly Verified Ring */}
+          {/* Avatar with Calm Blue Ring */}
           <div className="relative">
             <img
               src={user.avatar}
               alt={user.name}
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-safety shadow-lg"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-civic-blue shadow-lg"
             />
             {user.isSuperAdmin ? (
-              <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full border-2 border-white shadow">
+              <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-white shadow">
                 SUPER ADMIN
               </div>
             ) : (
-              <div className="absolute -bottom-2 -right-2 bg-safety text-white text-[10px] font-black px-2 py-0.5 rounded-full border-2 border-white shadow">
+              <div className="absolute -bottom-2 -right-2 bg-civic-blue text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-white shadow">
                 GUARDIAN
               </div>
             )}
@@ -144,16 +189,16 @@ export default function UserProfile() {
                   </h1>
                   {user.verificationStatus === 'GREATLY_VERIFIED' && (
                     <span 
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold border border-emerald-300 shadow-2xs"
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-[11px] font-extrabold border border-blue-200 shadow-2xs"
                       title="Identity fully verified by Bangladesh National ID & Mobile OTP"
                     >
-                      <BadgeCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <BadgeCheck className="w-3.5 h-3.5 text-civic-blue" />
                       <span>Greatly Verified Guardian</span>
                     </span>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-safety flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
-                  <ShieldCheck className="w-4 h-4 text-safety" />
+                <p className="text-xs sm:text-sm font-semibold text-civic-blue flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
+                  <ShieldCheck className="w-4 h-4 text-civic-blue" />
                   <span>{user.role} • {user.livingPlace}</span>
                 </p>
               </div>
@@ -177,7 +222,7 @@ export default function UserProfile() {
             </div>
 
             <p className="text-xs text-slate-500 max-w-xl">
-              Active civic guardian since August 2026. Verified contributor to community safety, drain clearance, and infrastructure reporting in Dhaka.
+              Active citizen member in Bangladesh. Verified contributor to community safety, local hazard monitoring, and public infrastructure reporting.
             </p>
 
             {/* Reputation Progress Bar */}
@@ -191,7 +236,7 @@ export default function UserProfile() {
               </div>
               <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-safety to-emerald-400 transition-all duration-700"
+                  className="h-full rounded-full bg-gradient-to-r from-blue-600 via-civic-blue to-sky-400 transition-all duration-700"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -272,7 +317,7 @@ export default function UserProfile() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-safety text-white text-xs font-bold rounded-lg shadow-sm hover:bg-safety-hover flex items-center gap-1.5"
+                className="px-4 py-1.5 bg-civic-blue text-white text-xs font-bold rounded-lg shadow-sm hover:bg-civic-royal flex items-center gap-1.5"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>Save Changes</span>
@@ -284,10 +329,10 @@ export default function UserProfile() {
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Phone Number</span>
               <p className="font-bold text-navy flex items-center gap-1">
-                <Phone className="w-3 h-3 text-safety" />
+                <Phone className="w-3 h-3 text-civic-blue" />
                 <span>{user.phone || '01711-234567'}</span>
               </p>
-              <span className="text-[9px] text-safety font-bold">✓ OTP Verified</span>
+              <span className="text-[9px] text-civic-blue font-bold">✓ OTP Verified</span>
             </div>
 
             <div>
@@ -296,7 +341,7 @@ export default function UserProfile() {
                 <Mail className="w-3 h-3 text-sky-500" />
                 <span className="truncate">{user.email}</span>
               </p>
-              <span className="text-[9px] text-safety font-bold">✓ Verified</span>
+              <span className="text-[9px] text-civic-blue font-bold">✓ Verified</span>
             </div>
 
             <div>
@@ -329,7 +374,7 @@ export default function UserProfile() {
               <p className="font-mono font-bold text-navy">
                 {user.nidNumber || '5928 4910 23'}
               </p>
-              <span className="text-[9px] text-safety font-bold">✓ NID Verified</span>
+              <span className="text-[9px] text-civic-blue font-bold">✓ NID Verified</span>
             </div>
           </div>
         )}
@@ -341,7 +386,7 @@ export default function UserProfile() {
             <p className="text-xs text-muted font-bold mt-0.5">{t.profile.reportsSubmitted}</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-safety">{user.reportsVerified}</span>
+            <span className="text-2xl sm:text-3xl font-black text-civic-blue">{user.reportsVerified}</span>
             <p className="text-xs text-muted font-bold mt-0.5">{t.profile.reportsVerified}</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
@@ -358,7 +403,7 @@ export default function UserProfile() {
         <div className="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-navy text-white flex items-center justify-center shrink-0">
-              <ShieldAlert className="w-4 h-4 text-safety" />
+              <ShieldAlert className="w-4 h-4 text-civic-blue" />
             </div>
             <div>
               <p className="text-xs font-bold text-navy">Account Integrity Record</p>
@@ -412,7 +457,7 @@ export default function UserProfile() {
                     {language === 'en' ? badge.titleEn : badge.titleBn}
                   </h4>
                   {badge.isUnlocked ? (
-                    <span className="text-[10px] font-bold text-safety bg-safety/10 px-2 py-0.2 rounded-full">
+                    <span className="text-[10px] font-bold text-civic-blue bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
                       Earned ✓
                     </span>
                   ) : (
@@ -456,7 +501,7 @@ export default function UserProfile() {
           </div>
           <Link
             href="/report/new"
-            className="text-xs font-bold text-safety hover:underline"
+            className="text-xs font-bold text-civic-blue hover:underline"
           >
             + Submit New Issue
           </Link>
@@ -502,7 +547,7 @@ export default function UserProfile() {
                 </div>
 
                 <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
-                  <span className="text-xs font-bold text-safety">
+                  <span className="text-xs font-bold text-civic-blue">
                     👥 {report.confirmationsCount} votes
                   </span>
                   <Link
@@ -568,7 +613,7 @@ export default function UserProfile() {
               <button
                 type="button"
                 onClick={handleWorkProofSubmit}
-                className="w-full py-2.5 bg-safety hover:bg-safety-hover text-white text-xs font-bold rounded-xl shadow transition"
+                className="w-full py-2.5 bg-civic-blue hover:bg-civic-royal text-white text-xs font-bold rounded-xl shadow transition"
               >
                 Submit & Verify Resolution
               </button>

@@ -81,7 +81,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <Link
           href="/reports"
-          className="inline-flex items-center gap-2 text-xs font-bold text-navy hover:text-safety transition"
+          className="inline-flex items-center gap-2 text-xs font-bold text-navy hover:text-civic-blue transition"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{language === 'en' ? 'Back to All Reports' : 'সকল রিপোর্টে ফিরে যান'}</span>
@@ -93,9 +93,9 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             href={`https://wa.me/?text=${encodeURIComponent(`[Nirapod BD Hazard Alert] ${report.title} at ${report.locationName}. Public ID: ${report.publicId}. View report: https://nirapodbd.gov.bd/report/${report.id}`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white text-xs font-bold shadow-2xs transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-2xs transition"
           >
-            <MessageCircle className="w-3.5 h-3.5" />
+            <MessageCircle className="w-3.5 h-3.5 text-sky-400" />
             <span>Share WhatsApp</span>
           </a>
 
@@ -110,7 +110,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             href="/map"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition"
           >
-            <MapPin className="w-3.5 h-3.5 text-safety" />
+            <MapPin className="w-3.5 h-3.5 text-civic-blue" />
             <span>{language === 'en' ? 'Locate on Map' : 'মানচিত্রে দেখুন'}</span>
           </Link>
         </div>
@@ -162,7 +162,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
               <h3 className="text-sm font-black text-navy uppercase tracking-wider">
                 {t.detail.officialResolutionTitle}
               </h3>
-              <span className="text-xs font-bold text-safety bg-safety/10 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-bold text-civic-blue bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
                 ✓ Repaired by {report.assignedOrganization?.name || 'Municipal Agency'}
               </span>
             </div>
@@ -173,8 +173,8 @@ export default function ReportDetail({ report }: ReportDetailProps) {
               confirmedCount={report.resolution?.verifiedByCommunityCount || 24}
             />
             {report.resolution?.description && (
-              <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 text-xs text-emerald-950 space-y-1">
-                <span className="font-extrabold uppercase text-[10px] tracking-wider text-emerald-800">
+              <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200 text-xs text-blue-950 space-y-1">
+                <span className="font-extrabold uppercase text-[10px] tracking-wider text-blue-800">
                   Maintenance Report Summary:
                 </span>
                 <p className="text-slate-800">{report.resolution.description}</p>
@@ -185,7 +185,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             {report.resolution?.citizenCompletionProof && (
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                 <div className="flex items-center gap-2">
-                  <FileCheck className="w-4 h-4 text-safety" />
+                  <FileCheck className="w-4 h-4 text-civic-blue" />
                   <span className="text-xs font-black text-navy uppercase">
                     Citizen Work Verification (Rule 25 Evidence)
                   </span>
@@ -261,7 +261,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             {/* Police */}
             <div className="p-3 rounded-xl bg-white/10 border border-white/10 space-y-1">
-              <div className="flex items-center gap-1.5 text-safety font-bold">
+              <div className="flex items-center gap-1.5 text-civic-blue font-bold">
                 <Building className="w-3.5 h-3.5" />
                 <span>{police.thanaName}</span>
               </div>
@@ -292,7 +292,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                 <span className="font-mono text-white font-bold text-[11px]">{ambulance.ambulanceHotline || '16263'}</span>
                 <a
                   href={`tel:${ambulance.emergencyHotline || ambulance.emergencyPhone}`}
-                  className="px-2 py-0.5 bg-safety text-white text-[10px] font-bold rounded"
+                  className="px-2 py-0.5 bg-civic-blue text-white text-[10px] font-bold rounded"
                 >
                   Call
                 </a>
@@ -317,7 +317,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                 </p>
               </div>
             </div>
-            <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-safety">
+            <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-civic-blue">
               {report.aiConfidence || 94}% Confidence
             </span>
           </div>
@@ -350,7 +350,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             <div className="w-full sm:w-48 space-y-1">
               <div className="h-2 rounded-full bg-slate-200 overflow-hidden flex">
                 <div
-                  className="bg-safety transition-all duration-500"
+                  className="bg-civic-blue transition-all duration-500"
                   style={{ width: `${confidencePercent}%` }}
                 />
                 <div
@@ -376,11 +376,11 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                 onClick={() => handleVote('confirm')}
                 className={`py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
                   userVoted === 'confirm'
-                    ? 'bg-safety text-white shadow-sm ring-2 ring-safety'
+                    ? 'bg-civic-blue text-white shadow-sm ring-2 ring-civic-blue'
                     : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
                 }`}
               >
-                <CheckCircle2 className="w-4 h-4 text-safety" />
+                <CheckCircle2 className="w-4 h-4 text-civic-blue" />
                 <span>{t.detail.confirmYes} (+5 pts)</span>
               </button>
 
@@ -420,7 +420,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
               </span>
               <button
                 onClick={() => confirmResolution(report.id)}
-                className="px-4 py-2 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-bold shadow-sm transition"
+                className="px-4 py-2 rounded-xl bg-civic-blue hover:bg-civic-royal text-white text-xs font-bold shadow-sm transition"
               >
                 {t.detail.confirmResolutionBtn}
               </button>
@@ -437,7 +437,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
           <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
             {report.timeline.map((event, idx) => (
               <div key={event.id} className="relative group">
-                <div className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-white border-2 border-navy group-last:border-safety group-last:bg-safety" />
+                <div className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-white border-2 border-navy group-last:border-civic-blue group-last:bg-civic-blue" />
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-navy">
@@ -463,7 +463,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
         <div className="space-y-4 pt-6 border-t border-slate-100">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-extrabold text-navy flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-safety" />
+              <MessageSquare className="w-4 h-4 text-civic-blue" />
               <span>{t.detail.commentsTitle} ({report.comments.length})</span>
             </h3>
           </div>
@@ -475,7 +475,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
               placeholder={t.detail.addCommentPlaceholder}
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:ring-2 focus:ring-safety focus:outline-none"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
             />
             <button
               type="submit"

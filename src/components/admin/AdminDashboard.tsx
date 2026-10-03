@@ -59,7 +59,7 @@ export default function AdminDashboard() {
     revokeSuspension,
     banUserFromCommunity,
     suspensionLogs,
-    switchUser
+    login
   } = useApp();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,7 +71,32 @@ export default function AdminDashboard() {
   const [suspensionReason, setSuspensionReason] = useState('Repeated violation of Nirapod BD community safety rules.');
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
-  const isSuperAdminUser = user.email.toLowerCase() === 'smdsami59@gmail.com' || user.isSuperAdmin;
+  if (!user) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-6">
+        <div className="w-16 h-16 rounded-3xl bg-amber-50 border border-amber-200 text-amber-600 mx-auto flex items-center justify-center shadow-subtle">
+          <Crown className="w-8 h-8" />
+        </div>
+        <div className="space-y-2 max-w-md mx-auto">
+          <h2 className="text-2xl font-black text-navy">Restricted Administration Console</h2>
+          <p className="text-xs sm:text-sm text-slate-600">
+            Sign in as Super Admin (smdsami59@gmail.com) or an authorized Ward Administrator to access civic moderation controls.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            onClick={() => login('smdsami59@gmail.com')}
+            className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs shadow-md transition flex items-center justify-center gap-2"
+          >
+            <span>👑</span>
+            <span>Sign In as Super Admin (smdsami59@gmail.com)</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const isSuperAdminUser = user ? (user.email.toLowerCase() === 'smdsami59@gmail.com' || user.isSuperAdmin) : false;
 
   // KPI Metrics
   const totalReportsCount = 1284;
@@ -83,8 +108,8 @@ export default function AdminDashboard() {
   // Chart Data: Categories
   const categoryData = [
     { name: 'Road Hazard', value: 34, color: '#F59E0B' },
-    { name: 'Waste / Sanitation', value: 26, color: '#10B981' },
-    { name: 'Flood / Drainage', value: 18, color: '#0284C7' },
+    { name: 'Waste / Sanitation', value: 26, color: '#0284C7' },
+    { name: 'Flood / Drainage', value: 18, color: '#38BDF8' },
     { name: 'Electrical', value: 12, color: '#EF4444' },
     { name: 'Other Infrastructure', value: 10, color: '#8B5CF6' },
   ];
@@ -93,7 +118,7 @@ export default function AdminDashboard() {
   const hotspotData = [
     { name: 'Mirpur', count: 342, fill: '#0B1F33' },
     { name: 'Mohammadpur', count: 268, fill: '#142C44' },
-    { name: 'Uttara', count: 245, fill: '#18A558' },
+    { name: 'Uttara', count: 245, fill: '#2563EB' },
     { name: 'Dhanmondi', count: 189, fill: '#F59E0B' },
     { name: 'Motijheel', count: 142, fill: '#0284C7' },
     { name: 'Gulshan', count: 98, fill: '#8B5CF6' },
@@ -138,9 +163,9 @@ export default function AdminDashboard() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Toast Notice */}
       {actionMessage && (
-        <div className="p-4 rounded-2xl bg-navy text-white text-xs font-bold shadow-lg border border-safety/30 flex items-center justify-between animate-in fade-in duration-200">
+        <div className="p-4 rounded-2xl bg-navy text-white text-xs font-bold shadow-lg border border-civic-blue/30 flex items-center justify-between animate-in fade-in duration-200">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-safety" />
+            <CheckCircle2 className="w-4 h-4 text-civic-blue" />
             <span>{actionMessage}</span>
           </div>
           <button onClick={() => setActionMessage(null)} className="text-slate-400 hover:text-white">✕</button>
@@ -152,7 +177,7 @@ export default function AdminDashboard() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy/10 text-xs font-bold text-navy uppercase tracking-wider mb-2">
-              <ShieldCheck className="w-4 h-4 text-safety" />
+              <ShieldCheck className="w-4 h-4 text-civic-blue" />
               <span>Civic Control Centre & Root Administration</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-navy tracking-tight">
@@ -211,7 +236,7 @@ export default function AdminDashboard() {
 
           {!isSuperAdminUser && (
             <button
-              onClick={() => switchUser('smdsami59@gmail.com')}
+              onClick={() => login('smdsami59@gmail.com')}
               className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow transition shrink-0 flex items-center gap-2"
             >
               <Crown className="w-4 h-4" />
@@ -226,7 +251,7 @@ export default function AdminDashboard() {
         <div className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-1">
           <span className="text-xs text-muted font-bold block">{t.admin.totalUsers}</span>
           <p className="text-3xl font-black text-navy">{totalUsersCount.toLocaleString()}</p>
-          <span className="text-[11px] text-safety font-bold flex items-center gap-1">
+          <span className="text-[11px] text-civic-blue font-bold flex items-center gap-1">
             <TrendingUp className="w-3 h-3" /> +142 this week
           </span>
         </div>
@@ -245,8 +270,8 @@ export default function AdminDashboard() {
 
         <div className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-1">
           <span className="text-xs text-muted font-bold block">{t.admin.resolvedReports}</span>
-          <p className="text-3xl font-black text-safety">{resolvedReportsCount.toLocaleString()}</p>
-          <span className="text-[11px] text-safety font-bold">71.8% resolution</span>
+          <p className="text-3xl font-black text-civic-blue">{resolvedReportsCount.toLocaleString()}</p>
+          <span className="text-[11px] text-civic-blue font-bold">71.8% resolution</span>
         </div>
 
         <div className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-1 col-span-2 lg:col-span-1">
@@ -323,7 +348,7 @@ export default function AdminDashboard() {
 
           <div className="flex items-center justify-between text-xs text-muted pt-2 border-t border-slate-100">
             <span>Primary Focus: Mirpur (DNCC Zone 4) & Mohammadpur (Zone 5)</span>
-            <span className="text-safety font-bold">Real-time Telemetry</span>
+            <span className="text-civic-blue font-bold">Real-time Telemetry</span>
           </div>
         </div>
       </div>
@@ -442,7 +467,7 @@ export default function AdminDashboard() {
                           </p>
                         </div>
                       ) : (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
                           Active & Good Standing
                         </span>
                       )}
@@ -467,7 +492,7 @@ export default function AdminDashboard() {
                       {isSuspended ? (
                         <button
                           onClick={() => handleRevoke(u.id)}
-                          className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow-sm transition"
+                          className="px-2.5 py-1 rounded-lg bg-civic-blue hover:bg-civic-royal text-white font-bold text-[11px] shadow-sm transition"
                         >
                           Cancel Suspension
                         </button>
@@ -514,7 +539,7 @@ export default function AdminDashboard() {
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className={`text-[10px] font-black uppercase px-2 py-0.2 rounded ${
-                      log.action === 'SUSPENDED' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'
+                      log.action === 'SUSPENDED' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
                     }`}>
                       {log.action}
                     </span>
@@ -525,7 +550,7 @@ export default function AdminDashboard() {
                     Reason: <em>{log.reason}</em>
                   </p>
                   <p className="text-[10px] text-slate-400">
-                    Authorized by: <strong className="text-navy">{log.issuedByEmail || log.authorizedBy}</strong> • Email Dispatch: <span className="text-safety font-bold">Delivered ✓</span>
+                    Authorized by: <strong className="text-navy">{log.issuedByEmail || log.authorizedBy}</strong> • Email Dispatch: <span className="text-civic-blue font-bold">Delivered ✓</span>
                   </p>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono shrink-0">
@@ -626,7 +651,7 @@ export default function AdminDashboard() {
                     {report.status !== 'VERIFIED' && (
                       <button
                         onClick={() => updateReportStatus(report.id, 'VERIFIED', 'Admin manual verification')}
-                        className="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] border border-emerald-200 transition"
+                        className="px-2 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-[11px] border border-sky-200 transition"
                         title="Verify Report"
                       >
                         Verify
@@ -646,7 +671,7 @@ export default function AdminDashboard() {
                     {report.status !== 'RESOLVED' && (
                       <button
                         onClick={() => updateReportStatus(report.id, 'RESOLVED', 'Admin marked resolved')}
-                        className="px-2 py-1 rounded-lg bg-safety/10 hover:bg-safety/20 text-safety font-bold text-[11px] border border-safety/30 transition"
+                        className="px-2 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-civic-blue font-bold text-[11px] border border-blue-200 transition"
                         title="Mark Resolved"
                       >
                         Resolve

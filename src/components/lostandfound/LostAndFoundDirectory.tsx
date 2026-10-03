@@ -35,7 +35,7 @@ export default function LostAndFoundDirectory() {
   const [newDescription, setNewDescription] = useState('');
   const [newMediaUrl, setNewMediaUrl] = useState('https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=800&q=80');
   const [newMediaType, setNewMediaType] = useState<'image' | 'video'>('image');
-  const [newContactPhone, setNewContactPhone] = useState(user.phone || '+880 1711-000000');
+  const [newContactPhone, setNewContactPhone] = useState(user?.phone || '+880 1711-000000');
   const [newReward, setNewReward] = useState('');
 
   const filteredItems = searchLostAndFound(searchQuery, selectedArea).filter(
@@ -56,9 +56,9 @@ export default function LostAndFoundDirectory() {
       date: new Date().toISOString().split('T')[0],
       mediaUrl: newMediaUrl,
       mediaType: newMediaType,
-      contactPerson: user.name,
+      contactPerson: user?.name || 'Citizen Guardian',
       contactPhone: newContactPhone,
-      contactEmail: user.email,
+      contactEmail: user?.email || 'citizen@nirapodbd.community',
       reward: newReward || undefined,
       status: 'active',
     });
@@ -90,7 +90,7 @@ export default function LostAndFoundDirectory() {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-safety hover:bg-safety-hover text-white font-extrabold text-sm shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 self-start md:self-auto"
+          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-civic-blue hover:bg-blue-700 text-white font-extrabold text-sm shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 self-start md:self-auto"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Post Lost or Found Item</span>
@@ -108,7 +108,7 @@ export default function LostAndFoundDirectory() {
               placeholder={language === 'en' ? 'Search by item name (e.g. National ID, Wallet, Keys, Pet, Phone)...' : 'জিনিসের নাম লিখে খুঁজুন (যেমন: এনআইডি, ওয়ালেট, চাবি, কুকুর)...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-navy focus:ring-2 focus:ring-safety focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-navy focus:ring-2 focus:ring-civic-blue focus:outline-none"
             />
           </div>
 
@@ -133,7 +133,7 @@ export default function LostAndFoundDirectory() {
             <button
               onClick={() => setSelectedType('found')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                selectedType === 'found' ? 'bg-safety text-white shadow-2xs' : 'text-slate-500 hover:text-navy'
+                selectedType === 'found' ? 'bg-civic-blue text-white shadow-2xs' : 'text-slate-500 hover:text-navy'
               }`}
             >
               Found
@@ -188,7 +188,7 @@ export default function LostAndFoundDirectory() {
                   {/* Badges */}
                   <div className="absolute top-3 left-3">
                     <span className={`px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-white shadow-md ${
-                      item.type === 'lost' ? 'bg-emergency' : 'bg-safety'
+                      item.type === 'lost' ? 'bg-emergency' : 'bg-civic-blue'
                     }`}>
                       {item.type === 'lost' ? 'LOST' : 'FOUND'}
                     </span>
@@ -246,7 +246,7 @@ export default function LostAndFoundDirectory() {
                     href={`tel:${item.contactPhone}`}
                     className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition"
                   >
-                    <PhoneCall className="w-3.5 h-3.5 text-safety" />
+                    <PhoneCall className="w-3.5 h-3.5 text-sky-400" />
                     <span>{item.contactPhone}</span>
                   </a>
                 </div>
@@ -283,10 +283,10 @@ export default function LostAndFoundDirectory() {
                   type="button"
                   onClick={() => setNewItemType('found')}
                   className={`p-3 rounded-2xl border text-center font-bold text-xs transition ${
-                    newItemType === 'found' ? 'bg-safety text-white border-safety shadow' : 'bg-slate-50 text-slate-700 border-slate-200'
+                    newItemType === 'found' ? 'bg-civic-blue text-white border-civic-blue shadow' : 'bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
-                  🟢 I Found Something
+                  🔵 I Found Something
                 </button>
               </div>
 
@@ -299,7 +299,7 @@ export default function LostAndFoundDirectory() {
                   placeholder="e.g. Black Leather Wallet with Driving License"
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-safety focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
                 />
               </div>
 
@@ -338,7 +338,7 @@ export default function LostAndFoundDirectory() {
                   placeholder="Describe color, marks, contents, or circumstances..."
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-safety focus:outline-none"
+                  className="w-full p-3 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
                 />
               </div>
 
@@ -376,7 +376,7 @@ export default function LostAndFoundDirectory() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-black shadow-md"
+                  className="px-6 py-2.5 rounded-xl bg-civic-blue hover:bg-blue-700 text-white text-xs font-black shadow-md"
                 >
                   Publish Item
                 </button>

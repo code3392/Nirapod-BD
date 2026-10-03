@@ -118,11 +118,11 @@ export default function SafetyMap() {
 
     // Helper to generate marker pin color
     const getPinBg = (report: Report) => {
-      if (report.status === 'RESOLVED') return '#18A558'; // Green
+      if (report.status === 'RESOLVED') return '#0284C7'; // Sky Blue
       if (report.severity === 'emergency') return '#E53935'; // Red
       if (report.severity === 'high') return '#F59E0B'; // Orange
-      if (report.severity === 'medium') return '#EAB308'; // Yellow
-      return '#3B82F6'; // Blue
+      if (report.severity === 'medium') return '#EAB308'; // Amber
+      return '#2563EB'; // Royal Blue
     };
 
     filteredReports.forEach((report) => {
@@ -229,7 +229,7 @@ export default function SafetyMap() {
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition shrink-0"
               title="Locate my position in Dhaka"
             >
-              <Navigation className={`w-3.5 h-3.5 text-safety ${userLocating ? 'animate-spin' : ''}`} />
+              <Navigation className={`w-3.5 h-3.5 text-civic-blue ${userLocating ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">Near Me</span>
             </button>
 
@@ -244,7 +244,7 @@ export default function SafetyMap() {
 
           {/* Quick Stats Pill */}
           <div className="hidden sm:flex items-center gap-2 bg-navy-dark/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 text-xs text-white">
-            <span className="w-2 h-2 rounded-full bg-safety animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-civic-blue animate-pulse" />
             <span>
               <strong>{filteredReports.length}</strong> Hazards Displayed
             </span>
@@ -268,7 +268,7 @@ export default function SafetyMap() {
               onClick={() => setSelectedCategory(cat.id)}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap ${
                 selectedCategory === cat.id
-                  ? 'bg-safety text-white ring-2 ring-white/30'
+                  ? 'bg-civic-blue text-white ring-2 ring-white/30'
                   : 'bg-white/95 text-navy hover:bg-white border border-slate-200'
               }`}
             >
@@ -337,7 +337,7 @@ export default function SafetyMap() {
 
             <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
               <div className="flex items-center gap-1.5 font-bold text-navy">
-                <Users className="w-3.5 h-3.5 text-safety" />
+                <Users className="w-3.5 h-3.5 text-civic-blue" />
                 <span>{activeReport.confirmationsCount} confirmations</span>
               </div>
               <span className="text-[11px] text-muted">
@@ -354,7 +354,7 @@ export default function SafetyMap() {
               </Link>
               <button
                 onClick={() => verifyReport(activeReport.id, 'confirm')}
-                className="py-2.5 px-3 rounded-xl bg-safety/10 hover:bg-safety/20 text-safety font-bold text-xs transition border border-safety/30"
+                className="py-2.5 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-civic-blue font-bold text-xs transition border border-blue-200"
                 title="Confirm this hazard report"
               >
                 ✓ Confirm
@@ -410,7 +410,7 @@ export default function SafetyMap() {
                       {report.locationName}
                     </p>
                     <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[11px]">
-                      <span className="text-safety font-bold">
+                      <span className="text-civic-blue font-bold">
                         👥 {report.confirmationsCount} votes
                       </span>
                       <SeverityBadge severity={report.severity} size="sm" showIcon={false} />

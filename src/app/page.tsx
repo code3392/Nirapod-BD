@@ -44,7 +44,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-navy via-navy to-navy-dark text-white relative overflow-hidden shadow-elevated flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="space-y-3 max-w-xl text-center lg:text-left">
-              <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-safety/20 text-safety border border-safety/30 inline-block">
+              <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-civic-blue/20 text-blue-300 border border-civic-blue/30 inline-block">
                 Take Collective Action
               </span>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">

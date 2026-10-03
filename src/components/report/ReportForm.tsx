@@ -219,7 +219,7 @@ export default function ReportForm() {
     setSubmissionError(null);
 
     // Rule 25 check: if user has unresolvedReportIdForWorkProof, block immediately
-    if (user.unresolvedReportIdForWorkProof) {
+    if (user?.unresolvedReportIdForWorkProof) {
       setShowWorkProofModal(true);
       return;
     }
@@ -259,7 +259,7 @@ export default function ReportForm() {
 
   // Rule 25 Proof-of-work submit handler
   const handleResolveWorkProof = () => {
-    if (user.unresolvedReportIdForWorkProof) {
+    if (user?.unresolvedReportIdForWorkProof) {
       submitCitizenProofOfWork(
         user.unresolvedReportIdForWorkProof,
         workProofUrl,
@@ -288,7 +288,7 @@ export default function ReportForm() {
       />
 
       {/* RULE 25 BLOCKING BANNER / MODAL */}
-      {user.unresolvedReportIdForWorkProof && (
+      {user?.unresolvedReportIdForWorkProof && (
         <div className="mb-8 p-6 rounded-3xl bg-amber-500/10 border-2 border-amber-500/40 backdrop-blur-md shadow-card space-y-4">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-lg">
@@ -339,7 +339,7 @@ export default function ReportForm() {
                 </div>
                 <div>
                   <h3 className="font-black text-navy text-base">Civic Work Verification (Rule 25)</h3>
-                  <p className="text-[11px] text-slate-500">Ticket: {user.unresolvedReportIdForWorkProof}</p>
+                  <p className="text-[11px] text-slate-500">Ticket: {user?.unresolvedReportIdForWorkProof}</p>
                 </div>
               </div>
               <button
@@ -352,7 +352,7 @@ export default function ReportForm() {
 
             {workProofSuccess ? (
               <div className="p-6 text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-safety/10 text-safety mx-auto flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-blue-50 text-civic-blue mx-auto flex items-center justify-center">
                   <CheckCircle2 className="w-8 h-8 animate-bounce" />
                 </div>
                 <h4 className="text-lg font-black text-navy">Work Proof Accepted!</h4>
@@ -429,7 +429,7 @@ export default function ReportForm() {
                 <button
                   type="button"
                   onClick={handleResolveWorkProof}
-                  className="w-full py-3 rounded-xl bg-safety hover:bg-safety-hover text-white font-extrabold text-xs shadow-md transition"
+                  className="w-full py-3 rounded-xl bg-civic-blue hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition"
                 >
                   Verify Work & Unlock Reporting
                 </button>
@@ -450,12 +450,12 @@ export default function ReportForm() {
       {/* SUCCESS SCREEN (Step 6) */}
       {currentStep === 6 && submittedReport && (
         <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 sm:p-12 shadow-elevated border border-surface-border text-center space-y-6 animate-in zoom-in-95 duration-200">
-          <div className="w-20 h-20 rounded-full bg-safety/10 text-safety mx-auto flex items-center justify-center shadow-glow animate-bounce">
+          <div className="w-20 h-20 rounded-full bg-blue-50 text-civic-blue mx-auto flex items-center justify-center shadow-glow animate-bounce">
             <CheckCircle2 className="w-10 h-10" />
           </div>
 
           <div className="space-y-2">
-            <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-safety/10 text-safety border border-safety/20">
+            <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-blue-50 text-civic-blue border border-blue-200">
               Broadcast Active
             </span>
             <h2 className="text-3xl font-black text-navy tracking-tight">
@@ -486,7 +486,7 @@ export default function ReportForm() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted font-bold">Reputation Award</span>
-              <span className="text-xs font-black text-safety bg-safety/10 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-black text-civic-blue bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
                 +25 Points
               </span>
             </div>
@@ -507,7 +507,7 @@ export default function ReportForm() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               {/* Nearest Police Thana */}
               <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 space-y-1.5">
-                <div className="flex items-center gap-1.5 text-safety font-bold">
+                <div className="flex items-center gap-1.5 text-sky-400 font-bold">
                   <Building className="w-4 h-4" />
                   <span className="truncate">{submittedReport.nearestPolice?.thanaName || nearestPolice.thanaName}</span>
                 </div>
@@ -542,7 +542,7 @@ export default function ReportForm() {
                   </span>
                   <a
                     href={`tel:${submittedReport.nearestAmbulance?.emergencyHotline || nearestAmbulance.emergencyHotline || nearestAmbulance.emergencyPhone}`}
-                    className="px-2 py-1 bg-safety hover:bg-safety-hover text-white text-[10px] font-bold rounded-lg transition"
+                    className="px-2 py-1 bg-civic-blue hover:bg-blue-700 text-white text-[10px] font-bold rounded-lg transition"
                   >
                     Call 16263
                   </a>
@@ -552,15 +552,15 @@ export default function ReportForm() {
           </div>
 
           {/* REQUIREMENT 5 & 6: VOLUNTEER EMAIL DISPATCH & WHATSAPP SHARING */}
-          <div className="max-w-xl mx-auto p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-left space-y-3">
+          <div className="max-w-xl mx-auto p-4 rounded-2xl bg-blue-50 border border-blue-200 text-left space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Radio className="w-4 h-4 text-safety animate-pulse" />
+                <Radio className="w-4 h-4 text-civic-blue animate-pulse" />
                 <span className="text-xs font-black text-navy uppercase">
                   Community Volunteer Dispatch
                 </span>
               </div>
-              <span className="text-[10px] bg-safety text-white font-bold px-2 py-0.5 rounded-full">
+              <span className="text-[10px] bg-civic-blue text-white font-bold px-2 py-0.5 rounded-full">
                 Auto-Sent
               </span>
             </div>
@@ -575,9 +575,9 @@ export default function ReportForm() {
                 href={`https://wa.me/?text=${encodeURIComponent(`[Nirapod BD Hazard Alert] ${submittedReport.title} at ${submittedReport.locationName}. Public ID: ${submittedReport.publicId}. View report: https://nirapodbd.gov.bd/report/${submittedReport.id}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs shadow-sm transition"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-navy hover:bg-navy-dark text-white font-bold text-xs shadow-sm transition"
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-4 h-4 text-sky-400" />
                 <span>Share Alert on WhatsApp</span>
               </a>
 
@@ -604,7 +604,7 @@ export default function ReportForm() {
             </Link>
             <Link
               href="/map"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-safety hover:bg-safety-hover text-white font-bold text-sm shadow-md transition"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-civic-blue hover:bg-blue-700 text-white font-bold text-sm shadow-md transition"
             >
               {t.report.backToMapBtn}
             </Link>
@@ -630,7 +630,7 @@ export default function ReportForm() {
           <div className="p-6 sm:p-8 bg-gradient-to-r from-navy via-navy to-navy-light text-white border-b border-navy-subtle">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <span className="text-xs uppercase font-extrabold tracking-widest text-safety">
+                <span className="text-xs uppercase font-extrabold tracking-widest text-sky-400">
                   Civic Hazard Dispatch
                 </span>
                 <h2 className="text-2xl font-black tracking-tight mt-0.5">
@@ -639,7 +639,7 @@ export default function ReportForm() {
               </div>
               <div className="text-right">
                 <span className="text-xs text-slate-400 block">Step</span>
-                <span className="text-lg font-black text-safety font-mono">
+                <span className="text-lg font-black text-sky-400 font-mono">
                   {currentStep} / 5
                 </span>
               </div>
@@ -657,7 +657,7 @@ export default function ReportForm() {
                     <div className="h-1.5 rounded-full overflow-hidden bg-white/20">
                       <div
                         className={`h-full transition-all duration-300 ${
-                          isCompleted || isCurrent ? 'bg-safety' : ''
+                          isCompleted || isCurrent ? 'bg-civic-blue' : ''
                         }`}
                       />
                     </div>
@@ -666,7 +666,7 @@ export default function ReportForm() {
                         isCurrent
                           ? 'text-white'
                           : isCompleted
-                          ? 'text-safety'
+                          ? 'text-sky-400'
                           : 'text-slate-400'
                       }`}
                     >
@@ -704,7 +704,7 @@ export default function ReportForm() {
                         onClick={() => handleCategorySelect(cat.id)}
                         className={`p-4 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between group ${
                           isSelected
-                            ? 'border-safety bg-safety-light/70 shadow-md ring-2 ring-safety'
+                            ? 'border-civic-blue bg-blue-50 shadow-md ring-2 ring-civic-blue'
                             : 'border-surface-border bg-white hover:border-slate-300 hover:bg-slate-50'
                         }`}
                       >
@@ -718,7 +718,7 @@ export default function ReportForm() {
                             </span>
                           )}
                           {isSelected && (
-                            <div className="w-5 h-5 rounded-full bg-safety text-white flex items-center justify-center">
+                            <div className="w-5 h-5 rounded-full bg-civic-blue text-white flex items-center justify-center">
                               <Check className="w-3 h-3" />
                             </div>
                           )}
@@ -863,7 +863,7 @@ export default function ReportForm() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-navy">
                       <span>Evidence Preview ({mediaType.toUpperCase()})</span>
-                      <span className="text-safety flex items-center gap-1">
+                      <span className="text-civic-blue flex items-center gap-1">
                         <Check className="w-3.5 h-3.5" /> Media Ready
                       </span>
                     </div>
@@ -903,9 +903,9 @@ export default function ReportForm() {
                 {isAiAnalyzing && (
                   <div className="p-8 sm:p-12 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4">
                     <div className="relative w-16 h-16 mx-auto">
-                      <div className="absolute inset-0 rounded-full border-4 border-safety/20 animate-ping" />
-                      <div className="w-16 h-16 rounded-full border-4 border-safety border-t-transparent animate-spin flex items-center justify-center">
-                        <Sparkles className="w-6 h-6 text-safety" />
+                      <div className="absolute inset-0 rounded-full border-4 border-civic-blue/20 animate-ping" />
+                      <div className="w-16 h-16 rounded-full border-4 border-civic-blue border-t-transparent animate-spin flex items-center justify-center">
+                        <Sparkles className="w-6 h-6 text-civic-blue" />
                       </div>
                     </div>
                     <div>
@@ -934,7 +934,7 @@ export default function ReportForm() {
                           AI SCANNED
                         </div>
                         <div className="absolute bottom-2 right-2">
-                          <span className="bg-emerald-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded shadow">
+                          <span className="bg-civic-blue text-white text-[10px] font-black px-1.5 py-0.5 rounded shadow">
                             {aiConfidence}% CONFIDENCE
                           </span>
                         </div>
@@ -955,7 +955,7 @@ export default function ReportForm() {
                             <span className="text-[10px] uppercase font-bold text-muted">
                               Confidence
                             </span>
-                            <p className="text-lg font-black text-safety font-mono">
+                            <p className="text-lg font-black text-civic-blue font-mono">
                               {aiConfidence}%
                             </p>
                           </div>
@@ -1003,7 +1003,7 @@ export default function ReportForm() {
                           <button
                             type="button"
                             onClick={() => setCurrentStep(4)}
-                            className="flex-1 py-2.5 px-4 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5"
+                            className="flex-1 py-2.5 px-4 rounded-xl bg-civic-blue hover:bg-blue-700 text-white text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5"
                           >
                             <Check className="w-4 h-4" />
                             <span>{t.report.aiLooksCorrect}</span>
@@ -1047,7 +1047,7 @@ export default function ReportForm() {
                     type="button"
                     onClick={handleUseMyLocation}
                     disabled={isLocating}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-black shadow-md transition disabled:opacity-50 relative overflow-hidden group"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-civic-blue hover:bg-blue-700 text-white text-xs font-black shadow-md transition disabled:opacity-50 relative overflow-hidden group"
                   >
                     <Radio className={`w-4 h-4 ${isLocating ? 'animate-spin' : 'animate-pulse'}`} />
                     <span>{isLocating ? 'Scanning GPS Radar...' : 'Auto-Locate GPS Position'}</span>
@@ -1103,7 +1103,7 @@ export default function ReportForm() {
                         }}
                         className={`text-[11px] font-bold px-3 py-1 rounded-full transition shadow-sm ${
                           area === loc.area
-                            ? 'bg-safety text-white ring-2 ring-white/40'
+                            ? 'bg-civic-blue text-white ring-2 ring-white/40'
                             : 'bg-navy-dark/80 text-slate-200 hover:bg-navy-dark border border-white/10'
                         }`}
                       >
@@ -1123,7 +1123,7 @@ export default function ReportForm() {
                       type="text"
                       value={locationName}
                       onChange={(e) => setLocationName(e.target.value)}
-                      className="w-full text-sm font-bold text-navy bg-white border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-safety focus:outline-none"
+                      className="w-full text-sm font-bold text-navy bg-white border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-civic-blue focus:outline-none"
                     />
                   </div>
 
@@ -1221,7 +1221,7 @@ export default function ReportForm() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder={t.report.titlePlaceholder}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-safety focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
                   />
                 </div>
 
@@ -1236,7 +1236,7 @@ export default function ReportForm() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder={t.report.descriptionPlaceholder}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-safety focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
                   />
                 </div>
 

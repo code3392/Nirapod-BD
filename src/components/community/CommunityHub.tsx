@@ -81,7 +81,7 @@ export default function CommunityHub() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-safety/10 text-xs font-bold text-safety uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-xs font-bold text-civic-blue border border-blue-200 uppercase tracking-wider mb-2">
             <Users className="w-3.5 h-3.5" />
             <span>Area-Wise Community Hubs</span>
           </div>
@@ -98,7 +98,7 @@ export default function CommunityHub() {
           href="/messages"
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white border border-surface-border text-navy font-bold text-xs shadow-subtle hover:bg-slate-50 transition"
         >
-          <MessageSquare className="w-4 h-4 text-safety" />
+          <MessageSquare className="w-4 h-4 text-civic-blue" />
           <span>Direct Messages</span>
         </Link>
       </div>
@@ -153,7 +153,7 @@ export default function CommunityHub() {
                     </p>
                   </div>
                 </div>
-                <span className={`w-2 h-2 rounded-full ${activeArea === area.id ? 'bg-safety' : 'bg-slate-300'}`} />
+                <span className={`w-2 h-2 rounded-full ${activeArea === area.id ? 'bg-civic-blue' : 'bg-slate-300'}`} />
               </button>
             ))}
           </div>
@@ -162,12 +162,12 @@ export default function CommunityHub() {
           <div className="mt-8 p-4 rounded-2xl bg-white border border-slate-200 space-y-1.5 text-xs">
             <span className="text-[10px] uppercase font-bold text-muted">Your Identity</span>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-navy">{user.name}</span>
-              <span className="text-[9px] bg-safety/10 text-safety font-black px-1.5 py-0.5 rounded border border-safety/20">
-                {user.verificationBadge}
+              <span className="font-extrabold text-navy">{user?.name || 'Guest Citizen'}</span>
+              <span className="text-[9px] bg-blue-50 text-civic-blue font-black px-1.5 py-0.5 rounded border border-blue-200">
+                {user?.verificationBadge || 'Guest'}
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">Posting in {user.area} Zone</p>
+            <p className="text-[11px] text-slate-500">Posting in {user?.area || 'Dhaka'} Zone</p>
           </div>
         </div>
 
@@ -185,7 +185,7 @@ export default function CommunityHub() {
               </div>
             </div>
 
-            <span className="text-xs font-mono font-bold text-safety bg-safety/10 px-2.5 py-1 rounded-full">
+            <span className="text-xs font-mono font-bold text-civic-blue bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full">
               ● Active Hub
             </span>
           </div>
@@ -193,7 +193,7 @@ export default function CommunityHub() {
           {/* Status / Moderation Alert Notice */}
           {statusNotice && (
             <div className={`mx-4 mt-3 p-3 rounded-xl text-xs font-bold flex items-center gap-2 ${
-              statusNotice.type === 'error' ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+              statusNotice.type === 'error' ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-blue-50 text-blue-800 border border-blue-200'
             }`}>
               <AlertTriangle className="w-4 h-4 shrink-0" />
               <span>{statusNotice.message}</span>
@@ -235,7 +235,7 @@ export default function CommunityHub() {
                         <FileText className="w-4 h-4 text-blue-600 shrink-0" />
                         <span className="truncate">{msg.fileAttachment.name}</span>
                         <span className="text-[10px] text-slate-500 font-mono">({msg.fileAttachment.size})</span>
-                        <a href={msg.fileAttachment.url} download className="text-safety hover:underline ml-1">
+                        <a href={msg.fileAttachment.url} download className="text-civic-blue hover:underline ml-1">
                           <Download className="w-3.5 h-3.5" />
                         </a>
                       </div>
@@ -251,7 +251,7 @@ export default function CommunityHub() {
             {/* Attached file chip */}
             {selectedFile && (
               <div className="mb-2 p-2 rounded-xl bg-white border border-slate-200 inline-flex items-center gap-2 text-xs">
-                <FileText className="w-4 h-4 text-safety" />
+                <FileText className="w-4 h-4 text-civic-blue" />
                 <span className="font-bold text-navy">{selectedFile.name}</span>
                 <button onClick={() => setSelectedFile(null)} className="text-slate-400 hover:text-slate-600">
                   <X className="w-3.5 h-3.5" />
@@ -266,7 +266,7 @@ export default function CommunityHub() {
                   placeholder={`Write a public safety update to ${activeArea} community...`}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-safety focus:outline-none"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-civic-blue focus:outline-none"
                 />
 
                 {/* File Attachment Quick Sample Buttons */}

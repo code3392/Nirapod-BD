@@ -24,9 +24,9 @@ const config: Config = {
           ice: '#F0F7FF',
         },
         safety: {
-          DEFAULT: '#10B981',
-          hover: '#059669',
-          light: '#ECFDF5',
+          DEFAULT: '#2563EB',
+          hover: '#1D4ED8',
+          light: '#EFF6FF',
         },
         emergency: {
           DEFAULT: '#DC2626',
@@ -53,11 +53,11 @@ const config: Config = {
         bengali: ['var(--font-noto-bengali)', 'sans-serif'],
       },
       boxShadow: {
-        subtle: '0 2px 10px rgba(11, 31, 51, 0.05)',
-        card: '0 4px 20px -2px rgba(11, 31, 51, 0.08)',
-        elevated: '0 12px 32px -4px rgba(11, 31, 51, 0.12)',
-        emergency: '0 0 25px rgba(229, 57, 53, 0.35)',
-        glow: '0 0 20px rgba(24, 165, 88, 0.3)',
+        subtle: '0 2px 10px rgba(10, 37, 64, 0.04)',
+        card: '0 4px 20px -2px rgba(10, 37, 64, 0.07)',
+        elevated: '0 12px 32px -4px rgba(10, 37, 64, 0.10)',
+        emergency: '0 0 25px rgba(220, 38, 38, 0.25)',
+        glow: '0 0 20px rgba(37, 99, 235, 0.25)',
       },
       animation: {
         'pulse-subtle': 'pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',

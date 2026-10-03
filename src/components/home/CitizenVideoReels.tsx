@@ -253,8 +253,8 @@ export default function CitizenVideoReels() {
                         {language === 'en' ? reel.categoryLabelEn : reel.categoryLabelBn}
                       </span>
                       {reel.isVerified && (
-                        <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span className="text-[10px] font-bold text-civic-blue flex items-center gap-1 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
+                          <CheckCircle2 className="w-3 h-3 text-civic-blue" />
                           Verified
                         </span>
                       )}
@@ -275,11 +275,11 @@ export default function CitizenVideoReels() {
                       onClick={() => handleConfirm(reel.id)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
                         isConfirmed
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          ? 'bg-blue-50 text-civic-blue border border-blue-200'
                           : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                       }`}
                     >
-                      <ThumbsUp className={`w-3.5 h-3.5 ${isConfirmed ? 'fill-emerald-600 text-emerald-600' : ''}`} />
+                      <ThumbsUp className={`w-3.5 h-3.5 ${isConfirmed ? 'fill-civic-blue text-civic-blue' : ''}`} />
                       <span>{reel.confirmations + (isConfirmed ? 1 : 0)}</span>
                     </button>
 
@@ -340,7 +340,7 @@ export default function CitizenVideoReels() {
                 </div>
 
                 <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-xl text-xs text-white font-mono flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span className="w-2 h-2 rounded-full bg-sky-400" />
                   <span>GPS Coordinate Verified • Dhaka</span>
                 </div>
               </div>
@@ -388,7 +388,7 @@ export default function CitizenVideoReels() {
                     onClick={() => handleConfirm(selectedReel.id)}
                     className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
                       confirmedReels[selectedReel.id]
-                        ? 'bg-emerald-600 text-white shadow-sm'
+                        ? 'bg-civic-blue text-white shadow-sm'
                         : 'bg-navy hover:bg-navy-light text-white'
                     }`}
                   >

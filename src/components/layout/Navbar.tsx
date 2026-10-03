@@ -27,9 +27,17 @@ import {
   LogOut,
   ShieldCheck,
   UserCheck,
-  ChevronDown
+  ChevronDown,
+  UserPlus
 } from 'lucide-react';
 import EmergencyDirectoryModal from '@/components/common/EmergencyDirectoryModal';
+
+const DHAKA_AREAS = [
+  'Mirpur', 'Uttara', 'Dhanmondi', 'Gulshan', 'Banani', 'Mohammadpur',
+  'Motijheel', 'Old Dhaka', 'Badda', 'Bashundhara', 'Khilgaon', 'Rampura'
+];
+
+const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
 export default function Navbar() {
   const { 
@@ -41,20 +49,33 @@ export default function Navbar() {
     markNotificationAsRead, 
     markAllNotificationsAsRead, 
     user,
-    allUsers,
-    switchUser
+    login,
+    register,
+    logout
   } = useApp();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const [optionsDropdownOpen, setOptionsDropdownOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [hotlinesModalOpen, setHotlinesModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authEmailInput, setAuthEmailInput] = useState('');
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [regName, setRegName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPhone, setRegPhone] = useState('');
+  const [regLivingPlace, setRegLivingPlace] = useState('');
+  const [regArea, setRegArea] = useState('Mirpur');
+  const [regAge, setRegAge] = useState(27);
+  const [regBlood, setRegBlood] = useState('B+');
+  const [authFeedback, setAuthFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
   const notifRef = useRef<HTMLDivElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close notifications and options on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
@@ -63,10 +84,63 @@ export default function Navbar() {
       if (optionsRef.current && !optionsRef.current.contains(event.target as Node)) {
         setOptionsDropdownOpen(false);
       }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleLoginSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!loginEmail.trim()) {
+      setAuthFeedback({ message: 'Please enter a valid email address.', type: 'error' });
+      return;
+    }
+    const res = login(loginEmail.trim());
+    if (res.success) {
+      setAuthFeedback({ message: res.message, type: 'success' });
+      setTimeout(() => {
+        setAuthModalOpen(false);
+        setAuthFeedback(null);
+        setLoginEmail('');
+      }, 600);
+    } else {
+      setAuthFeedback({ message: res.message, type: 'error' });
+    }
+  };
+
+  const handleRegisterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!regName.trim() || !regEmail.trim()) {
+      setAuthFeedback({ message: 'Please enter your full name and email.', type: 'error' });
+      return;
+    }
+    const res = register({
+      name: regName,
+      email: regEmail,
+      phone: regPhone || '+880 1700-000000',
+      livingPlace: regLivingPlace || `${regArea}, Dhaka`,
+      area: regArea,
+      age: regAge,
+      bloodGroup: regBlood,
+      occupation: 'Citizen Volunteer',
+    });
+    if (res.success) {
+      setAuthFeedback({ message: res.message, type: 'success' });
+      setTimeout(() => {
+        setAuthModalOpen(false);
+        setAuthFeedback(null);
+        setRegName('');
+        setRegEmail('');
+        setRegPhone('');
+        setRegLivingPlace('');
+      }, 600);
+    } else {
+      setAuthFeedback({ message: res.message, type: 'error' });
+    }
+  };
 
   const primaryLinks = [
     { href: '/', label: t.nav.home },
@@ -135,7 +209,7 @@ export default function Navbar() {
   const getNotifIcon = (type: string) => {
     switch (type) {
       case 'verified':
-        return <CheckCircle2 className="w-4 h-4 text-safety" />;
+        return <CheckCircle2 className="w-4 h-4 text-civic-blue" />;
       case 'emergency':
         return <AlertTriangle className="w-4 h-4 text-emergency" />;
       case 'points':
@@ -183,18 +257,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-navy to-navy-light flex items-center justify-center shadow-md text-white group-hover:scale-105 transition-transform duration-200">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-navy to-civic-deep flex items-center justify-center shadow-md text-white group-hover:scale-105 transition-transform duration-200">
             <div className="relative">
-              <ShieldAlert className="w-6 h-6 text-safety" />
+              <ShieldAlert className="w-6 h-6 text-civic-blue" />
               <MapPin className="w-3.5 h-3.5 text-emergency absolute -bottom-1 -right-1 fill-emergency" />
             </div>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-xl tracking-tight text-navy group-hover:text-safety transition-colors">
+              <span className="font-extrabold text-xl tracking-tight text-navy group-hover:text-civic-blue transition-colors">
                 Nirapod BD
               </span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-safety-light text-safety border border-safety/20">
+              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-blue-50 text-civic-blue border border-blue-200">
                 Civic
               </span>
             </div>
@@ -362,7 +436,7 @@ export default function Navbar() {
                   {unreadNotificationsCount > 0 && (
                     <button
                       onClick={markAllNotificationsAsRead}
-                      className="text-xs text-safety hover:underline font-semibold"
+                      className="text-xs text-civic-blue hover:underline font-semibold"
                     >
                       {t.nav.markAllRead}
                     </button>
@@ -384,7 +458,7 @@ export default function Navbar() {
                           setNotifDropdownOpen(false);
                         }}
                         className={`block p-3.5 hover:bg-slate-50 transition-colors ${
-                          !notif.isRead ? 'bg-emerald-50/40' : ''
+                          !notif.isRead ? 'bg-blue-50/60' : ''
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -414,7 +488,7 @@ export default function Navbar() {
                   <Link
                     href="/profile"
                     onClick={() => setNotifDropdownOpen(false)}
-                    className="text-xs text-navy font-bold hover:text-safety transition-colors inline-flex items-center gap-1"
+                    className="text-xs text-navy font-bold hover:text-civic-blue transition-colors inline-flex items-center gap-1"
                   >
                     <span>{language === 'en' ? 'Manage Alert Preferences' : 'বিজ্ঞপ্তি সেটিংস'}</span>
                     <ChevronRight className="w-3 h-3" />
@@ -424,42 +498,116 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* User Profile & Account Switcher */}
-          <div className="flex items-center gap-1.5">
-            <Link
-              href="/profile"
-              className="hidden sm:flex items-center gap-2 pl-2 pr-3 py-1 rounded-full border border-surface-border bg-slate-50 hover:bg-slate-100 transition-colors"
-              title="User Profile & Reputation"
-            >
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-6 h-6 rounded-full object-cover border border-white shadow-sm"
-              />
-              <span className="text-xs font-bold text-navy max-w-[90px] truncate">
-                {user.name.split(' ')[0]}
-              </span>
-              {user.isSuperAdmin ? (
-                <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500 text-white shadow-2xs">
-                  SUPER
+          {/* User Profile or Guest Auth Buttons */}
+          {user ? (
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-blue-200 bg-blue-50/60 hover:bg-blue-100/70 transition-all shadow-2xs"
+                title="Account Menu"
+              >
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-7 h-7 rounded-full object-cover border border-white shadow-xs"
+                />
+                <span className="text-xs font-bold text-navy max-w-[90px] truncate hidden sm:inline">
+                  {user.name.split(' ')[0]}
                 </span>
-              ) : (
-                <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-safety text-white">
-                  {user.points}p
-                </span>
-              )}
-            </Link>
+                {user.isSuperAdmin || user.email === 'smdsami59@gmail.com' ? (
+                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500 text-white shadow-2xs">
+                    SUPER
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-civic-blue text-white">
+                    {user.points}p
+                  </span>
+                )}
+                <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+              </button>
 
-            {/* Quick Switch / Sign In Modal Trigger */}
-            <button
-              onClick={() => setAuthModalOpen(true)}
-              className="px-2.5 py-1 text-xs font-extrabold rounded-lg bg-slate-100 hover:bg-slate-200 text-navy border border-slate-200 transition flex items-center gap-1"
-              title="Sign In / Register / Switch Account"
-            >
-              <UserCheck className="w-3.5 h-3.5 text-navy" />
-              <span className="hidden md:inline">Account</span>
-            </button>
-          </div>
+              {/* Profile Dropdown */}
+              {profileDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-elevated border border-slate-200 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="p-3 border-b border-slate-100 mb-1">
+                    <p className="text-xs font-black text-navy truncate">{user.name}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+                    <div className="mt-1 flex items-center gap-1.5">
+                      <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-blue-50 text-civic-blue border border-blue-200">
+                        {user.role}
+                      </span>
+                      <span className="text-[9px] font-bold text-slate-500">
+                        {user.livingPlace.split(',')[0]}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/profile"
+                    onClick={() => setProfileDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition"
+                  >
+                    <User className="w-4 h-4 text-slate-500" />
+                    <span>{language === 'en' ? 'My Profile & Badges' : 'আমার প্রোফাইল ও ব্যাজ'}</span>
+                  </Link>
+
+                  {(user.isSuperAdmin || user.email === 'smdsami59@gmail.com') && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-amber-800 bg-amber-50/70 hover:bg-amber-100 rounded-xl transition mt-0.5"
+                    >
+                      <Sliders className="w-4 h-4 text-amber-600" />
+                      <span>{language === 'en' ? 'Super Admin Console' : 'সুপার অ্যাডমিন ড্যাশবোর্ড'}</span>
+                    </Link>
+                  )}
+
+                  <Link
+                    href="/safety-circles"
+                    onClick={() => setProfileDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-slate-500" />
+                    <span>{language === 'en' ? 'Family Safety Circles' : 'ব্যক্তিগত নিরাপত্তা সার্কেল'}</span>
+                  </Link>
+
+                  <div className="my-1 border-t border-slate-100" />
+
+                  <button
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      logout();
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-emergency hover:bg-red-50 rounded-xl transition text-left"
+                  >
+                    <LogOut className="w-4 h-4 text-emergency" />
+                    <span>{language === 'en' ? 'Sign Out' : 'লগআউট'}</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <button
+                onClick={() => {
+                  setAuthMode('login');
+                  setAuthModalOpen(true);
+                }}
+                className="px-3 py-1.5 text-xs font-bold text-navy hover:bg-slate-100 rounded-xl border border-slate-200 transition shadow-2xs"
+              >
+                {language === 'en' ? 'Sign In' : 'লগইন'}
+              </button>
+              <button
+                onClick={() => {
+                  setAuthMode('register');
+                  setAuthModalOpen(true);
+                }}
+                className="hidden sm:inline-flex px-3 py-1.5 text-xs font-bold bg-civic-blue hover:bg-civic-royal text-white rounded-xl shadow-sm transition"
+              >
+                {language === 'en' ? 'Register' : 'নিবন্ধন'}
+              </button>
+            </div>
+          )}
 
           {/* Report CTA Button */}
           <Link
@@ -484,26 +632,59 @@ export default function Navbar() {
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-surface-border bg-white px-4 pt-3 pb-6 space-y-3 shadow-lg animate-in slide-in-from-top-4 duration-200">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-            <div className="flex items-center gap-3">
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-10 h-10 rounded-full object-cover border-2 border-safety"
-              />
+          {user ? (
+            <div className="flex items-center justify-between p-3 rounded-xl bg-blue-50/70 border border-blue-100">
+              <div className="flex items-center gap-3">
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-civic-blue"
+                />
+                <div>
+                  <p className="font-bold text-sm text-navy">{user.name}</p>
+                  <p className="text-xs text-muted">{user.role} • {user.points} Points</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  logout();
+                }}
+                className="text-xs font-bold text-emergency hover:underline"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
               <div>
-                <p className="font-bold text-sm text-navy">{user.name}</p>
-                <p className="text-xs text-muted">{user.role} • {user.points} Reputation Points</p>
+                <p className="font-bold text-xs text-navy">Browsing as Guest</p>
+                <p className="text-[11px] text-slate-500">Sign in to report and track issues</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setAuthMode('login');
+                    setAuthModalOpen(true);
+                  }}
+                  className="px-2.5 py-1 text-xs font-bold bg-navy text-white rounded-lg"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setAuthMode('register');
+                    setAuthModalOpen(true);
+                  }}
+                  className="px-2.5 py-1 text-xs font-bold bg-civic-blue text-white rounded-lg"
+                >
+                  Register
+                </button>
               </div>
             </div>
-            <Link
-              href="/profile"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-xs font-bold text-safety hover:underline"
-            >
-              View
-            </Link>
-          </div>
+          )}
 
           <div className="space-y-1">
             {primaryLinks.map((link) => (
@@ -607,148 +788,277 @@ export default function Navbar() {
               </button>
             </div>
           </div>
-
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              setAuthModalOpen(true);
-            }}
-            className="w-full py-2 px-3 rounded-xl bg-slate-100 text-navy font-bold text-xs flex items-center justify-center gap-1.5"
-          >
-            <UserCheck className="w-4 h-4" />
-            <span>Switch Account / Sign In</span>
-          </button>
         </div>
       )}
 
-      {/* Auth & Account Switcher Modal (Rule 13 & Rule 21) */}
+      {/* AUTHENTIC AUTHENTICATION MODAL (Rule 13, Rule 20 & Rule 21) */}
       {authModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/70 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-surface-border space-y-5 animate-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-blue-100 space-y-5 animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-navy text-white flex items-center justify-center">
-                  <ShieldCheck className="w-4 h-4 text-safety" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-navy text-white flex items-center justify-center shadow-xs">
+                  <ShieldCheck className="w-5 h-5 text-civic-blue" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-navy text-base">Account Authentication</h3>
-                  <p className="text-[11px] text-slate-500">Bangladeshi Citizen & Guardian Verification</p>
+                  <h3 className="font-black text-navy text-base">
+                    {authMode === 'login' ? 'Citizen & Admin Sign In' : 'Register Citizen Account'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    {authMode === 'login' ? 'Access your verified civic dashboard' : 'Join verified community safety network'}
+                  </p>
                 </div>
               </div>
               <button
-                onClick={() => setAuthModalOpen(false)}
+                onClick={() => {
+                  setAuthModalOpen(false);
+                  setAuthFeedback(null);
+                }}
                 className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Current Active User Profile Banner */}
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-3 min-w-0">
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-safety shrink-0"
-                />
-                <div className="min-w-0">
-                  <p className="text-xs font-black text-navy truncate flex items-center gap-1">
-                    <span>{user.name}</span>
-                    {user.isSuperAdmin && (
-                      <span className="text-[9px] bg-amber-500 text-white font-black px-1.5 py-0.2 rounded">
-                        ROOT
-                      </span>
-                    )}
+            {/* Mode Switcher Tabs */}
+            <div className="flex border-b border-slate-200 text-xs font-bold">
+              <button
+                onClick={() => {
+                  setAuthMode('login');
+                  setAuthFeedback(null);
+                }}
+                className={`flex-1 py-2.5 text-center border-b-2 transition ${
+                  authMode === 'login'
+                    ? 'border-civic-blue text-civic-blue font-extrabold'
+                    : 'border-transparent text-slate-500 hover:text-navy'
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => {
+                  setAuthMode('register');
+                  setAuthFeedback(null);
+                }}
+                className={`flex-1 py-2.5 text-center border-b-2 transition ${
+                  authMode === 'register'
+                    ? 'border-civic-blue text-civic-blue font-extrabold'
+                    : 'border-transparent text-slate-500 hover:text-navy'
+                }`}
+              >
+                Register (Requirement 20)
+              </button>
+            </div>
+
+            {/* Feedback Message */}
+            {authFeedback && (
+              <div className={`p-3 rounded-xl text-xs font-bold ${
+                authFeedback.type === 'success'
+                  ? 'bg-blue-50 text-blue-800 border border-blue-200'
+                  : 'bg-red-50 text-red-800 border border-red-200'
+              }`}>
+                {authFeedback.message}
+              </div>
+            )}
+
+            {/* TAB 1: SIGN IN */}
+            {authMode === 'login' && (
+              <div className="space-y-4">
+                {/* 1-Tap Super Admin Access Button */}
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-navy via-navy to-civic-deep text-white shadow-sm space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">
+                      Rule 13 Root Authority
+                    </span>
+                    <span className="text-[10px] bg-amber-500 text-white font-black px-1.5 py-0.2 rounded">
+                      SUPER ADMIN
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300">
+                    Direct access for platform founder & root administrator.
                   </p>
-                  <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
-                  <p className="text-[10px] text-safety font-bold">{user.role} • {user.livingPlace}</p>
-                </div>
-              </div>
-              <span className="text-xs font-black text-safety font-mono shrink-0">
-                {user.points} pts
-              </span>
-            </div>
-
-            {/* Fast Switcher Options */}
-            <div className="space-y-2">
-              <span className="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider block">
-                Quick Test Switcher
-              </span>
-              <div className="space-y-2">
-                {allUsers.map((u) => {
-                  const isCurrent = u.id === user.id;
-                  return (
-                    <button
-                      key={u.id}
-                      onClick={() => {
-                        switchUser(u.email);
+                  <button
+                    onClick={() => {
+                      login('smdsami59@gmail.com');
+                      setAuthFeedback({ message: 'Welcome back, Super Admin!', type: 'success' });
+                      setTimeout(() => {
                         setAuthModalOpen(false);
-                      }}
-                      className={`w-full p-2.5 rounded-xl border text-left flex items-center justify-between transition ${
-                        isCurrent
-                          ? 'border-safety bg-safety/5 ring-1 ring-safety'
-                          : 'border-slate-200 hover:bg-slate-50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <img
-                          src={u.avatar}
-                          alt={u.name}
-                          className="w-8 h-8 rounded-full object-cover shrink-0"
-                        />
-                        <div className="min-w-0 text-left">
-                          <p className="text-xs font-bold text-navy truncate">
-                            {u.name}
-                            {u.isSuperAdmin && (
-                              <span className="ml-1 text-[9px] bg-amber-500 text-white font-extrabold px-1 rounded">
-                                Super Admin
-                              </span>
-                            )}
-                          </p>
-                          <p className="text-[10px] text-slate-500 truncate">{u.email}</p>
-                        </div>
-                      </div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isCurrent ? 'bg-safety text-white' : 'bg-slate-100 text-slate-600'
-                      }`}>
-                        {isCurrent ? 'Active' : 'Switch'}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                        setAuthFeedback(null);
+                      }, 500);
+                    }}
+                    className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow transition flex items-center justify-center gap-2"
+                  >
+                    <UserCheck className="w-4 h-4" />
+                    <span>Sign In as Super Admin (smdsami59@gmail.com)</span>
+                  </button>
+                </div>
 
-            {/* Custom Sign In / Registration Form */}
-            <div className="space-y-2 pt-2 border-t border-slate-100">
-              <span className="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider block">
-                Sign In with Custom Email
-              </span>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="e.g. smdsami59@gmail.com"
-                  value={authEmailInput}
-                  onChange={(e) => setAuthEmailInput(e.target.value)}
-                  className="flex-1 px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-safety focus:outline-none"
-                />
-                <button
-                  onClick={() => {
-                    if (authEmailInput.trim()) {
-                      switchUser(authEmailInput.trim());
-                      setAuthModalOpen(false);
-                      setAuthEmailInput('');
-                    }
-                  }}
-                  className="px-4 py-2 bg-navy hover:bg-navy-dark text-white rounded-xl text-xs font-bold shadow-sm transition"
-                >
-                  Sign In
-                </button>
+                <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                  <div className="flex-1 h-px bg-slate-200" />
+                  <span>OR SIGN IN WITH CITIZEN EMAIL</span>
+                  <div className="flex-1 h-px bg-slate-200" />
+                </div>
+
+                {/* Email Sign In */}
+                <form onSubmit={handleLoginSubmit} className="space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-navy block mb-1">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="e.g. your.email@domain.com"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full py-2.5 bg-navy hover:bg-navy-dark text-white rounded-xl text-xs font-bold shadow transition"
+                  >
+                    Sign In
+                  </button>
+                </form>
+
+                <p className="text-center text-xs text-slate-500 pt-1">
+                  Don&apos;t have an account?{' '}
+                  <button
+                    onClick={() => {
+                      setAuthMode('register');
+                      setAuthFeedback(null);
+                    }}
+                    className="text-civic-blue font-bold hover:underline"
+                  >
+                    Create one here
+                  </button>
+                </p>
               </div>
-              <p className="text-[10px] text-slate-400">
-                Tip: Enter <span className="font-mono text-navy font-bold">smdsami59@gmail.com</span> for root Super Admin control.
-              </p>
-            </div>
+            )}
+
+            {/* TAB 2: REGISTER (REQUIREMENT 20: Name, email, phone, living place, area, age, blood group) */}
+            {authMode === 'register' && (
+              <form onSubmit={handleRegisterSubmit} className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                <div>
+                  <label className="text-[11px] font-bold text-navy block mb-1">Full Legal Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Mohammad Samiul"
+                    value={regName}
+                    onChange={(e) => setRegName(e.target.value)}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="text-[11px] font-bold text-navy block mb-1">Email *</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="smdsami59@gmail.com"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-navy block mb-1">Mobile Phone *</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="+880 1712-345678"
+                      value={regPhone}
+                      onChange={(e) => setRegPhone(e.target.value)}
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-bold text-navy block mb-1">Living Place / Address *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Road 4, Block D, Mirpur-10"
+                    value={regLivingPlace}
+                    onChange={(e) => setRegLivingPlace(e.target.value)}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="text-[11px] font-bold text-navy block mb-1">Area *</label>
+                    <select
+                      value={regArea}
+                      onChange={(e) => setRegArea(e.target.value)}
+                      className="w-full px-2 py-2 text-xs border border-slate-200 rounded-xl bg-white focus:outline-none"
+                    >
+                      {DHAKA_AREAS.map((a) => (
+                        <option key={a} value={a}>{a}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-navy block mb-1">Age *</label>
+                    <input
+                      type="number"
+                      min={16}
+                      max={95}
+                      required
+                      value={regAge}
+                      onChange={(e) => setRegAge(Number(e.target.value))}
+                      className="w-full px-2 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-navy block mb-1">Blood *</label>
+                    <select
+                      value={regBlood}
+                      onChange={(e) => setRegBlood(e.target.value)}
+                      className="w-full px-2 py-2 text-xs border border-slate-200 rounded-xl bg-white focus:outline-none"
+                    >
+                      {BLOOD_GROUPS.map((b) => (
+                        <option key={b} value={b}>{b}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-blue-50/70 rounded-xl text-[11px] text-slate-600 border border-blue-100 flex items-start gap-2">
+                  <ShieldCheck className="w-4 h-4 text-civic-blue shrink-0 mt-0.5" />
+                  <span>
+                    Your identity will be awarded the <strong>Greatly Verified Guardian</strong> badge with 100 reputation points upon registration.
+                  </span>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-2.5 bg-civic-blue hover:bg-civic-royal text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-1.5"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Register & Verify Account</span>
+                </button>
+
+                <p className="text-center text-xs text-slate-500 pt-1">
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMode('login');
+                      setAuthFeedback(null);
+                    }}
+                    className="text-civic-blue font-bold hover:underline"
+                  >
+                    Sign in here
+                  </button>
+                </p>
+              </form>
+            )}
           </div>
         </div>
       )}

@@ -164,7 +164,7 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
                   className="px-3 py-2 rounded-xl bg-navy hover:bg-navy-light text-white text-xs font-bold flex items-center gap-1 shrink-0 transition"
                   title="Call Thana Duty Officer"
                 >
-                  <PhoneCall className="w-3.5 h-3.5 text-emerald-400" />
+                  <PhoneCall className="w-3.5 h-3.5 text-blue-300" />
                   <span>Call</span>
                 </a>
               </div>
@@ -206,7 +206,7 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-civic-blue border border-blue-200">
                         {language === 'en' ? provider.badgeEn : provider.badgeBn}
                       </span>
-                      <span className="text-[11px] font-mono text-emerald-600 font-bold flex items-center gap-1">
+                      <span className="text-[11px] font-mono text-civic-blue font-bold flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" />
                         {provider.available}
                       </span>

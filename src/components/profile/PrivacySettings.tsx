@@ -20,6 +20,28 @@ export default function PrivacySettings() {
   const { language, t, user, updatePrivacySettings, reports } = useApp();
   const [savedSuccess, setSavedSuccess] = useState(false);
 
+  if (!user) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-6">
+        <div className="w-16 h-16 rounded-3xl bg-blue-50 border border-blue-200 text-civic-blue mx-auto flex items-center justify-center shadow-subtle">
+          <Lock className="w-8 h-8" />
+        </div>
+        <div className="space-y-2 max-w-md mx-auto">
+          <h2 className="text-2xl font-black text-navy">Privacy & Security Console</h2>
+          <p className="text-xs sm:text-sm text-slate-600">
+            Sign in to configure personal identity protection, location anonymization, and data export settings.
+          </p>
+        </div>
+        <Link
+          href="/profile"
+          className="inline-block px-6 py-3 rounded-2xl bg-civic-blue hover:bg-blue-700 text-white font-bold text-xs shadow-md transition"
+        >
+          Sign In to Access Privacy Settings
+        </Link>
+      </div>
+    );
+  }
+
   const handleToggle = (key: keyof typeof user.privacySettings) => {
     updatePrivacySettings({
       [key]: !user.privacySettings[key],
@@ -50,7 +72,7 @@ export default function PrivacySettings() {
       <div>
         <Link
           href="/profile"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-navy hover:text-safety transition"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-navy hover:text-civic-blue transition"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{language === 'en' ? 'Back to Profile' : 'প্রোফাইলে ফিরে যান'}</span>
@@ -59,7 +81,7 @@ export default function PrivacySettings() {
 
       {/* Header */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-surface-border shadow-card space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-safety/10 text-safety text-xs font-bold uppercase tracking-wider">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-civic-blue border border-blue-200 text-xs font-bold uppercase tracking-wider">
           <Lock className="w-3.5 h-3.5" />
           <span>Security & Data Protection</span>
         </div>
@@ -71,8 +93,8 @@ export default function PrivacySettings() {
         </p>
 
         {savedSuccess && (
-          <div className="p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold flex items-center gap-2 animate-in fade-in duration-150">
-            <Check className="w-4 h-4 text-safety" />
+          <div className="p-3 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 text-xs font-bold flex items-center gap-2 animate-in fade-in duration-150">
+            <Check className="w-4 h-4 text-civic-blue" />
             <span>Preferences saved successfully.</span>
           </div>
         )}
@@ -98,7 +120,7 @@ export default function PrivacySettings() {
             type="button"
             onClick={() => handleToggle('showApproximateLocation')}
             className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-200 shrink-0 ${
-              user.privacySettings.showApproximateLocation ? 'bg-safety' : 'bg-slate-300'
+              user.privacySettings.showApproximateLocation ? 'bg-civic-blue' : 'bg-slate-300'
             }`}
           >
             <div
@@ -127,7 +149,7 @@ export default function PrivacySettings() {
             type="button"
             onClick={() => handleToggle('hideIdentityPublicly')}
             className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-200 shrink-0 ${
-              user.privacySettings.hideIdentityPublicly ? 'bg-safety' : 'bg-slate-300'
+              user.privacySettings.hideIdentityPublicly ? 'bg-civic-blue' : 'bg-slate-300'
             }`}
           >
             <div
@@ -156,7 +178,7 @@ export default function PrivacySettings() {
             type="button"
             onClick={() => handleToggle('allowCommunityNotifications')}
             className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-200 shrink-0 ${
-              user.privacySettings.allowCommunityNotifications ? 'bg-safety' : 'bg-slate-300'
+              user.privacySettings.allowCommunityNotifications ? 'bg-civic-blue' : 'bg-slate-300'
             }`}
           >
             <div

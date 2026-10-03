@@ -51,14 +51,14 @@ export default function AboutUsSection() {
   return (
     <section id="about-us" className="py-24 bg-slate-900 text-white relative overflow-hidden border-t border-slate-800">
       {/* Background Subtle Tech Matrix & Glowing Orbs */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-safety/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-civic-blue/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-emergency/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-safety uppercase tracking-wider backdrop-blur-md">
-            <ShieldCheck className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-blue-300 uppercase tracking-wider backdrop-blur-md">
+            <ShieldCheck className="w-4 h-4 text-blue-300" />
             <span>About Nirapod BD</span>
           </div>
 
@@ -75,8 +75,8 @@ export default function AboutUsSection() {
 
         {/* 3 Core Ethical Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-safety/40 transition-all space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-safety/20 text-safety flex items-center justify-center font-bold">
+          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-civic-blue/40 transition-all space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-civic-blue/20 text-blue-300 flex items-center justify-center font-bold">
               <Users2 className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-black text-white">Community-Powered</h3>
@@ -85,7 +85,7 @@ export default function AboutUsSection() {
             </p>
           </div>
 
-          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-safety/40 transition-all space-y-3">
+          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-indigo-400/40 transition-all space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
               <Globe2 className="w-6 h-6" />
             </div>
@@ -95,7 +95,7 @@ export default function AboutUsSection() {
             </p>
           </div>
 
-          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-safety/40 transition-all space-y-3">
+          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-amber-400/40 transition-all space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
               <Eye className="w-6 h-6" />
             </div>
@@ -122,12 +122,12 @@ export default function AboutUsSection() {
                 <img
                   src={member.image}
                   alt={member.name}
-                  className="w-20 h-20 rounded-2xl object-cover mx-auto border-2 border-safety group-hover:scale-105 transition-transform"
+                  className="w-20 h-20 rounded-2xl object-cover mx-auto border-2 border-civic-blue group-hover:scale-105 transition-transform"
                 />
                 <div>
                   <h4 className="font-extrabold text-sm text-white">{member.name}</h4>
                   <p className="text-[11px] text-slate-300 mt-0.5">{member.role}</p>
-                  <span className="inline-block mt-2 text-[10px] font-mono font-bold text-safety bg-safety/10 px-2 py-0.5 rounded-full border border-safety/20">
+                  <span className="inline-block mt-2 text-[10px] font-mono font-bold text-blue-300 bg-civic-blue/10 px-2 py-0.5 rounded-full border border-civic-blue/20">
                     {member.badge}
                   </span>
                 </div>

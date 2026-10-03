@@ -58,7 +58,7 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl bg-navy-light flex items-center justify-center border border-navy-subtle">
-                <ShieldAlert className="w-6 h-6 text-safety" />
+                <ShieldAlert className="w-6 h-6 text-civic-blue" />
               </div>
               <span className="font-extrabold text-2xl tracking-tight text-white">
                 Nirapod BD
@@ -71,12 +71,12 @@ export default function Footer() {
 
             <div className="flex items-center gap-3 pt-2 text-xs text-slate-400">
               <span className="flex items-center gap-1">
-                <CheckCircle2 className="w-4 h-4 text-safety" />
+                <CheckCircle2 className="w-4 h-4 text-civic-blue" />
                 Community Verified
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <Lock className="w-4 h-4 text-safety" />
+                <Lock className="w-4 h-4 text-civic-blue" />
                 Privacy Protected
               </span>
             </div>
@@ -98,12 +98,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-300">
               <li>
-                <Link href="/" className="hover:text-safety transition-colors">
+                <Link href="/" className="hover:text-civic-blue transition-colors">
                   {t.nav.home}
                 </Link>
               </li>
               <li>
-                <Link href="/map" className="hover:text-safety transition-colors flex items-center gap-1.5">
+                <Link href="/map" className="hover:text-civic-blue transition-colors flex items-center gap-1.5">
                   <span>{t.nav.safetyMap}</span>
                   <span className="text-[10px] bg-emergency px-1.5 py-0.2 rounded-full text-white font-bold">
                     Live
@@ -111,17 +111,17 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/reports" className="hover:text-safety transition-colors">
+                <Link href="/reports" className="hover:text-civic-blue transition-colors">
                   {t.nav.reports}
                 </Link>
               </li>
               <li>
-                <Link href="/#how-it-works" className="hover:text-safety transition-colors">
+                <Link href="/#how-it-works" className="hover:text-civic-blue transition-colors">
                   {t.nav.howItWorks}
                 </Link>
               </li>
               <li>
-                <Link href="/organization" className="hover:text-safety transition-colors">
+                <Link href="/organization" className="hover:text-civic-blue transition-colors">
                   {t.nav.organizations}
                 </Link>
               </li>
@@ -135,22 +135,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-300">
               <li>
-                <Link href="/admin" className="hover:text-safety transition-colors">
+                <Link href="/admin" className="hover:text-civic-blue transition-colors">
                   {t.nav.admin}
                 </Link>
               </li>
               <li>
-                <Link href="/profile" className="hover:text-safety transition-colors">
+                <Link href="/profile" className="hover:text-civic-blue transition-colors">
                   {language === 'en' ? 'Guardian Profile' : 'নাগরিক প্রোফাইল'}
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-safety transition-colors">
+                <Link href="/privacy" className="hover:text-civic-blue transition-colors">
                   {language === 'en' ? 'Privacy & Data Protection' : 'গোপনীয়তা নীতি'}
                 </Link>
               </li>
               <li>
-                <Link href="/report/new" className="text-safety hover:underline font-semibold flex items-center gap-1">
+                <Link href="/report/new" className="text-civic-blue hover:underline font-semibold flex items-center gap-1">
                   <span>{t.nav.reportProblem}</span>
                   <ExternalLink className="w-3 h-3" />
                 </Link>

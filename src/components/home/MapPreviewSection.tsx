@@ -31,7 +31,7 @@ export default function MapPreviewSection() {
     : demoReports.filter(r => r.severity === filterSeverity || (filterSeverity === 'resolved' && r.status === 'RESOLVED'));
 
   const getMarkerColor = (report: Report) => {
-    if (report.status === 'RESOLVED') return 'bg-safety border-white text-white shadow-glow';
+    if (report.status === 'RESOLVED') return 'bg-civic-blue border-white text-white shadow-glow';
     if (report.severity === 'emergency') return 'bg-emergency border-white text-white shadow-emergency animate-pulse';
     if (report.severity === 'high') return 'bg-orange-500 border-white text-white';
     if (report.severity === 'medium') return 'bg-amber-400 border-navy text-navy';
@@ -77,7 +77,7 @@ export default function MapPreviewSection() {
             className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-navy hover:bg-navy-dark text-white font-bold text-sm shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 shrink-0"
           >
             <span>{t.mapPreview.viewFullMap}</span>
-            <ArrowRight className="w-4 h-4 text-safety" />
+            <ArrowRight className="w-4 h-4 text-civic-blue" />
           </Link>
         </div>
 
@@ -90,7 +90,7 @@ export default function MapPreviewSection() {
                 onClick={() => setFilterSeverity('all')}
                 className={`px-3 py-1 rounded-xl transition ${
                   filterSeverity === 'all'
-                    ? 'bg-safety text-white'
+                    ? 'bg-civic-blue text-white'
                     : 'bg-white/10 text-slate-300 hover:bg-white/15'
                 }`}
               >
@@ -122,11 +122,11 @@ export default function MapPreviewSection() {
                 onClick={() => setFilterSeverity('resolved')}
                 className={`px-3 py-1 rounded-xl flex items-center gap-1.5 transition ${
                   filterSeverity === 'resolved'
-                    ? 'bg-safety text-white'
+                    ? 'bg-civic-blue text-white'
                     : 'bg-white/10 text-slate-300 hover:bg-white/15'
                 }`}
               >
-                <span className="w-2 h-2 rounded-full bg-safety" />
+                <span className="w-2 h-2 rounded-full bg-civic-blue" />
                 Resolved
               </button>
             </div>
@@ -146,8 +146,8 @@ export default function MapPreviewSection() {
                 🟡 Normal
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-safety" />
-                🟢 Resolved
+                <span className="w-2.5 h-2.5 rounded-full bg-civic-blue" />
+                🔵 Resolved
               </span>
             </div>
           </div>
@@ -240,7 +240,7 @@ export default function MapPreviewSection() {
 
                 <div className="flex items-center justify-between text-xs text-slate-600 mt-3 pt-3 border-t border-slate-100">
                   <div className="flex items-center gap-1.5 font-bold text-navy">
-                    <Users className="w-3.5 h-3.5 text-safety" />
+                    <Users className="w-3.5 h-3.5 text-civic-blue" />
                     <span>{selectedReport.confirmationsCount} people confirmed this</span>
                   </div>
                   <SeverityBadge severity={selectedReport.severity} size="sm" showIcon={false} />

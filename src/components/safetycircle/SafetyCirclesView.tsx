@@ -54,15 +54,15 @@ export default function SafetyCirclesView() {
   const [members, setMembers] = useState<CircleMember[]>([
     {
       id: 'mem-1',
-      name: 'Rahim Ahmed (You)',
+      name: user ? `${user.name} (You)` : 'You (Citizen Guardian)',
       relationship: 'Primary Account',
-      phone: user.phone || '+880 1712-890123',
-      locationName: 'Mirpur-10, Dhaka',
+      phone: user?.phone || '+880 1700-000000',
+      locationName: user?.livingPlace || 'Mirpur, Dhaka',
       lastUpdated: 'Live right now',
-      batteryLevel: 88,
+      batteryLevel: 92,
       isOnline: true,
-      statusText: 'Safe at Home',
-      avatarSeed: 'Rahim+Ahmed',
+      statusText: 'Safe at Location',
+      avatarSeed: user?.name || 'Citizen',
     },
     {
       id: 'mem-2',
@@ -167,7 +167,7 @@ export default function SafetyCirclesView() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-civic-blue">
               <ShieldCheck className="w-4 h-4 text-civic-blue" />
               <span>{language === 'en' ? 'Personal Security Circles' : 'ব্যক্তিগত নিরাপত্তা সার্কেল'}</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-civic-blue animate-pulse" />
             </div>
 
             <h1 className="text-2xl sm:text-4xl font-black text-navy tracking-tight">
@@ -247,7 +247,7 @@ export default function SafetyCirclesView() {
                   href="tel:999"
                   className="w-full py-3 rounded-2xl bg-navy hover:bg-navy-dark text-white font-bold text-xs flex items-center justify-center gap-1.5 transition"
                 >
-                  <PhoneCall className="w-4 h-4 text-emerald-400" />
+                  <PhoneCall className="w-4 h-4 text-blue-300" />
                   <span>Direct Call 999 Police / Ambulance</span>
                 </a>
               </div>
@@ -257,14 +257,14 @@ export default function SafetyCirclesView() {
 
         {/* SOS Sent Banner */}
         {sosDispatched && (
-          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border border-emerald-300 flex items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-200">
+          <div className="p-4 sm:p-5 rounded-2xl bg-blue-50 border border-blue-300 flex items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-200">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="w-6 h-6 text-civic-blue shrink-0" />
               <div>
-                <h4 className="text-sm font-bold text-emerald-900">
+                <h4 className="text-sm font-bold text-blue-900">
                   {language === 'en' ? 'Emergency SOS Broadcasted' : 'এসওএস বার্তা সফলভাবে সম্প্রচারিত হয়েছে'}
                 </h4>
-                <p className="text-xs text-emerald-700">
+                <p className="text-xs text-blue-700">
                   {language === 'en'
                     ? 'WhatsApp and SMS dispatch initiated with your coordinates: 23.8041° N, 90.3667° E.'
                     : 'আপনার বর্তমান লোকেশন সহ সার্কেল সদস্যদের হোয়াটসঅ্যাপ ও এসএমএস লিঙ্ক সক্রিয় করা হয়েছে।'}
@@ -273,7 +273,7 @@ export default function SafetyCirclesView() {
             </div>
             <button
               onClick={() => setSosDispatched(false)}
-              className="text-xs text-emerald-700 hover:text-emerald-900 font-bold px-3 py-1.5 rounded-lg bg-emerald-100/60"
+              className="text-xs text-blue-700 hover:text-blue-900 font-bold px-3 py-1.5 rounded-lg bg-blue-100/60"
             >
               Dismiss
             </button>
@@ -320,11 +320,11 @@ export default function SafetyCirclesView() {
                   {/* Battery & Online Status */}
                   <div className="flex flex-col items-end gap-1">
                     <div className="flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
-                      <Battery className={`w-3.5 h-3.5 ${member.batteryLevel < 20 ? 'text-emergency' : 'text-emerald-600'}`} />
+                      <Battery className={`w-3.5 h-3.5 ${member.batteryLevel < 20 ? 'text-emergency' : 'text-civic-blue'}`} />
                       <span>{member.batteryLevel}%</span>
                     </div>
                     <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
-                      member.isOnline ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'
+                      member.isOnline ? 'bg-blue-50 text-civic-blue' : 'bg-slate-100 text-slate-500'
                     }`}>
                       {member.isOnline ? '● Live' : 'Offline'}
                     </span>
@@ -356,9 +356,9 @@ export default function SafetyCirclesView() {
                     href={`https://wa.me/${member.phone.replace(/[^0-9]/g, '')}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center gap-1 transition"
+                    className="flex-1 py-2 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 text-xs font-bold flex items-center justify-center gap-1 transition"
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                    <MessageSquare className="w-3.5 h-3.5 text-sky-600" />
                     <span>WhatsApp</span>
                   </a>
                 </div>

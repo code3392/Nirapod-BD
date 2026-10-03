@@ -72,7 +72,7 @@ export default function OrganizationDashboard() {
       {/* Organization Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-navy text-white shadow-elevated">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-safety shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-sky-400 shrink-0">
             <Building2 className="w-8 h-8" />
           </div>
           <div>
@@ -80,7 +80,7 @@ export default function OrganizationDashboard() {
               <h1 className="text-xl sm:text-2xl font-black text-white">
                 Dhaka North City Corporation (DNCC)
               </h1>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-safety text-white">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-civic-blue text-white">
                 Verified Civic Agency
               </span>
             </div>
@@ -99,7 +99,7 @@ export default function OrganizationDashboard() {
           </Link>
           <Link
             href="/reports"
-            className="px-4 py-2 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-bold transition shadow-sm"
+            className="px-4 py-2 rounded-xl bg-civic-blue hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm"
           >
             Public Feed
           </Link>
@@ -160,15 +160,15 @@ export default function OrganizationDashboard() {
           onClick={() => setActiveTab('resolved')}
           className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
             activeTab === 'resolved'
-              ? 'bg-emerald-50/80 border-safety shadow-md ring-2 ring-safety'
+              ? 'bg-blue-50/80 border-civic-blue shadow-md ring-2 ring-civic-blue'
               : 'bg-white border-surface-border hover:border-slate-300 shadow-subtle'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-muted">{t.organization.resolved}</span>
-            <CheckCircle2 className="w-4 h-4 text-safety" />
+            <CheckCircle2 className="w-4 h-4 text-civic-blue" />
           </div>
-          <p className="text-3xl font-black text-safety">{resolvedReports.length + 65}</p>
+          <p className="text-3xl font-black text-civic-blue">{resolvedReports.length + 65}</p>
           <p className="text-[11px] text-slate-500 mt-1">Citizen verified fixes</p>
         </button>
       </div>
@@ -237,7 +237,7 @@ export default function OrganizationDashboard() {
                     {report.status !== 'RESOLVED' ? (
                       <button
                         onClick={() => handleOpenResolveModal(report)}
-                        className="px-3 py-1 rounded-lg bg-safety hover:bg-safety-hover text-white font-extrabold text-[11px] shadow-sm transition"
+                        className="px-3 py-1 rounded-lg bg-civic-blue hover:bg-civic-royal text-white font-extrabold text-[11px] shadow-sm transition"
                       >
                         {t.organization.btnResolve}
                       </button>
@@ -264,7 +264,7 @@ export default function OrganizationDashboard() {
             {/* Modal Header */}
             <div className="bg-navy p-5 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-safety/20 text-safety flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-civic-blue/20 text-blue-300 flex items-center justify-center">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
@@ -322,7 +322,7 @@ export default function OrganizationDashboard() {
                       alt="Repaired Resolution"
                       className="w-full h-full object-cover"
                     />
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-extrabold bg-safety text-white">
+                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-extrabold bg-civic-blue text-white">
                       Repaired & Cleared
                     </span>
                   </div>
@@ -346,7 +346,7 @@ export default function OrganizationDashboard() {
                       onClick={() => setAfterImage(item.url)}
                       className={`text-[11px] font-bold px-3 py-1.5 rounded-xl border transition ${
                         afterImage === item.url
-                          ? 'bg-safety text-white border-safety shadow-sm'
+                          ? 'bg-civic-blue text-white border-civic-blue shadow-sm'
                           : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                       }`}
                     >
@@ -367,7 +367,7 @@ export default function OrganizationDashboard() {
                   value={resolutionDesc}
                   onChange={(e) => setResolutionDesc(e.target.value)}
                   placeholder={t.organization.resolvePlaceholder}
-                  className="w-full p-3 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-safety focus:outline-none"
+                  className="w-full p-3 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
                 />
               </div>
 
@@ -382,7 +382,7 @@ export default function OrganizationDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-black shadow-md transition"
+                  className="px-6 py-2.5 rounded-xl bg-civic-blue hover:bg-civic-royal text-white text-xs font-black shadow-md transition"
                 >
                   {t.organization.submitResolutionBtn}
                 </button>

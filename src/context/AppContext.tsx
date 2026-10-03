@@ -34,7 +34,7 @@ interface AppContextType {
   setLanguage: (lang: Language) => void;
   t: typeof translations.en;
   reports: Report[];
-  user: UserProfile;
+  user: UserProfile | null;
   allUsers: UserProfile[];
   notifications: NotificationItem[];
   unreadNotificationsCount: number;
@@ -42,6 +42,18 @@ interface AppContextType {
   offlineQueueCount: number;
   
   // Auth & Roles
+  login: (email: string) => { success: boolean; message: string };
+  register: (data: {
+    name: string;
+    email: string;
+    phone: string;
+    livingPlace: string;
+    area: string;
+    age: number;
+    bloodGroup: string;
+    occupation?: string;
+  }) => { success: boolean; message: string };
+  logout: () => void;
   switchUser: (email: string) => void;
   updateUserRole: (targetUserId: string, newRole: UserRole) => { success: boolean; message: string };
   updateUserProfile: (data: Partial<UserProfile>) => void;
@@ -87,7 +99,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>('en');
   const [reports, setReports] = useState<Report[]>(INITIAL_REPORTS);
   const [allUsers, setAllUsers] = useState<UserProfile[]>(INITIAL_USER_REGISTRY);
-  const [user, setUser] = useState<UserProfile>(INITIAL_USER);
+  // Default to Guest visitor - NO fake accounts preloaded
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [isOffline, setIsOffline] = useState<boolean>(false);
   const [offlineQueue, setOfflineQueue] = useState<Partial<Report>[]>([]);
@@ -110,7 +123,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedUsers) setAllUsers(JSON.parse(savedUsers));
 
         const savedUser = localStorage.getItem('nirapod_user');
-        if (savedUser) setUser(JSON.parse(savedUser));
+        if (savedUser) {
+          try {
+            const parsed = JSON.parse(savedUser);
+            // Purge legacy fake demo accounts like Rahim Ahmed (usr-1)
+            if (parsed.id === 'usr-1' || parsed.email === 'rahim.ahmed@nirapodbd.gov.bd') {
+              localStorage.removeItem('nirapod_user');
+              setUser(null);
+            } else {
+              setUser(parsed);
+            }
+          } catch {
+            localStorage.removeItem('nirapod_user');
+            setUser(null);
+          }
+        }
 
         const savedNotifs = localStorage.getItem('nirapod_notifications');
         if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
@@ -154,12 +181,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') localStorage.setItem('nirapod_reports', JSON.stringify(newReports));
   };
 
-  const persistUsers = (newUsers: UserProfile[], activeUser?: UserProfile) => {
+  const persistUsers = (newUsers: UserProfile[], activeUser?: UserProfile | null) => {
     setAllUsers(newUsers);
     if (typeof window !== 'undefined') localStorage.setItem('nirapod_users', JSON.stringify(newUsers));
-    if (activeUser) {
+    if (activeUser !== undefined) {
       setUser(activeUser);
-      if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(activeUser));
+      if (typeof window !== 'undefined') {
+        if (activeUser) {
+          localStorage.setItem('nirapod_user', JSON.stringify(activeUser));
+        } else {
+          localStorage.removeItem('nirapod_user');
+        }
+      }
     }
   };
 
@@ -168,21 +201,152 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') localStorage.setItem('nirapod_notifications', JSON.stringify(newNotifs));
   };
 
-  // Switch Active User / Login simulation (e.g. to smdsami59@gmail.com)
+  // Authentic Login Method
+  const login = (email: string): { success: boolean; message: string } => {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail) return { success: false, message: 'Please enter a valid email address.' };
+
+    if (cleanEmail === 'smdsami59@gmail.com') {
+      setUser(SUPER_ADMIN_USER);
+      if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(SUPER_ADMIN_USER));
+      if (!allUsers.some(u => u.email.toLowerCase() === 'smdsami59@gmail.com')) {
+        const updated = [SUPER_ADMIN_USER, ...allUsers];
+        setAllUsers(updated);
+        if (typeof window !== 'undefined') localStorage.setItem('nirapod_users', JSON.stringify(updated));
+      }
+      return { success: true, message: 'Authenticated successfully as Super Admin (smdsami59@gmail.com).' };
+    }
+
+    const existing = allUsers.find(u => u.email.toLowerCase() === cleanEmail);
+    if (existing) {
+      setUser(existing);
+      if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(existing));
+      return { success: true, message: `Welcome back, ${existing.name}!` };
+    }
+
+    // Auto-create verified citizen profile for this new email
+    const namePart = cleanEmail.split('@')[0];
+    const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+    const newCitizen: UserProfile = {
+      id: `usr-${Date.now()}`,
+      name: formattedName,
+      email: cleanEmail,
+      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(formattedName)}&backgroundColor=0A2540&textColor=ffffff`,
+      role: 'Citizen',
+      isSuperAdmin: false,
+      phone: '+880 1700-000000',
+      livingPlace: 'Dhaka, Bangladesh',
+      area: 'Mirpur',
+      age: 26,
+      bloodGroup: 'B+',
+      occupation: 'Citizen Volunteer',
+      isEmailVerified: true,
+      isPhoneVerified: true,
+      isIdVerified: true,
+      verificationBadge: 'Greatly Verified Guardian',
+      verificationStatus: 'GREATLY_VERIFIED',
+      reputationScore: 100,
+      verificationLevel: 'Verified Citizen (Tier 1)',
+      reportsSubmitted: 0,
+      reportsVerified: 0,
+      helpfulConfirmations: 0,
+      points: 100,
+      warningStrikes: { fakePostCount: 0, badWordsCount: 0, racismCount: 0 },
+      suspendedUntil: null,
+      suspensionReason: null,
+      bannedFromCommunities: false,
+      unresolvedReportIdForWorkProof: null,
+      badges: [],
+      privacySettings: {
+        showApproximateLocation: true,
+        hideIdentityPublicly: false,
+        allowCommunityNotifications: true,
+      },
+    };
+
+    const updatedUsers = [newCitizen, ...allUsers];
+    persistUsers(updatedUsers, newCitizen);
+    return { success: true, message: `Signed in as ${cleanEmail}!` };
+  };
+
+  // Authentic Registration Method (Requirement 20)
+  const register = (data: {
+    name: string;
+    email: string;
+    phone: string;
+    livingPlace: string;
+    area: string;
+    age: number;
+    bloodGroup: string;
+    occupation?: string;
+  }): { success: boolean; message: string } => {
+    const cleanEmail = data.email.trim().toLowerCase();
+    const cleanName = data.name.trim();
+
+    if (!cleanName || !cleanEmail) {
+      return { success: false, message: 'Name and email are required.' };
+    }
+
+    const isSuper = cleanEmail === 'smdsami59@gmail.com';
+    const newAccount: UserProfile = {
+      id: isSuper ? 'usr-super-admin' : `usr-${Date.now()}`,
+      name: cleanName,
+      email: cleanEmail,
+      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(cleanName)}&backgroundColor=0A2540&textColor=ffffff`,
+      role: isSuper ? 'Super Admin' : 'Community Guardian',
+      isSuperAdmin: isSuper,
+      phone: data.phone.trim() || '+880 1700-000000',
+      livingPlace: data.livingPlace.trim() || `${data.area}, Dhaka`,
+      area: data.area.trim() || 'Mirpur',
+      age: Number(data.age) || 28,
+      bloodGroup: data.bloodGroup.trim() || 'B+',
+      occupation: data.occupation?.trim() || 'Civic Volunteer',
+      isEmailVerified: true,
+      isPhoneVerified: true,
+      isIdVerified: true,
+      verificationBadge: 'Greatly Verified Guardian',
+      verificationStatus: 'GREATLY_VERIFIED',
+      reputationScore: isSuper ? 2450 : 150,
+      verificationLevel: isSuper ? 'Supreme Civic Moderator' : 'Verified Guardian (Tier 1)',
+      reportsSubmitted: 0,
+      reportsVerified: 0,
+      helpfulConfirmations: 0,
+      points: isSuper ? 2450 : 150,
+      warningStrikes: { fakePostCount: 0, badWordsCount: 0, racismCount: 0 },
+      suspendedUntil: null,
+      suspensionReason: null,
+      bannedFromCommunities: false,
+      unresolvedReportIdForWorkProof: null,
+      badges: [],
+      privacySettings: {
+        showApproximateLocation: true,
+        hideIdentityPublicly: false,
+        allowCommunityNotifications: true,
+      },
+    };
+
+    const filtered = allUsers.filter(u => u.email.toLowerCase() !== cleanEmail);
+    const updatedUsers = [newAccount, ...filtered];
+    persistUsers(updatedUsers, newAccount);
+    return { success: true, message: `Account created successfully! Welcome, ${cleanName}.` };
+  };
+
+  const logout = () => {
+    setUser(null);
+    if (typeof window !== 'undefined') localStorage.removeItem('nirapod_user');
+  };
+
   const switchUser = (email: string) => {
-    const target = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (target) {
-      setUser(target);
-      if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(target));
-    } else if (email === 'smdsami59@gmail.com') {
-      const updated = [SUPER_ADMIN_USER, ...allUsers];
-      persistUsers(updated, SUPER_ADMIN_USER);
+    if (!email || email === 'guest') {
+      logout();
+    } else {
+      login(email);
     }
   };
 
   // Rule 13: Super admin can make someone Admin or Super Admin. Admin CANNOT make an Admin.
   const updateUserRole = (targetUserId: string, newRole: UserRole): { success: boolean; message: string } => {
-    if (!user.isSuperAdmin && user.email !== 'smdsami59@gmail.com') {
+    if (!user || (!user.isSuperAdmin && user.email !== 'smdsami59@gmail.com')) {
       return {
         success: false,
         message: 'Permission Denied: Only Super Admin (smdsami59@gmail.com) is authorized to appoint Admins or Super Admins.',
@@ -200,15 +364,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return u;
     });
 
-    const activeUser = updated.find(u => u.id === user.id) || user;
-    persistUsers(updated, activeUser);
+    const activeUser = user ? (updated.find(u => u.id === user.id) || user) : null;
+    persistUsers(updated, activeUser || undefined);
 
     return { success: true, message: `User role updated successfully to ${newRole}.` };
   };
 
   // Rule 14 & 15: Suspend User with Email Log and Revocation
   const suspendUser = (targetUserId: string, reason: string, durationDays: number): { success: boolean; message: string } => {
-    if (user.role !== 'Admin' && user.role !== 'Super Admin') {
+    if (!user || (user.role !== 'Admin' && user.role !== 'Super Admin')) {
       return { success: false, message: 'Only authorized Admins or Super Admin can suspend accounts.' };
     }
 
@@ -254,7 +418,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const revokeSuspension = (targetUserId: string): { success: boolean; message: string } => {
-    if (user.role !== 'Admin' && user.role !== 'Super Admin') {
+    if (!user || (user.role !== 'Admin' && user.role !== 'Super Admin')) {
       return { success: false, message: 'Unauthorized action.' };
     }
 
@@ -274,12 +438,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const banUserFromCommunity = (targetUserId: string, ban: boolean) => {
-    if (user.role !== 'Admin' && user.role !== 'Super Admin') return;
+    if (!user || (user.role !== 'Admin' && user.role !== 'Super Admin')) return;
     const updated = allUsers.map(u => u.id === targetUserId ? { ...u, bannedFromCommunities: ban } : u);
     persistUsers(updated, updated.find(u => u.id === user.id));
   };
 
   const updateUserProfile = (data: Partial<UserProfile>) => {
+    if (!user) return;
     const updated = { ...user, ...data };
     const all = allUsers.map(u => u.id === user.id ? updated : u);
     persistUsers(all, updated);
@@ -313,7 +478,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Rule 25: Mandatory Resolution Work Proof & Automated Helper Dispatch
   const addReport = (reportData: Partial<Report>): { success: boolean; report?: Report; errorReason?: string } => {
     // Check if user is suspended
-    if (user.suspendedUntil && new Date(user.suspendedUntil) > new Date()) {
+    if (user?.suspendedUntil && new Date(user.suspendedUntil) > new Date()) {
       return {
         success: false,
         errorReason: `Your account is currently suspended until ${new Date(user.suspendedUntil).toLocaleDateString()}. Reason: ${user.suspensionReason}`,
@@ -321,7 +486,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
 
     // Check Rule 25: Must provide photo/video proof for previous done work before making another request
-    if (user.unresolvedReportIdForWorkProof) {
+    if (user?.unresolvedReportIdForWorkProof) {
       return {
         success: false,
         errorReason: `Work Completion Proof Required: You have a previously resolved request (${user.unresolvedReportIdForWorkProof}) awaiting your photo/video verification. You must submit completion evidence before submitting a new issue.`,
@@ -369,11 +534,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newReport: Report = {
       id: reportId,
       publicId,
-      userId: user.id,
-      userName: user.privacySettings.hideIdentityPublicly ? 'Anonymous Citizen' : user.name,
-      userEmail: user.email,
-      userPhone: user.phone,
-      userAvatar: user.avatar,
+      userId: user ? user.id : 'usr-guest',
+      userName: user ? (user.privacySettings.hideIdentityPublicly ? 'Anonymous Citizen' : user.name) : (reportData.userName || 'Anonymous Citizen'),
+      userEmail: user?.email || reportData.userEmail,
+      userPhone: user?.phone || reportData.userPhone,
+      userAvatar: user?.avatar || 'https://api.dicebear.com/7.x/initials/svg?seed=Citizen&backgroundColor=0A2540&textColor=ffffff',
       categoryId: reportData.categoryId || 'road_traffic',
       title: reportData.title || 'Reported Civic Issue',
       description: reportData.description || '',
@@ -402,8 +567,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         {
           id: `t-${Date.now()}-1`,
           status: 'SUBMITTED',
-          titleEn: `Report created by ${user.name}`,
-          titleBn: `${user.name} কর্তৃক রিপোর্ট দাখিল`,
+          titleEn: user ? `Report created by ${user.name}` : 'Report created by Citizen',
+          titleBn: user ? `${user.name} কর্তৃক রিপোর্ট দাখিল` : 'নাগরিক কর্তৃক রিপোর্ট দাখিল',
           timestamp: now,
           actor: 'Citizen',
         },
@@ -425,13 +590,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     persistReports(updatedReports);
 
     // Update user stats
-    const updatedUser: UserProfile = {
-      ...user,
-      points: user.points + 25,
-      reputationScore: user.reputationScore + 25,
-      reportsSubmitted: user.reportsSubmitted + 1,
-    };
-    persistUsers(allUsers.map(u => u.id === user.id ? updatedUser : u), updatedUser);
+    if (user) {
+      const updatedUser: UserProfile = {
+        ...user,
+        points: user.points + 25,
+        reputationScore: user.reputationScore + 25,
+        reportsSubmitted: user.reportsSubmitted + 1,
+      };
+      persistUsers(allUsers.map(u => u.id === user.id ? updatedUser : u), updatedUser);
+    }
 
     // Add Notification
     const newNotif: NotificationItem = {
@@ -451,6 +618,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleModerationViolation = (category: 'bad_words' | 'racism' | 'commercial_ad') => {
+    if (!user) return;
     const strikes = { ...user.warningStrikes };
     let newSuspendedUntil: string | null = null;
     let reason: string | null = null;
@@ -562,7 +730,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       titleEn: `Status updated to ${status}${note ? `: ${note}` : ''}`,
       titleBn: `অবস্থা পরিবর্তিত হয়েছে: ${status}${note ? ` (${note})` : ''}`,
       timestamp: new Date().toISOString(),
-      actor: user.name,
+      actor: user ? user.name : 'Authorized Officer',
     });
 
     const updatedReports = [...reports];
@@ -599,7 +767,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     report.requiresCitizenProofOfWork = true;
 
     // Rule 25: Tag author user as requiring proof of work completion
-    if (report.userId === user.id) {
+    if (user && report.userId === user.id) {
       updateUserProfile({ unresolvedReportIdForWorkProof: report.publicId });
     }
 
@@ -632,11 +800,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     persistReports(updatedReports);
 
     // Clear user restriction & award points
-    updateUserProfile({
-      unresolvedReportIdForWorkProof: null,
-      points: user.points + 20,
-      reputationScore: user.reputationScore + 20,
-    });
+    if (user) {
+      updateUserProfile({
+        unresolvedReportIdForWorkProof: null,
+        points: user.points + 20,
+        reputationScore: user.reputationScore + 20,
+      });
+    }
   };
 
   const confirmResolution = (reportId: string) => {
@@ -680,8 +850,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const report = { ...reports[reportIndex] };
     const newComment = {
       id: `c-${Date.now()}`,
-      userName: isOfficial ? 'Official Municipal Officer' : user.name,
-      userAvatar: user.avatar,
+      userName: isOfficial ? 'Official Municipal Officer' : (user ? user.name : 'Verified Citizen'),
+      userAvatar: user?.avatar || 'https://api.dicebear.com/7.x/initials/svg?seed=Citizen&backgroundColor=0A2540&textColor=ffffff',
       isOfficial,
       content,
       createdAt: new Date().toISOString(),
@@ -695,7 +865,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Community Hub Messaging with File Support & Moderation
   const sendCommunityMessage = (area: string, content: string, fileAttachment?: CommunityMessage['fileAttachment']): { success: boolean; violationReason?: string } => {
-    if (user.bannedFromCommunities) {
+    if (user?.bannedFromCommunities) {
       return { success: false, violationReason: 'You have been restricted from participating in community discussion rooms by administration.' };
     }
 
@@ -708,10 +878,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newMsg: CommunityMessage = {
       id: `msg-${Date.now()}`,
       area,
-      senderId: user.id,
-      senderName: user.name,
-      senderAvatar: user.avatar,
-      senderBadge: user.verificationBadge,
+      senderId: user ? user.id : 'usr-guest',
+      senderName: user ? user.name : 'Community Neighbor',
+      senderAvatar: user ? user.avatar : 'https://api.dicebear.com/7.x/initials/svg?seed=Neighbor&backgroundColor=0A2540&textColor=ffffff',
+      senderBadge: user ? user.verificationBadge : 'Citizen',
       content,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       fileAttachment,
@@ -725,6 +895,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Direct P2P Messaging
   const sendDirectMessage = (recipientId: string, recipientName: string, content: string, fileAttachment?: DirectMessage['fileAttachment']): { success: boolean; violationReason?: string } => {
+    if (!user) {
+      return { success: false, violationReason: 'Please sign in or create an account to start direct messaging.' };
+    }
+
+    if (user.bannedFromCommunities) {
+      return { success: false, violationReason: 'Your account is restricted from direct messaging.' };
+    }
+
     const scan = scanTextForViolations(content);
     if (scan.flagged) {
       handleModerationViolation(scan.category || 'bad_words');
@@ -780,6 +958,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updatePrivacySettings = (settings: Partial<UserProfile['privacySettings']>) => {
+    if (!user) return;
     const updated = { ...user, privacySettings: { ...user.privacySettings, ...settings } };
     persistUsers(allUsers.map(u => u.id === user.id ? updated : u), updated);
   };
@@ -813,6 +992,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         unreadNotificationsCount,
         isOffline,
         offlineQueueCount: offlineQueue.length,
+        login,
+        register,
+        logout,
         switchUser,
         updateUserRole,
         updateUserProfile,

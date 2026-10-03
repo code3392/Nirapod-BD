@@ -48,8 +48,8 @@ export default function StatusBadge({ status, size = 'md', showIcon = true }: St
       case 'VERIFIED':
         return {
           label: t.status.VERIFIED,
-          icon: <CheckCircle2 className="w-3.5 h-3.5" />,
-          classes: 'bg-emerald-50 text-emerald-700 border-emerald-300 font-bold',
+          icon: <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />,
+          classes: 'bg-blue-50 text-blue-800 border-blue-200 font-bold',
         };
       case 'ASSIGNED':
         return {
@@ -66,14 +66,14 @@ export default function StatusBadge({ status, size = 'md', showIcon = true }: St
       case 'RESOLVED':
         return {
           label: t.status.RESOLVED,
-          icon: <CheckCheck className="w-3.5 h-3.5" />,
-          classes: 'bg-safety/10 text-safety border-safety/30 font-extrabold',
+          icon: <CheckCheck className="w-3.5 h-3.5 text-white" />,
+          classes: 'bg-civic-blue text-white border-civic-blue font-extrabold',
         };
       case 'COMMUNITY_CONFIRMED':
         return {
           label: t.status.COMMUNITY_CONFIRMED,
-          icon: <CheckCheck className="w-3.5 h-3.5 text-safety" />,
-          classes: 'bg-teal-50 text-teal-800 border-teal-300 font-extrabold',
+          icon: <CheckCheck className="w-3.5 h-3.5 text-sky-600" />,
+          classes: 'bg-sky-50 text-sky-800 border-sky-300 font-extrabold',
         };
       case 'REJECTED':
         return {

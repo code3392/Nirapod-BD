@@ -17,14 +17,38 @@ import {
 } from 'lucide-react';
 
 export default function DirectMessagingView() {
-  const { user, allUsers, directMessages, sendDirectMessage, language } = useApp();
+  const { user, allUsers, directMessages, sendDirectMessage, language, login } = useApp();
   
   // Available conversation partners (excluding self)
-  const conversationPartners = allUsers.filter((u) => u.id !== user.id);
+  const conversationPartners = allUsers.filter((u) => u.id !== user?.id);
   const [activePartner, setActivePartner] = useState(conversationPartners[0] || null);
   const [inputText, setInputText] = useState('');
   const [attachedFile, setAttachedFile] = useState<{ name: string; size: string; type: string; url: string } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  if (!user) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-6">
+        <div className="w-16 h-16 rounded-3xl bg-blue-50 border border-blue-200 text-civic-blue mx-auto flex items-center justify-center shadow-subtle">
+          <MessageSquare className="w-8 h-8" />
+        </div>
+        <div className="space-y-2 max-w-md mx-auto">
+          <h2 className="text-2xl font-black text-navy">Direct Citizen Messaging</h2>
+          <p className="text-xs sm:text-sm text-slate-600">
+            Sign in with your verified guardian account to securely communicate with neighbors and coordinate civic problem solving.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            onClick={() => login('smdsami59@gmail.com')}
+            className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-civic-blue hover:bg-blue-700 text-white font-bold text-xs shadow-md transition"
+          >
+            Sign In with Super Admin (smdsami59@gmail.com)
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Filter messages between current user and activePartner
   const conversationMessages = directMessages.filter((m) => {
@@ -55,7 +79,7 @@ export default function DirectMessagingView() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
       {/* Header */}
       <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-safety/10 text-xs font-bold text-safety uppercase tracking-wider mb-2">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-xs font-bold text-civic-blue uppercase tracking-wider mb-2 border border-blue-100">
           <MessageSquare className="w-3.5 h-3.5" />
           <span>Encrypted Direct Messaging</span>
         </div>
@@ -121,7 +145,7 @@ export default function DirectMessagingView() {
                 <div>
                   <div className="flex items-center gap-1.5">
                     <h3 className="font-extrabold text-sm text-navy">{activePartner.name}</h3>
-                    <span className="text-[9px] bg-safety/10 text-safety font-bold px-1.5 py-0.2 rounded">
+                    <span className="text-[9px] bg-blue-50 text-civic-blue font-bold px-1.5 py-0.2 rounded border border-blue-100">
                       {activePartner.verificationBadge}
                     </span>
                   </div>
@@ -174,7 +198,7 @@ export default function DirectMessagingView() {
                         <div className={`p-2 rounded-xl border flex items-center gap-2 text-xs font-bold ${
                           isMe ? 'bg-white/10 border-white/20 text-white' : 'bg-white border-slate-200 text-navy'
                         }`}>
-                          <FileText className="w-4 h-4 text-safety" />
+                          <FileText className="w-4 h-4 text-sky-400" />
                           <span className="truncate">{msg.fileAttachment.name}</span>
                           <span className="text-[10px] opacity-70">({msg.fileAttachment.size})</span>
                         </div>
@@ -194,7 +218,7 @@ export default function DirectMessagingView() {
           <div className="p-4 border-t border-slate-200 bg-slate-50/60">
             {attachedFile && (
               <div className="mb-2 p-2 rounded-xl bg-white border border-slate-200 inline-flex items-center gap-2 text-xs">
-                <FileText className="w-4 h-4 text-safety" />
+                <FileText className="w-4 h-4 text-civic-blue" />
                 <span className="font-bold text-navy">{attachedFile.name}</span>
                 <button onClick={() => setAttachedFile(null)} className="text-slate-400 hover:text-slate-600">
                   <X className="w-3.5 h-3.5" />
@@ -209,7 +233,7 @@ export default function DirectMessagingView() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 disabled={!activePartner}
-                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-safety focus:outline-none"
+                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-civic-blue focus:outline-none"
               />
 
               <button
@@ -224,7 +248,7 @@ export default function DirectMessagingView() {
               <button
                 type="submit"
                 disabled={!activePartner || (!inputText.trim() && !attachedFile)}
-                className="px-5 py-2.5 rounded-xl bg-safety hover:bg-safety-hover text-white text-xs font-bold shadow-md transition disabled:opacity-40"
+                className="px-5 py-2.5 rounded-xl bg-civic-blue hover:bg-blue-700 text-white text-xs font-bold shadow-md transition disabled:opacity-40"
               >
                 <Send className="w-4 h-4" />
               </button>

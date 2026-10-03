@@ -165,12 +165,12 @@ export default function NirapodAiAssistant() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-navy via-navy-light to-safety text-white font-extrabold text-xs shadow-glow hover:scale-105 active:scale-95 transition-all border border-safety/40 group"
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-navy via-navy-light to-civic-blue text-white font-extrabold text-xs shadow-glow hover:scale-105 active:scale-95 transition-all border border-civic-blue/40 group"
           title="Ask Nirapod AI Assistant"
         >
           <div className="relative">
-            <span className="absolute -inset-1 rounded-full bg-safety/50 animate-ping" />
-            <div className="w-7 h-7 rounded-full bg-safety flex items-center justify-center text-white">
+            <span className="absolute -inset-1 rounded-full bg-civic-blue/50 animate-ping" />
+            <div className="w-7 h-7 rounded-full bg-civic-blue flex items-center justify-center text-white">
               <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
             </div>
           </div>
@@ -187,14 +187,14 @@ export default function NirapodAiAssistant() {
           {/* Header */}
           <div className="p-4 bg-gradient-to-r from-navy to-navy-light border-b border-white/10 flex items-center justify-between text-white">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-safety/20 text-safety flex items-center justify-center border border-safety/30 shadow-inner">
+              <div className="w-10 h-10 rounded-2xl bg-civic-blue/20 text-blue-300 flex items-center justify-center border border-civic-blue/30 shadow-inner">
                 <Bot className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="font-extrabold text-sm text-white">Nirapod AI</h3>
-                  <span className="w-2 h-2 rounded-full bg-safety animate-pulse" />
-                  <span className="text-[10px] font-mono text-safety font-bold">Online</span>
+                  <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+                  <span className="text-[10px] font-mono text-blue-300 font-bold">Online</span>
                 </div>
                 <p className="text-[11px] text-slate-300">
                   {language === 'en' ? 'Community Civic Assistant' : 'নাগরিক সেবা এআই'}
@@ -231,7 +231,7 @@ export default function NirapodAiAssistant() {
                 className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.sender === 'ai' && (
-                  <div className="w-7 h-7 rounded-xl bg-safety/20 text-safety border border-safety/30 flex items-center justify-center shrink-0 text-xs">
+                  <div className="w-7 h-7 rounded-xl bg-civic-blue/20 text-blue-300 border border-civic-blue/30 flex items-center justify-center shrink-0 text-xs">
                     <Sparkles className="w-3.5 h-3.5" />
                   </div>
                 )}
@@ -239,7 +239,7 @@ export default function NirapodAiAssistant() {
                 <div
                   className={`max-w-[82%] rounded-2xl p-3.5 text-xs leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-safety text-white font-medium rounded-tr-sm'
+                      ? 'bg-civic-blue text-white font-medium rounded-tr-sm'
                       : 'bg-white/10 text-slate-200 border border-white/10 rounded-tl-sm'
                   }`}
                 >
@@ -253,7 +253,7 @@ export default function NirapodAiAssistant() {
                           key={i}
                           href={link.url}
                           onClick={() => setIsOpen(false)}
-                          className="inline-flex items-center gap-1 text-[11px] font-bold text-safety bg-black/30 hover:bg-black/50 px-2 py-0.5 rounded-lg border border-safety/30 transition"
+                          className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-300 bg-black/30 hover:bg-black/50 px-2 py-0.5 rounded-lg border border-civic-blue/30 transition"
                         >
                           <span>{link.label}</span>
                           <ChevronRight className="w-3 h-3" />
@@ -271,7 +271,7 @@ export default function NirapodAiAssistant() {
 
             {isThinking && (
               <div className="flex gap-2.5 items-center text-xs text-slate-400">
-                <div className="w-7 h-7 rounded-xl bg-safety/20 text-safety flex items-center justify-center">
+                <div className="w-7 h-7 rounded-xl bg-civic-blue/20 text-blue-300 flex items-center justify-center">
                   <Sparkles className="w-3.5 h-3.5 animate-spin" />
                 </div>
                 <span>Nirapod AI is generating answer...</span>
@@ -294,12 +294,12 @@ export default function NirapodAiAssistant() {
                 placeholder={language === 'en' ? 'Ask a question about Nirapod BD...' : 'নিরাপদ বিডি সম্পর্কে প্রশ্ন লিখুন...'}
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                className="flex-1 bg-white/10 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-safety"
+                className="flex-1 bg-white/10 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-civic-blue"
               />
               <button
                 type="submit"
                 disabled={!inputMessage.trim() || isThinking}
-                className="p-2 rounded-xl bg-safety hover:bg-safety-hover text-white disabled:opacity-40 transition shadow-sm"
+                className="p-2 rounded-xl bg-civic-blue hover:bg-civic-royal text-white disabled:opacity-40 transition shadow-sm"
               >
                 <Send className="w-4 h-4" />
               </button>

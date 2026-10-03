@@ -39,7 +39,7 @@ export default function PartnershipShowcase() {
       categoryEn: 'Municipal Public Works',
       categoryBn: 'পৌর বর্জ্য ও সড়ক বিভাগ',
       icon: Building2,
-      color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      color: 'bg-sky-50 text-sky-700 border-sky-200',
       tag: 'Zones 1-10',
       descriptionEn: 'Automated problem ticket dispatch for Mirpur, Uttara, Gulshan road potholes and waste clearance.',
       descriptionBn: 'মিরপুর, উত্তরা ও গুলশান এলাকার সড়ক সংস্কার ও পরিচ্ছন্নতা বিভাগে রিপোর্ট প্রেরণ।',
@@ -141,7 +141,7 @@ export default function PartnershipShowcase() {
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-civic-blue border border-blue-200">
                         {partner.tag}
                       </span>
-                      <span className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                      <span className="text-[10px] font-bold text-civic-blue mt-1 flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" />
                         {partner.status}
                       </span>
@@ -165,7 +165,7 @@ export default function PartnershipShowcase() {
                   <span className="text-slate-400 font-medium">Standardized Dispatch</span>
                   <span className="text-civic-blue font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                     <span>Protocol Live</span>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-civic-blue" />
                   </span>
                 </div>
               </div>
@@ -177,7 +177,7 @@ export default function PartnershipShowcase() {
         <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-navy via-navy to-civic-deep text-white border border-blue-900 shadow-elevated flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
-              <Award className="w-7 h-7 text-safety" />
+              <Award className="w-7 h-7 text-blue-300" />
             </div>
             <div>
               <h4 className="text-base sm:text-lg font-black text-white">

@@ -44,17 +44,17 @@ export default function HowItWorks() {
       number: '04',
       title: t.howItWorks.step4Title,
       desc: t.howItWorks.step4Desc,
-      icon: <UserCheck className="w-7 h-7 text-emerald-600" />,
+      icon: <UserCheck className="w-7 h-7 text-sky-600" />,
       tag: language === 'en' ? 'Community Consensus' : 'নাগরিক ঐক্যমত',
-      accent: 'border-emerald-200 bg-emerald-50/50',
+      accent: 'border-sky-200 bg-sky-50/50',
     },
     {
       number: '05',
       title: t.howItWorks.step5Title,
       desc: t.howItWorks.step5Desc,
-      icon: <CheckCircle2 className="w-7 h-7 text-safety" />,
+      icon: <CheckCircle2 className="w-7 h-7 text-civic-blue" />,
       tag: language === 'en' ? 'Before & After' : 'আগে ও পরে প্রমাণ',
-      accent: 'border-safety/30 bg-safety/5',
+      accent: 'border-blue-200 bg-blue-50/50',
     },
   ];
 
@@ -64,7 +64,7 @@ export default function HowItWorks() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-navy/5 border border-navy/10 text-xs font-bold text-navy uppercase tracking-wider">
-            <ShieldCheck className="w-4 h-4 text-safety" />
+            <ShieldCheck className="w-4 h-4 text-civic-blue" />
             <span>{language === 'en' ? 'Transparent Civic Workflow' : 'স্বচ্ছ নাগরিক প্রক্রিয়া'}</span>
           </div>
 
@@ -85,11 +85,11 @@ export default function HowItWorks() {
               <span className="text-slate-400">→</span>
               <span className="text-amber-600">Location</span>
               <span className="text-slate-400">→</span>
-              <span className="text-emerald-600">Verification</span>
+              <span className="text-sky-600">Verification</span>
               <span className="text-slate-400">→</span>
               <span className="text-blue-600">Action</span>
               <span className="text-slate-400">→</span>
-              <span className="text-safety font-black">Resolution</span>
+              <span className="text-civic-blue font-black">Resolution</span>
             </div>
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function HowItWorks() {
                 {idx < 4 ? (
                   <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-1 transition-transform" />
                 ) : (
-                  <span className="text-safety font-extrabold">Done ✓</span>
+                  <span className="text-civic-blue font-extrabold">Done ✓</span>
                 )}
               </div>
             </div>

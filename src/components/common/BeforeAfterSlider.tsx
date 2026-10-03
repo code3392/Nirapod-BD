@@ -89,7 +89,7 @@ export default function BeforeAfterSlider({
           style={{ left: `${sliderPosition}%` }}
         >
           {/* Circular Drag Handle */}
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white text-navy flex items-center justify-center shadow-lg border-2 border-safety pointer-events-auto cursor-grab active:cursor-grabbing hover:scale-110 transition-transform">
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white text-navy flex items-center justify-center shadow-lg border-2 border-civic-blue pointer-events-auto cursor-grab active:cursor-grabbing hover:scale-110 transition-transform">
             <MoveHorizontal className="w-5 h-5 text-navy" />
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function BeforeAfterSlider({
         </div>
 
         <div className="absolute top-4 right-4 z-10">
-          <span className="px-3 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-safety/90 text-white backdrop-blur-md shadow-md border border-white/20">
+          <span className="px-3 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-civic-blue/90 text-white backdrop-blur-md shadow-md border border-white/20">
             {defaultAfter}
           </span>
         </div>
@@ -120,11 +120,11 @@ export default function BeforeAfterSlider({
       {communityConfirmed && (
         <div className="p-4 bg-navy-dark text-white border-t border-navy-subtle flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm font-bold text-white">
-            <CheckCircle2 className="w-5 h-5 text-safety shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-civic-blue shrink-0" />
             <span>{t.detail.confirmedResolution}</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-safety" />
+            <span className="w-2 h-2 rounded-full bg-civic-blue" />
             <span>
               {language === 'en'
                 ? `Verified by ${confirmedCount} citizens on-site`

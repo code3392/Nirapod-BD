@@ -61,10 +61,10 @@ export default function LiveStatistics() {
     {
       label: t.stats.resolvedLabel,
       value: counts.resolved.toLocaleString(),
-      icon: <CheckCircle2 className="w-6 h-6 text-safety" />,
-      bg: 'bg-emerald-50/80',
-      border: 'border-emerald-100',
-      accent: 'text-safety',
+      icon: <CheckCircle2 className="w-6 h-6 text-civic-blue" />,
+      bg: 'bg-sky-50/80',
+      border: 'border-sky-100',
+      accent: 'text-civic-blue',
       badge: language === 'en' ? '71.8% Resolved' : '৭১.৮% সমাধান',
     },
     {
@@ -120,7 +120,7 @@ export default function LiveStatistics() {
               {/* Decorative Subtle Accent Line */}
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-muted font-medium">
                 <span>Verified in Dhaka</span>
-                <span className="text-safety font-bold">● Active 24/7</span>
+                <span className="text-civic-blue font-bold">● Active 24/7</span>
               </div>
             </div>
           ))}

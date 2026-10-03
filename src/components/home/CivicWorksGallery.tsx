@@ -93,7 +93,7 @@ export default function CivicWorksGallery() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-civic-blue shadow-subtle">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <CheckCircle2 className="w-4 h-4 text-civic-blue" />
             <span>{language === 'en' ? 'Verified Community Works & Resolutions' : 'বাস্তবায়িত নাগরিক কাজ ও সমাধান গ্যালারি'}</span>
           </div>
 
@@ -146,7 +146,7 @@ export default function CivicWorksGallery() {
                       onClick={() => setActiveTab(prev => ({ ...prev, [work.id]: 'after' }))}
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                         currentView === 'after'
-                          ? 'bg-emerald-600 text-white shadow-sm'
+                          ? 'bg-civic-blue text-white shadow-sm'
                           : 'text-slate-300 hover:text-white'
                       }`}
                     >
@@ -156,7 +156,7 @@ export default function CivicWorksGallery() {
 
                   {/* Status Tag */}
                   <div className="absolute top-3 right-3">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/90 backdrop-blur-md text-white border border-white/20 flex items-center gap-1">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-civic-blue/90 backdrop-blur-md text-white border border-white/20 flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" />
                       100% Resolved
                     </span>
@@ -170,7 +170,7 @@ export default function CivicWorksGallery() {
                     </div>
                     <div className="flex items-center justify-between text-[11px] text-slate-300">
                       <span>{work.resolvedDate}</span>
-                      <span className="font-semibold text-emerald-400">
+                      <span className="font-semibold text-blue-300">
                         {work.confirmations} neighbors verified
                       </span>
                     </div>

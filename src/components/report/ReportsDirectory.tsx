@@ -69,7 +69,7 @@ export default function ReportsDirectory() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <span className="text-xs uppercase font-extrabold text-safety tracking-wider">
+          <span className="text-xs uppercase font-extrabold text-civic-blue tracking-wider">
             Public Registry
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-navy tracking-tight mt-1">
@@ -223,7 +223,7 @@ export default function ReportsDirectory() {
               setSelectedArea('all');
               setSearch('');
             }}
-            className="text-safety hover:underline"
+            className="text-civic-blue hover:underline"
           >
             Reset Filters
           </button>
@@ -275,7 +275,7 @@ export default function ReportsDirectory() {
                     {report.categoryId.replace('_', ' ')} • {report.area}
                   </span>
 
-                  <h3 className="text-base font-extrabold text-navy leading-snug group-hover:text-safety transition-colors line-clamp-2">
+                  <h3 className="text-base font-extrabold text-navy leading-snug group-hover:text-civic-blue transition-colors line-clamp-2">
                     {report.title}
                   </h3>
 
@@ -290,7 +290,7 @@ export default function ReportsDirectory() {
               <div className="p-5 pt-0">
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
                   <span className="flex items-center gap-1.5 font-bold text-navy">
-                    <Users className="w-3.5 h-3.5 text-safety" />
+                    <Users className="w-3.5 h-3.5 text-civic-blue" />
                     {report.confirmationsCount} verified
                   </span>
                   <span className="text-[11px] text-muted">

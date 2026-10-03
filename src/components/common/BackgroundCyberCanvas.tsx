@@ -39,7 +39,7 @@ export default function BackgroundCyberCanvas() {
       'rgba(37, 99, 235, ',    // Royal Civic Blue
       'rgba(2, 132, 199, ',    // Sky Blue
       'rgba(59, 130, 246, ',   // Electric Blue
-      'rgba(16, 185, 129, ',   // Safety Green Accent
+      'rgba(14, 165, 233, ',   // Electric Sky Blue Accent
     ];
 
     const particleCount = Math.min(38, Math.floor(width / 35));

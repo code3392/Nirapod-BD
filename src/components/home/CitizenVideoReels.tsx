@@ -14,7 +14,10 @@ import {
   AlertTriangle,
   ChevronRight,
   ShieldCheck,
-  X
+  X,
+  Volume2,
+  Sparkles,
+  Maximize2
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import Link from 'next/link';
@@ -33,7 +36,7 @@ interface IncidentReel {
   views: number;
   confirmations: number;
   videoPoster: string;
-  videoUrl?: string;
+  videoUrl: string;
   descriptionEn: string;
   descriptionBn: string;
   isVerified: boolean;
@@ -44,7 +47,6 @@ export default function CitizenVideoReels() {
   const { language } = useApp();
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedReel, setSelectedReel] = useState<IncidentReel | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [confirmedReels, setConfirmedReels] = useState<Record<string, boolean>>({});
 
   const reels: IncidentReel[] = [
@@ -62,10 +64,11 @@ export default function CitizenVideoReels() {
       views: 1420,
       confirmations: 64,
       videoPoster: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80',
+      videoUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Driving_under_rain_-_Doha%2C_Qatar.webm',
       descriptionEn: 'Live citizen video showing stagnant rainwater blocking the north bus bay and passenger metro stairs. Rickshaws struggling to cross.',
       descriptionBn: 'মিরপুর ১০ মেট্রো স্টেশনের উত্তর বাস বে-তে হাঁটু সমান পানি। ড্রেনেজ ব্লক থাকায় যানবাহন চলাচলে তীব্র বিঘ্ন।',
       isVerified: true,
-      reporterName: 'Rahim Ahmed',
+      reporterName: 'Citizen Guardian',
     },
     {
       id: 'reel-2',
@@ -81,10 +84,11 @@ export default function CitizenVideoReels() {
       views: 2890,
       confirmations: 92,
       videoPoster: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
+      videoUrl: '/videos/hero-traffic.webm',
       descriptionEn: 'Pedestrians alarmed as storm wind severed high voltage line. DESCO emergency line notified, police barrier requested.',
       descriptionBn: 'ঝড়ে ছিঁড়ে ফুটপাতে ঝুলছে উচ্চক্ষমতার তার। পথচারীদের ওই রাস্তা এড়িয়ে চলার অনুরোধ।',
       isVerified: true,
-      reporterName: 'Tanvir Ahmed',
+      reporterName: 'Community Sentinel',
     },
     {
       id: 'reel-3',
@@ -100,10 +104,11 @@ export default function CitizenVideoReels() {
       views: 1840,
       confirmations: 43,
       videoPoster: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      videoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Cars_Passing_by_at_Night.webm',
       descriptionEn: 'Underground conduit rupture caused sudden sinkhole in the middle lane. Temporary warning red cloth placed by volunteers.',
       descriptionBn: 'মাঝের লেনে হঠাৎ মাটি ধসে বড় গর্ত তৈরি হয়েছে। রিকশা ও বাইক চালকদের সাবধানে চলার আহ্বান।',
       isVerified: true,
-      reporterName: 'Farhana Yasmin',
+      reporterName: 'Local Commuter',
     },
     {
       id: 'reel-4',
@@ -119,10 +124,11 @@ export default function CitizenVideoReels() {
       views: 980,
       confirmations: 31,
       videoPoster: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=800&q=80',
+      videoUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Driving_under_rain_-_Doha%2C_Qatar.webm',
       descriptionEn: 'Plastic sack blockages preventing rainwater discharge. Community waste committee cleaning in progress.',
       descriptionBn: 'ড্রেনের মুখে ভারী পলিথিনের বাধা। স্বেচ্ছাসেবকরা প্রাথমিক পরিষ্কারের কাজ শুরু করেছেন।',
       isVerified: true,
-      reporterName: 'Mahbubur Rahman',
+      reporterName: 'Civic Monitor',
     },
   ];
 
@@ -194,37 +200,34 @@ export default function CitizenVideoReels() {
             return (
               <div
                 key={reel.id}
-                className="group bg-white rounded-3xl border border-slate-200 hover:border-civic-blue/60 shadow-subtle hover:shadow-card transition-all duration-300 flex flex-col overflow-hidden"
+                className="group bg-white rounded-3xl border border-slate-200 hover:border-civic-blue/60 shadow-subtle hover:shadow-card transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col overflow-hidden"
               >
                 {/* Video Card Thumbnail */}
                 <div 
-                  onClick={() => {
-                    setSelectedReel(reel);
-                    setIsPlaying(true);
-                  }}
-                  className="relative h-56 bg-slate-900 cursor-pointer overflow-hidden"
+                  onClick={() => setSelectedReel(reel)}
+                  className="relative h-56 bg-slate-900 cursor-pointer overflow-hidden group/thumb"
                 >
                   <img
                     src={reel.videoPoster}
                     alt={reel.titleEn}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                    className="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-700 opacity-90 group-hover/thumb:opacity-100"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent" />
 
                   {/* Top Badges */}
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 flex items-center gap-1">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emergency animate-pulse" />
                       LIVE REEL
                     </span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-slate-200">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-slate-200">
                       {reel.duration}
                     </span>
                   </div>
 
                   {/* Center Play Button Overlay */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-13 h-13 rounded-2xl bg-white/90 backdrop-blur-md text-civic-blue shadow-lg flex items-center justify-center group-hover:scale-110 group-hover:bg-civic-blue group-hover:text-white transition-all duration-300">
+                    <div className="w-14 h-14 rounded-2xl bg-white/90 backdrop-blur-md text-civic-blue shadow-xl flex items-center justify-center group-hover/thumb:scale-115 group-hover/thumb:bg-civic-blue group-hover/thumb:text-white transition-all duration-300">
                       <Play className="w-6 h-6 fill-current ml-0.5" />
                     </div>
                   </div>
@@ -275,7 +278,7 @@ export default function CitizenVideoReels() {
                       onClick={() => handleConfirm(reel.id)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
                         isConfirmed
-                          ? 'bg-blue-50 text-civic-blue border border-blue-200'
+                          ? 'bg-blue-50 text-civic-blue border border-blue-200 shadow-2xs'
                           : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                       }`}
                     >
@@ -284,14 +287,11 @@ export default function CitizenVideoReels() {
                     </button>
 
                     <button
-                      onClick={() => {
-                        setSelectedReel(reel);
-                        setIsPlaying(true);
-                      }}
-                      className="text-xs font-bold text-civic-blue hover:text-civic-royal inline-flex items-center gap-1"
+                      onClick={() => setSelectedReel(reel)}
+                      className="text-xs font-bold text-civic-blue hover:text-civic-royal inline-flex items-center gap-1 group/btn"
                     >
-                      <span>{language === 'en' ? 'Watch Full' : 'ভিডিও দেখুন'}</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
+                      <span>{language === 'en' ? 'Watch Full Reel' : 'ভিডিও দেখুন'}</span>
+                      <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
                     </button>
                   </div>
                 </div>
@@ -300,64 +300,69 @@ export default function CitizenVideoReels() {
           })}
         </div>
 
-        {/* Video Modal Player (Citizen.com style) */}
+        {/* Video Modal Player (Real Playable Video Player) */}
         {selectedReel && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-navy-dark/80 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-blue-100 space-y-4 animate-in zoom-in-95 duration-200">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#06121E]/85 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-blue-100 space-y-0 animate-in zoom-in-95 duration-200">
+              
               {/* Modal Video Header */}
               <div className="p-4 bg-navy text-white flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-emergency animate-ping" />
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
-                    {selectedReel.area} Incident Reel • {selectedReel.timestamp}
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-200">
+                    {selectedReel.area} Live Incident Reel • {selectedReel.timestamp}
                   </span>
                 </div>
                 <button
                   onClick={() => setSelectedReel(null)}
-                  className="p-1 rounded-lg text-slate-300 hover:text-white hover:bg-white/10"
+                  className="p-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Video Player Box */}
+              {/* Working HTML5 Video Player Container */}
               <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
-                <img
-                  src={selectedReel.videoPoster}
-                  alt={selectedReel.titleEn}
+                <video
+                  key={selectedReel.videoUrl}
+                  src={selectedReel.videoUrl}
+                  poster={selectedReel.videoPoster}
+                  controls
+                  autoPlay
+                  loop
+                  playsInline
                   className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white space-y-3">
-                  <div 
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    className="w-16 h-16 rounded-3xl bg-civic-blue/90 hover:bg-civic-blue text-white flex items-center justify-center cursor-pointer shadow-lg transform hover:scale-105 transition"
-                  >
-                    {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 fill-white ml-1" />}
-                  </div>
-                  <p className="text-xs font-bold text-slate-200">
-                    {isPlaying ? 'Playing High-Res Civic Stream' : 'Click to Play Authenticated Footage'}
-                  </p>
+                >
+                  <source src={selectedReel.videoUrl} type="video/webm" />
+                  <source src="/videos/hero-traffic.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+
+                {/* Camera HUD Overlays */}
+                <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] text-white font-mono flex items-center gap-1.5 pointer-events-none">
+                  <span className="w-2 h-2 rounded-full bg-emergency animate-pulse" />
+                  <span>REC 1080p 60FPS</span>
                 </div>
 
-                <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-xl text-xs text-white font-mono flex items-center gap-2">
+                <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-xl text-xs text-white font-mono flex items-center gap-2 pointer-events-none">
                   <span className="w-2 h-2 rounded-full bg-sky-400" />
-                  <span>GPS Coordinate Verified • Dhaka</span>
+                  <span>GPS Coordinate Verified • {selectedReel.area}, Dhaka</span>
                 </div>
               </div>
 
               {/* Modal Body */}
               <div className="p-5 space-y-4">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 text-civic-blue border border-blue-200">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-civic-blue border border-blue-200">
                       {selectedReel.categoryLabelEn}
                     </span>
                     <span className="text-xs text-slate-400">
-                      Reported by {selectedReel.reporterName}
+                      Uploaded by {selectedReel.reporterName}
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-black text-navy">
+                  <h3 className="text-lg font-black text-navy leading-snug">
                     {language === 'en' ? selectedReel.titleEn : selectedReel.titleBn}
                   </h3>
 
@@ -367,8 +372,8 @@ export default function CitizenVideoReels() {
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-blue-50/60 border border-blue-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-civic-blue" />
+                  <div className="flex items-center gap-2.5">
+                    <MapPin className="w-4 h-4 text-civic-blue shrink-0" />
                     <div>
                       <p className="text-xs font-bold text-navy">{selectedReel.specificLocation}</p>
                       <p className="text-[11px] text-slate-500">{selectedReel.area}, Dhaka, Bangladesh</p>
@@ -377,7 +382,7 @@ export default function CitizenVideoReels() {
                   <Link
                     href="/map"
                     onClick={() => setSelectedReel(null)}
-                    className="px-3 py-1.5 rounded-xl bg-white border border-blue-200 text-civic-blue text-xs font-bold hover:bg-blue-50 transition"
+                    className="px-3.5 py-1.5 rounded-xl bg-white border border-blue-200 text-civic-blue text-xs font-bold hover:bg-blue-50 transition shadow-2xs"
                   >
                     View on Map
                   </Link>
@@ -386,9 +391,9 @@ export default function CitizenVideoReels() {
                 <div className="flex items-center justify-between pt-2">
                   <button
                     onClick={() => handleConfirm(selectedReel.id)}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
                       confirmedReels[selectedReel.id]
-                        ? 'bg-civic-blue text-white shadow-sm'
+                        ? 'bg-civic-blue text-white shadow-md shadow-blue-500/20'
                         : 'bg-navy hover:bg-navy-light text-white'
                     }`}
                   >
@@ -406,7 +411,7 @@ export default function CitizenVideoReels() {
                         }).catch(() => {});
                       }
                     }}
-                    className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition"
+                    className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition"
                   >
                     <Share2 className="w-3.5 h-3.5" />
                     <span>Share Reel</span>

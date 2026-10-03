@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { FileText, CheckCircle2, Users, AlertCircle, Info } from 'lucide-react';
+import { FileText, CheckCircle2, Users, AlertCircle, Info, Sparkles, Activity } from 'lucide-react';
 
 export default function LiveStatistics() {
   const { language, t } = useApp();
@@ -54,55 +54,60 @@ export default function LiveStatistics() {
       value: counts.reports.toLocaleString(),
       icon: <FileText className="w-6 h-6 text-navy" />,
       bg: 'bg-blue-50/80',
-      border: 'border-blue-100',
+      border: 'border-blue-100 hover:border-blue-300',
       accent: 'text-navy',
       badge: language === 'en' ? 'Submissions' : 'মোট অভিযোগ',
+      glow: 'group-hover:shadow-[0_0_25px_rgba(10,37,64,0.12)]',
     },
     {
       label: t.stats.resolvedLabel,
       value: counts.resolved.toLocaleString(),
       icon: <CheckCircle2 className="w-6 h-6 text-civic-blue" />,
       bg: 'bg-sky-50/80',
-      border: 'border-sky-100',
+      border: 'border-sky-100 hover:border-sky-300',
       accent: 'text-civic-blue',
       badge: language === 'en' ? '71.8% Resolved' : '৭১.৮% সমাধান',
+      glow: 'group-hover:shadow-[0_0_25px_rgba(37,99,235,0.18)]',
     },
     {
       label: t.stats.membersLabel,
       value: counts.members.toLocaleString(),
-      icon: <Users className="w-6 h-6 text-indigo-600" />,
-      bg: 'bg-indigo-50/80',
-      border: 'border-indigo-100',
-      accent: 'text-indigo-600',
+      icon: <Users className="w-6 h-6 text-blue-700" />,
+      bg: 'bg-blue-50/80',
+      border: 'border-blue-100 hover:border-blue-300',
+      accent: 'text-blue-700',
       badge: language === 'en' ? 'Civic Guardians' : 'সচেতন প্রহরী',
+      glow: 'group-hover:shadow-[0_0_25px_rgba(29,78,216,0.15)]',
     },
     {
       label: t.stats.activeReportsLabel,
       value: counts.active.toLocaleString(),
       icon: <AlertCircle className="w-6 h-6 text-amber-500" />,
       bg: 'bg-amber-50/80',
-      border: 'border-amber-100',
+      border: 'border-amber-100 hover:border-amber-300',
       accent: 'text-amber-600',
       badge: language === 'en' ? 'Under Action' : 'তদন্তাধীন',
+      glow: 'group-hover:shadow-[0_0_25px_rgba(245,158,11,0.18)]',
     },
   ];
 
   return (
-    <section className="py-12 bg-surface relative -mt-8 z-20">
+    <section className="py-12 bg-surface relative -mt-8 z-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Statistics Cards Grid */}
+        
+        {/* Statistics Cards Grid with Elevated 3D Tilt and Glowing Borders */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {statsCards.map((card, idx) => (
             <div
               key={idx}
-              className={`p-6 rounded-3xl bg-white border ${card.border} shadow-subtle hover:shadow-card transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden group`}
+              className={`p-6 rounded-3xl bg-white border ${card.border} shadow-subtle hover:shadow-elevated ${card.glow} transition-all duration-300 transform hover:-translate-y-2 relative overflow-hidden group`}
             >
               {/* Top Row: Icon + Badge */}
               <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 rounded-2xl ${card.bg} flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform`}>
+                <div className={`w-12 h-12 rounded-2xl ${card.bg} flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform`}>
                   {card.icon}
                 </div>
-                <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 group-hover:bg-blue-50 group-hover:text-civic-blue transition-colors">
                   {card.badge}
                 </span>
               </div>
@@ -120,19 +125,31 @@ export default function LiveStatistics() {
               {/* Decorative Subtle Accent Line */}
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-muted font-medium">
                 <span>Verified in Dhaka</span>
-                <span className="text-civic-blue font-bold">● Active 24/7</span>
+                <span className="text-civic-blue font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-civic-blue animate-ping" />
+                  Active 24/7
+                </span>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Demo Disclaimer notice */}
-        <div className="mt-4 text-center">
-          <p className="inline-flex items-center gap-1.5 text-xs text-muted font-medium bg-slate-100/80 px-3.5 py-1 rounded-full border border-slate-200">
-            <Info className="w-3.5 h-3.5 text-muted shrink-0" />
+        {/* Live Network Pulse Bar */}
+        <div className="mt-6 p-3 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-slate-600">
+            <Activity className="w-4 h-4 text-civic-blue animate-pulse" />
+            <span className="font-bold text-navy">Live Mesh Ticker:</span>
+            <span className="text-slate-500">
+              Mirpur Sec-10 road verification updated 4m ago • DESCO cable repair logged in Uttara
+            </span>
+          </div>
+
+          <p className="inline-flex items-center gap-1.5 text-[11px] text-muted font-medium bg-slate-50 px-3 py-1 rounded-full border border-slate-200 shrink-0">
+            <Info className="w-3 h-3 text-muted shrink-0" />
             <span>{t.stats.sampleNotice}</span>
           </p>
         </div>
+
       </div>
     </section>
   );

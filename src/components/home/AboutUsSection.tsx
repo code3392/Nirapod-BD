@@ -11,54 +11,65 @@ import {
   Building2, 
   Award,
   Globe2,
-  Users2
+  Users2,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AboutUsSection() {
   const { language } = useApp();
 
-  const teamMembers = [
+  const civicActionPillars = [
     {
-      name: 'Samiul Haque',
-      role: 'Platform Founder & Lead Civic Architect',
-      email: 'smdsami59@gmail.com',
-      image: 'https://api.dicebear.com/7.x/initials/svg?seed=Samiul+Haque&backgroundColor=0A2540&textColor=ffffff',
-      badge: 'Super Admin',
+      titleEn: 'Youth & Student Civic Volunteers',
+      titleBn: 'তরুণ ও শিক্ষার্থী স্বেচ্ছাসেবক নেটওয়ার্ক',
+      roleEn: 'Field Incident Verification & Rapid Alerting',
+      roleBn: 'মাঠপর্যায়ে দ্রুত তথ্য সংগ্রহ ও প্রাথমিক সতর্কতা',
+      image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80',
+      tag: 'Field Volunteers',
+      metric: '1,200+ Active',
     },
     {
-      name: 'Rahim Ahmed',
-      role: 'Community Guardian & Field Dispatch Lead',
-      email: 'rahim.ahmed@nirapodbd.gov.bd',
-      image: 'https://api.dicebear.com/7.x/initials/svg?seed=Rahim+Ahmed&backgroundColor=0A2540&textColor=ffffff',
-      badge: 'Tier 3 Guardian',
+      titleEn: 'Emergency & First Aid Liaison',
+      titleBn: 'জরুরি সেবা ও প্রাথমিক চিকিৎসা সমন্বয়',
+      roleEn: 'Fast-Track Protocol with 999 & Ambulance Network',
+      roleBn: 'জাতীয় ৯৯৯ ও অ্যাম্বুলেন্স নেটওয়ার্কের সাথে দ্রুত যোগাযোগ',
+      image: 'https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?auto=format&fit=crop&w=600&q=80',
+      tag: 'Emergency Protocol',
+      metric: '24/7 Standby',
     },
     {
-      name: 'Farhana Yasmin',
-      role: 'Civil Society Liaison & Environmental Safety',
-      email: 'farhana.yasmin@dhanmondi.org',
-      image: 'https://api.dicebear.com/7.x/initials/svg?seed=Farhana+Yasmin&backgroundColor=1E3A8A&textColor=ffffff',
-      badge: 'Ward Admin',
+      titleEn: 'Municipal Technical Support Desk',
+      titleBn: 'পৌর প্রযুক্তিগত সহায়তা ডেস্ক',
+      roleEn: 'Direct Coordination with City Corporations & DESCO',
+      roleBn: 'সিটি কর্পোরেশন, ডেসকো ও ওয়াসার সাথে সমন্বয়',
+      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80',
+      tag: 'Public Liaison',
+      metric: 'Zone 1-10 Dhaka',
     },
     {
-      name: 'Kazi Zubair Hossain',
-      role: 'Red Crescent Volunteer Lead & Rapid Response',
-      email: 'kazi.zubair@redcrescent.org.bd',
-      image: 'https://api.dicebear.com/7.x/initials/svg?seed=Kazi+Zubair&backgroundColor=0A2540&textColor=ffffff',
-      badge: 'First Aid Volunteer',
+      titleEn: 'Neighborhood Safety Circles',
+      titleBn: 'ওয়ার্ডভিত্তিক নিরাপত্তা সার্কেল',
+      roleEn: 'Community-led Problem Resolution & Accountability',
+      roleBn: 'এলাকাভিত্তিক নাগরিক জবাবদিহিতা ও টেকসই সমাধান',
+      image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=600&q=80',
+      tag: 'Local Guardianship',
+      metric: '54 Wards Covered',
     },
   ];
 
   return (
-    <section id="about-us" className="py-24 bg-slate-900 text-white relative overflow-hidden border-t border-slate-800">
+    <section id="about-us" className="py-24 bg-[#071320] text-white relative overflow-hidden border-t border-slate-800">
       {/* Background Subtle Tech Matrix & Glowing Orbs */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-civic-blue/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-emergency/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-civic-blue/15 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/15 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-blue-300 uppercase tracking-wider backdrop-blur-md">
-            <ShieldCheck className="w-4 h-4 text-blue-300" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-sky-300 uppercase tracking-wider backdrop-blur-md">
+            <ShieldCheck className="w-4 h-4 text-sky-400" />
             <span>About Nirapod BD</span>
           </div>
 
@@ -76,7 +87,7 @@ export default function AboutUsSection() {
         {/* 3 Core Ethical Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-civic-blue/40 transition-all space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-civic-blue/20 text-blue-300 flex items-center justify-center font-bold">
+            <div className="w-12 h-12 rounded-2xl bg-civic-blue/20 text-sky-300 flex items-center justify-center font-bold">
               <Users2 className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-black text-white">Community-Powered</h3>
@@ -85,8 +96,8 @@ export default function AboutUsSection() {
             </p>
           </div>
 
-          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-indigo-400/40 transition-all space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
+          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-sky-400/40 transition-all space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
               <Globe2 className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-black text-white">AI-Assisted Triage</h3>
@@ -95,8 +106,8 @@ export default function AboutUsSection() {
             </p>
           </div>
 
-          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-amber-400/40 transition-all space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+          <div className="p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-blue-400/40 transition-all space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-300 flex items-center justify-center font-bold">
               <Eye className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-black text-white">Strict Accountability</h3>
@@ -106,35 +117,99 @@ export default function AboutUsSection() {
           </div>
         </div>
 
-        {/* Leadership & Civic Volunteers */}
+        {/* Real Civic Action & Volunteer Teams (High-Res Photographic Cards) */}
         <div className="space-y-6 pt-6">
           <div className="text-center space-y-1">
-            <h3 className="text-2xl font-black text-white">Leadership & Civic Volunteers</h3>
-            <p className="text-xs text-slate-400">Authentic citizens and coordinators driving local change</p>
+            <h3 className="text-2xl font-black text-white">
+              {language === 'en' ? 'Community In Action Across Bangladesh' : 'বাস্তব নাগরিক উদ্যোগ ও স্বেচ্ছাসেবক কার্যক্রম'}
+            </h3>
+            <p className="text-xs text-slate-400">
+              {language === 'en'
+                ? 'Authentic citizen patrols and youth volunteers making streets safe every day'
+                : 'প্রতিদিনের রাস্তাঘাট নিরাপদ করতে সক্রিয় নাগরিক ও তরুণ স্বেচ্ছাসেবকদের ভূমিকা'}
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {teamMembers.map((member, idx) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {civicActionPillars.map((item, idx) => (
               <div
                 key={idx}
-                className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md text-center space-y-3 hover:border-white/20 transition group"
+                className="bg-white/5 rounded-3xl border border-white/10 overflow-hidden hover:border-civic-blue/50 transition-all duration-300 transform hover:-translate-y-2 group shadow-xl flex flex-col justify-between"
               >
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-20 h-20 rounded-2xl object-cover mx-auto border-2 border-civic-blue group-hover:scale-105 transition-transform"
-                />
                 <div>
-                  <h4 className="font-extrabold text-sm text-white">{member.name}</h4>
-                  <p className="text-[11px] text-slate-300 mt-0.5">{member.role}</p>
-                  <span className="inline-block mt-2 text-[10px] font-mono font-bold text-blue-300 bg-civic-blue/10 px-2 py-0.5 rounded-full border border-civic-blue/20">
-                    {member.badge}
-                  </span>
+                  <div className="relative h-44 overflow-hidden bg-slate-800">
+                    <img
+                      src={item.image}
+                      alt={item.titleEn}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#071320] via-transparent to-transparent" />
+                    
+                    <div className="absolute top-3 left-3">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#071320]/80 backdrop-blur-md text-sky-300 border border-white/20">
+                        {item.tag}
+                      </span>
+                    </div>
+
+                    <div className="absolute bottom-2 right-3">
+                      <span className="text-[10px] font-mono font-bold text-white bg-civic-blue/80 px-2 py-0.5 rounded-md backdrop-blur-md">
+                        {item.metric}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-5 space-y-2">
+                    <h4 className="font-extrabold text-base text-white group-hover:text-sky-300 transition-colors">
+                      {language === 'en' ? item.titleEn : item.titleBn}
+                    </h4>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      {language === 'en' ? item.roleEn : item.roleBn}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-5 pt-0">
+                  <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>Verified Network</span>
+                    <CheckCircle2 className="w-4 h-4 text-civic-blue" />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Root Platform Authority Card */}
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-navy via-navy-light to-navy border border-white/15 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+          <div className="flex items-center gap-4 text-center md:text-left">
+            <div className="w-14 h-14 rounded-2xl bg-civic-blue/20 text-sky-400 border border-civic-blue/30 flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-civic-blue text-white">
+                  Super Admin Authority
+                </span>
+                <span className="text-xs font-mono text-slate-300">smdsami59@gmail.com</span>
+              </div>
+              <p className="text-sm font-bold text-white">
+                {language === 'en' ? 'Direct Platform Ownership & Moderation Protocol' : 'প্ল্যাটফর্ম সার্বিক তত্ত্বাবধান ও সমন্বয়'}
+              </p>
+              <p className="text-xs text-slate-400">
+                {language === 'en' ? 'Independent Civic Non-Profit Technology Initiative for Bangladesh' : 'বাংলাদেশের জন্য একটি স্বাধীন অলাভজনক সামাজিক প্রযুক্তি উদ্যোগ'}
+              </p>
+            </div>
+          </div>
+
+          <Link
+            href="/community"
+            className="px-6 py-3 rounded-2xl bg-civic-blue hover:bg-civic-royal text-white font-extrabold text-xs transition transform hover:scale-105 shadow-glow shrink-0 flex items-center gap-2"
+          >
+            <span>{language === 'en' ? 'Join Community Hub' : 'কমিউনিটি হাবে যোগ দিন'}</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
       </div>
     </section>
   );

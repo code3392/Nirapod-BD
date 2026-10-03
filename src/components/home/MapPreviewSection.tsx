@@ -214,12 +214,28 @@ export default function MapPreviewSection() {
               );
             })}
 
-            {/* Floating Report Preview Card */}
+            {/* Floating Report Preview Card with Photographic Evidence */}
             {selectedReport && (
-              <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 bg-white rounded-3xl p-5 shadow-2xl border border-surface-border z-30 animate-in fade-in slide-in-from-bottom-3 duration-200">
+              <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 bg-white rounded-3xl p-5 shadow-2xl border border-surface-border z-30 animate-in fade-in slide-in-from-bottom-3 duration-300">
+                {/* Photo Thumbnail */}
+                {selectedReport.imageUrl && (
+                  <div className="relative h-32 w-full rounded-2xl overflow-hidden mb-3 bg-slate-900 border border-slate-100 group">
+                    <img 
+                      src={selectedReport.imageUrl} 
+                      alt={selectedReport.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold text-white flex items-center gap-1 border border-white/20">
+                      <Clock className="w-3 h-3 text-sky-400" />
+                      <span>{selectedReport.area} • Dhaka</span>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-black text-navy uppercase tracking-wider">
+                    <span className="text-xs font-black text-navy uppercase tracking-wider">
                       {selectedReport.categoryId.replace('_', ' ')}
                     </span>
                     <span className="text-xs text-muted font-mono font-bold">

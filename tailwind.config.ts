@@ -10,20 +10,28 @@ const config: Config = {
     extend: {
       colors: {
         navy: {
-          DEFAULT: '#0B1F33',
-          dark: '#061320',
-          light: '#142C44',
-          subtle: '#1C3D5A',
+          DEFAULT: '#0A2540',
+          dark: '#051322',
+          light: '#133966',
+          subtle: '#1E4976',
+        },
+        civic: {
+          blue: '#2563EB',
+          deep: '#0F2C59',
+          royal: '#1D4ED8',
+          sky: '#0284C7',
+          light: '#E0F2FE',
+          ice: '#F0F7FF',
         },
         safety: {
-          DEFAULT: '#18A558',
-          hover: '#138947',
-          light: '#E8F7EE',
+          DEFAULT: '#10B981',
+          hover: '#059669',
+          light: '#ECFDF5',
         },
         emergency: {
-          DEFAULT: '#E53935',
-          hover: '#C62828',
-          light: '#FDECEC',
+          DEFAULT: '#DC2626',
+          hover: '#B91C1C',
+          light: '#FEF2F2',
         },
         warning: {
           DEFAULT: '#F59E0B',
@@ -31,12 +39,14 @@ const config: Config = {
           light: '#FEF3C7',
         },
         surface: {
-          DEFAULT: '#F7F9FC',
+          DEFAULT: '#F8FAFC',
           card: '#FFFFFF',
           border: '#E2E8F0',
+          blueBorder: '#BFDBFE',
+          blueTint: '#F0F7FF',
         },
-        darktext: '#102A43',
-        muted: '#627D98',
+        darktext: '#0F172A',
+        muted: '#64748B',
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'var(--font-noto-bengali)', 'sans-serif'],

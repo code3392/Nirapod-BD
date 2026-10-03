@@ -26,8 +26,10 @@ import {
   LogIn,
   LogOut,
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  ChevronDown
 } from 'lucide-react';
+import EmergencyDirectoryModal from '@/components/common/EmergencyDirectoryModal';
 
 export default function Navbar() {
   const { 
@@ -45,29 +47,89 @@ export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
+  const [optionsDropdownOpen, setOptionsDropdownOpen] = useState(false);
+  const [hotlinesModalOpen, setHotlinesModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authEmailInput, setAuthEmailInput] = useState('');
   const notifRef = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
 
-  // Close notifications on outside click
+  // Close notifications and options on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
         setNotifDropdownOpen(false);
+      }
+      if (optionsRef.current && !optionsRef.current.contains(event.target as Node)) {
+        setOptionsDropdownOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const navLinks = [
+  const primaryLinks = [
     { href: '/', label: t.nav.home },
     { href: '/map', label: t.nav.safetyMap, badge: 'Live' },
     { href: '/reports', label: t.nav.reports },
-    { href: '/community', label: language === 'en' ? 'Community' : 'কমিউনিটি', badge: 'Areas' },
-    { href: '/lost-and-found', label: language === 'en' ? 'Lost & Found' : 'হারানো ও প্রাপ্তি' },
-    { href: '/messages', label: language === 'en' ? 'Messages' : 'বার্তা' },
-    { href: '/admin', label: t.nav.admin },
+  ];
+
+  const optionLinks = [
+    {
+      href: '/community',
+      label: language === 'en' ? 'Area Communities' : 'এলাকাভিত্তিক কমিউনিটি',
+      desc: language === 'en' ? 'Mirpur, Dhanmondi, Uttara neighborhood feeds' : 'মিরপুর, ধানমন্ডি, উত্তরা আলোচনা ও তথ্য',
+      icon: Users,
+      badge: 'Hubs',
+    },
+    {
+      href: '/lost-and-found',
+      label: language === 'en' ? 'Lost & Found' : 'হারানো ও প্রাপ্তি ডেস্ক',
+      desc: language === 'en' ? 'Search & trace lost Smart NID, documents, wallet' : 'স্মার্ট এনআইডি, কাগজপত্র ও হারানো জিনিস খুঁজুন',
+      icon: Search,
+    },
+    {
+      href: '/messages',
+      label: language === 'en' ? 'Citizen Messages' : 'নাগরিক বার্তা',
+      desc: language === 'en' ? 'Direct messages between verified neighbors' : 'বিশ্বস্ত প্রতিবেশীদের মধ্যে প্রত্যক্ষ বার্তা',
+      icon: MessageSquare,
+    },
+    {
+      href: '/safety-circles',
+      label: language === 'en' ? 'Personal Safety Circles' : 'ব্যক্তিগত নিরাপত্তা সার্কেল',
+      desc: language === 'en' ? 'Family emergency network with 1-tap SOS SMS/WhatsApp' : 'পরিবার ও বিশ্বস্তদের জরুরি এসওএস নেটওয়ার্ক',
+      icon: ShieldCheck,
+      badge: 'Life360',
+    },
+    {
+      href: '#hotlines',
+      label: language === 'en' ? 'Emergency Hotlines' : 'জরুরি হটলাইন ডিরেক্টরি',
+      desc: language === 'en' ? '999, 16263, 109, 333 & Thana Police numbers' : '৯৯৯, ১৬২৬৩, ১০৯, ৩৩৩ ও থানা পুলিশ নম্বর',
+      icon: PhoneCall,
+      isAction: true,
+      onClick: () => {
+        setOptionsDropdownOpen(false);
+        setHotlinesModalOpen(true);
+      },
+    },
+    {
+      href: '/organization',
+      label: language === 'en' ? 'Agency Portal' : 'সরকারি ও সেবা সংস্থা',
+      desc: language === 'en' ? 'DNCC, DSCC, WASA, DESCO resolution triage' : 'সিটি কর্পোরেশন, ওয়াসা ও ডেসকো ট্রায়াজ ডেস্ক',
+      icon: Building2,
+    },
+    {
+      href: '/admin',
+      label: t.nav.admin,
+      desc: language === 'en' ? 'Super Admin moderation & security logs' : 'সুপার অ্যাডমিন ও কনটেন্ট মডারেশন লগ',
+      icon: Sliders,
+    },
+    {
+      href: '/#about-us',
+      label: language === 'en' ? 'About Nirapod BD' : 'আমাদের সম্পর্কে',
+      desc: language === 'en' ? 'Civic mission, verified team, and principles' : 'নাগরিক উদ্দেশ্য, টিম ও নিরাপত্তা নীতিমালা',
+      icon: ShieldAlert,
+    },
   ];
 
   const getNotifIcon = (type: string) => {
@@ -144,7 +206,7 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-          {navLinks.map((link) => {
+          {primaryLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
@@ -165,6 +227,97 @@ export default function Navbar() {
               </Link>
             );
           })}
+
+          {/* Clean "Options" Dropdown Menu */}
+          <div className="relative" ref={optionsRef}>
+            <button
+              onClick={() => setOptionsDropdownOpen(!optionsDropdownOpen)}
+              className={`px-3 py-1.5 text-sm font-semibold rounded-lg transition-all flex items-center gap-1.5 border ${
+                optionsDropdownOpen 
+                  ? 'bg-blue-50 text-civic-blue border-blue-200 shadow-sm' 
+                  : 'text-darktext/80 hover:text-navy hover:bg-slate-50 border-transparent'
+              }`}
+              aria-label="Toggle options menu"
+            >
+              <span>{language === 'en' ? 'Options' : 'অপশন'}</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${optionsDropdownOpen ? 'rotate-180 text-civic-blue' : 'text-slate-400'}`} />
+            </button>
+
+            {optionsDropdownOpen && (
+              <div className="absolute left-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-elevated border border-blue-100 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-2 border-b border-slate-100 mb-1 flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">
+                    {language === 'en' ? 'Civic Tools & Portals' : 'নাগরিক সেবা ও অপশন'}
+                  </span>
+                  <span className="text-[10px] font-bold text-civic-blue bg-blue-50 px-2 py-0.5 rounded-full">
+                    {optionLinks.length} Services
+                  </span>
+                </div>
+
+                <div className="max-h-[380px] overflow-y-auto space-y-1">
+                  {optionLinks.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname === item.href;
+
+                    if (item.isAction) {
+                      return (
+                        <button
+                          key={item.label}
+                          onClick={item.onClick}
+                          className="w-full text-left p-2.5 rounded-xl hover:bg-red-50/60 border border-transparent hover:border-red-100 transition-colors flex items-center gap-3 group"
+                        >
+                          <div className="w-9 h-9 rounded-xl bg-red-100 text-emergency flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between">
+                              <h5 className="text-xs font-bold text-navy group-hover:text-emergency transition-colors">
+                                {item.label}
+                              </h5>
+                              <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white">
+                                24/7
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 truncate">{item.desc}</p>
+                          </div>
+                        </button>
+                      );
+                    }
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setOptionsDropdownOpen(false)}
+                        className={`p-2.5 rounded-xl transition-all flex items-center gap-3 border ${
+                          isActive
+                            ? 'bg-blue-50/80 border-blue-200 text-civic-blue'
+                            : 'hover:bg-slate-50 border-transparent'
+                        }`}
+                      >
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                          isActive ? 'bg-civic-blue text-white' : 'bg-slate-100 text-slate-700'
+                        }`}>
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between">
+                            <h5 className="text-xs font-bold text-navy truncate">{item.label}</h5>
+                            {item.badge && (
+                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-civic-blue">
+                                {item.badge}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-slate-500 truncate">{item.desc}</p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Actions (Language, Notifs, Profile, Report CTA) */}
@@ -353,7 +506,7 @@ export default function Navbar() {
           </div>
 
           <div className="space-y-1">
-            {navLinks.map((link) => (
+            {primaryLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -372,6 +525,55 @@ export default function Navbar() {
                 )}
               </Link>
             ))}
+
+            {/* Mobile Options & Services Section */}
+            <div className="pt-2 border-t border-slate-100 space-y-1">
+              <span className="px-3 text-[10px] font-black uppercase text-slate-400 tracking-wider block mb-1">
+                {language === 'en' ? 'Options & Services' : 'অপশন ও নাগরিক সেবা'}
+              </span>
+              {optionLinks.map((item) => {
+                const Icon = item.icon;
+                if (item.isAction) {
+                  return (
+                    <button
+                      key={item.label}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        item.onClick();
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold text-emergency hover:bg-red-50 transition"
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <Icon className="w-4 h-4 text-emergency" />
+                        <span>{item.label}</span>
+                      </span>
+                      <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white">
+                        24/7
+                      </span>
+                    </button>
+                  );
+                }
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Icon className="w-4 h-4 text-slate-500" />
+                      <span>{item.label}</span>
+                    </span>
+                    {item.badge && (
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-civic-blue">
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+
             <Link
               href="/profile"
               onClick={() => setMobileMenuOpen(false)}
@@ -550,6 +752,12 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Bangladesh Emergency & Hotlines Modal */}
+      <EmergencyDirectoryModal
+        isOpen={hotlinesModalOpen}
+        onClose={() => setHotlinesModalOpen(false)}
+      />
     </header>
   );
 }

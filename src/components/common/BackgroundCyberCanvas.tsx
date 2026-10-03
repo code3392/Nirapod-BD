@@ -36,10 +36,10 @@ export default function BackgroundCyberCanvas() {
     }
 
     const colors = [
-      'rgba(24, 165, 88, ',    // Safety Green
-      'rgba(14, 165, 233, ',   // Cyber Sky Blue
-      'rgba(245, 158, 11, ',   // Warning Amber
-      'rgba(16, 185, 129, ',   // Emerald
+      'rgba(37, 99, 235, ',    // Royal Civic Blue
+      'rgba(2, 132, 199, ',    // Sky Blue
+      'rgba(59, 130, 246, ',   // Electric Blue
+      'rgba(16, 185, 129, ',   // Safety Green Accent
     ];
 
     const particleCount = Math.min(38, Math.floor(width / 35));
@@ -70,7 +70,7 @@ export default function BackgroundCyberCanvas() {
           if (dist < 130) {
             const lineAlpha = (1 - dist / 130) * 0.12;
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(24, 165, 88, ${lineAlpha})`;
+            ctx.strokeStyle = `rgba(37, 99, 235, ${lineAlpha})`;
             ctx.lineWidth = 0.8;
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -94,7 +94,7 @@ export default function BackgroundCyberCanvas() {
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
         ctx.fillStyle = `${node.color}${node.alpha})`;
-        ctx.shadowColor = '#18A558';
+        ctx.shadowColor = '#2563EB';
         ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -113,17 +113,17 @@ export default function BackgroundCyberCanvas() {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
-      {/* Dynamic Animated Ambient Orbs */}
+      {/* Dynamic Animated Ambient Orbs in White & Blue */}
       <div 
-        className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl animate-pulse"
+        className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl animate-pulse"
         style={{ animationDuration: '8s' }}
       />
       <div 
-        className="absolute top-1/3 -right-32 w-[30rem] h-[30rem] rounded-full bg-sky-500/10 blur-3xl animate-pulse"
+        className="absolute top-1/3 -right-32 w-[30rem] h-[30rem] rounded-full bg-sky-400/10 blur-3xl animate-pulse"
         style={{ animationDuration: '12s' }}
       />
       <div 
-        className="absolute -bottom-32 left-1/4 w-[28rem] h-[28rem] rounded-full bg-amber-500/10 blur-3xl animate-pulse"
+        className="absolute -bottom-32 left-1/4 w-[28rem] h-[28rem] rounded-full bg-indigo-500/10 blur-3xl animate-pulse"
         style={{ animationDuration: '10s' }}
       />
       

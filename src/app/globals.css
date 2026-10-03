@@ -7,13 +7,13 @@
 
 @layer base {
   :root {
-    --background: 247 249 252;
-    --foreground: 16 42 67;
+    --background: 248 250 252;
+    --foreground: 15 23 42;
   }
 
   body {
-    color: #102A43;
-    background-color: #F7F9FC;
+    color: #0F172A;
+    background-color: #F8FAFC;
     font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

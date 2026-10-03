@@ -235,3 +235,145 @@ export function getNearbyHelpers(areaName: string): LocalHelper[] {
   const match = VERIFIED_LOCAL_HELPERS.filter((h) => h.area.toLowerCase() === areaName.toLowerCase());
   return match.length > 0 ? match : VERIFIED_LOCAL_HELPERS.slice(0, 2);
 }
+
+export interface ServiceProviderItem {
+  id: string;
+  nameEn: string;
+  nameBn: string;
+  number: string;
+  category: 'emergency' | 'utility' | 'health' | 'civic' | 'children_women';
+  badgeEn: string;
+  badgeBn: string;
+  descriptionEn: string;
+  descriptionBn: string;
+  available: string;
+  isTollFree?: boolean;
+}
+
+export const BANGLADESH_EMERGENCY_PROVIDERS: ServiceProviderItem[] = [
+  {
+    id: 'sp-999',
+    nameEn: 'National Emergency Service (999)',
+    nameBn: 'জাতীয় জরুরি সেবা (৯৯৯)',
+    number: '999',
+    category: 'emergency',
+    badgeEn: 'Toll-Free 24/7',
+    badgeBn: 'টোল-ফ্রি ২৪/৭',
+    descriptionEn: 'Immediate Police, Fire Brigade, and Government Ambulance dispatch across Bangladesh.',
+    descriptionBn: 'বাংলাদেশ পুলিশ, ফায়ার সার্ভিস এবং সরকারি অ্যাম্বুলেন্স জরুরি সহায়তা।',
+    available: '24/7/365',
+    isTollFree: true,
+  },
+  {
+    id: 'sp-16263',
+    nameEn: 'DGHS Health Window (Shastho Batayan)',
+    nameBn: 'স্বাস্থ্য বাতায়ন (১৬২৬৩)',
+    number: '16263',
+    category: 'health',
+    badgeEn: 'Govt Health Hotline',
+    badgeBn: 'সরকারি স্বাস্থ্য সেবা',
+    descriptionEn: 'Directorate General of Health Services 24/7 doctor consultations and ambulance coordination.',
+    descriptionBn: 'স্বাস্থ্য অধিদপ্তর কর্তৃক ২৪ ঘণ্টা বিনামূল্যে সরকারি চিকিৎসকের পরামর্শ ও অ্যাম্বুলেন্স সহায়তা।',
+    available: '24 Hours',
+    isTollFree: true,
+  },
+  {
+    id: 'sp-109',
+    nameEn: 'National Helpline for Violence Against Women & Children',
+    nameBn: 'নারী ও শিশু নির্যাতন প্রতিরোধ হেল্পলাইন (১০৯)',
+    number: '109',
+    category: 'children_women',
+    badgeEn: 'Toll-Free Support',
+    badgeBn: 'টোল-ফ্রি সহায়তা',
+    descriptionEn: 'Ministry of Women and Children Affairs rapid legal, medical, and security intervention.',
+    descriptionBn: 'মহিলা ও শিশু বিষয়ক মন্ত্রণালয় কর্তৃক জরুরি আইনি, চিকিৎসা ও নিরাপত্তা সহায়তা।',
+    available: '24/7',
+    isTollFree: true,
+  },
+  {
+    id: 'sp-333',
+    nameEn: 'Citizen Services & Govt Info (333)',
+    nameBn: 'জাতীয় তথ্য বাতায়ন ও নাগরিক সেবা (৩৩৩)',
+    number: '333',
+    category: 'civic',
+    badgeEn: 'Citizen Portal',
+    badgeBn: 'নাগরিক তথ্য',
+    descriptionEn: 'Government administrative procedures, social safety net inquiries, and district administration aid.',
+    descriptionBn: 'সরকারি সেবা, সামাজিক নিরাপত্তা ও জেলা প্রশাসনের যেকোনো তথ্য সেবা।',
+    available: '24 Hours',
+  },
+  {
+    id: 'sp-1098',
+    nameEn: 'Child Helpline Bangladesh',
+    nameBn: 'চাইল্ড হেল্পলাইন বাংলাদেশ (১০৯৮)',
+    number: '1098',
+    category: 'children_women',
+    badgeEn: 'Child Protection',
+    badgeBn: 'শিশু সুরক্ষা',
+    descriptionEn: 'Dedicated child rescue, emergency relief, and protection from abuse.',
+    descriptionBn: 'বিপদাপন্ন শিশুদের উদ্ধার ও তাৎক্ষণিক সহায়তা প্রদান।',
+    available: '24/7',
+    isTollFree: true,
+  },
+  {
+    id: 'sp-wasa',
+    nameEn: 'Dhaka WASA Hotline',
+    nameBn: 'ঢাকা ওয়াসা জরুরি হটলাইন (১৬১৬২)',
+    number: '16162',
+    category: 'utility',
+    badgeEn: 'Water & Drainage',
+    badgeBn: 'পানি ও পয়ঃনিষ্কাশন',
+    descriptionEn: 'Emergency water supply breakdown, sewer overflow, and urban drainage clearance.',
+    descriptionBn: 'পাইপলাইন লিকেজ, পয়ঃনিষ্কাশন সমস্যা ও জরুরি পানির গাড়ি সরবরাহ।',
+    available: '24 Hours',
+  },
+  {
+    id: 'sp-desco',
+    nameEn: 'DESCO Electricity Emergency',
+    nameBn: 'ডেসকো বিদ্যুৎ জরুরি কন্ট্রোল রুম (১৬১২০)',
+    number: '16120',
+    category: 'utility',
+    badgeEn: 'Power Grid North',
+    badgeBn: 'বিদ্যুৎ বিতরণ উত্তর',
+    descriptionEn: 'Dhaka North electrical faults, sparking transformers, dangling live wires, and outages.',
+    descriptionBn: 'মিরপুর, উত্তরা, গুলশান এলাকার জরুরি বিদ্যুৎ বিভ্রাট ও বিপদজনক তার মেরামত।',
+    available: '24/7',
+  },
+  {
+    id: 'sp-dpdc',
+    nameEn: 'DPDC Electricity Emergency',
+    nameBn: 'ডিপিডিসি বিদ্যুৎ জরুরি কন্ট্রোল রুম (১৬১১৬)',
+    number: '16116',
+    category: 'utility',
+    badgeEn: 'Power Grid South',
+    badgeBn: 'বিদ্যুৎ বিতরণ দক্ষিণ',
+    descriptionEn: 'Dhaka South and Central power faults, electrical safety hazards, and rapid line repair.',
+    descriptionBn: 'ধানমন্ডি, মতিঝিল, পুরান ঢাকা এলাকার বিদ্যুৎ বিপর্যয় ও জরুরি মেরামত।',
+    available: '24/7',
+  },
+  {
+    id: 'sp-titas',
+    nameEn: 'Titas Gas Emergency Control Room',
+    nameBn: 'তিতাস গ্যাস জরুরি গ্যাস লিকেজ হটলাইন (১৬৪৯৬)',
+    number: '16496',
+    category: 'utility',
+    badgeEn: 'Gas Leakage Hotline',
+    badgeBn: 'গ্যাস লিকেজ জরুরি',
+    descriptionEn: 'Emergency response for gas pipeline leaks, underground fire hazards, and riser bursts.',
+    descriptionBn: 'গ্যাস লিকেজ, গ্যাস অগ্নিকাণ্ড ও পাইপলাইন দুর্ঘটনা রোধে জরুরি তল্লাশি ও কাট-অফ।',
+    available: '24 Hours',
+  },
+  {
+    id: 'sp-fire',
+    nameEn: 'Fire Service & Civil Defence Central Control',
+    nameBn: 'ফায়ার সার্ভিস ও সিভিল ডিফেন্স কেন্দ্রীয় নিয়ন্ত্রণ কক্ষ',
+    number: '02-223355555',
+    category: 'emergency',
+    badgeEn: 'Central HQ Hotline',
+    badgeBn: 'সদর দপ্তর কন্ট্রোল রুম',
+    descriptionEn: 'Direct command hotline for multi-station building fire, chemical hazard, and structural collapse.',
+    descriptionBn: 'বহুতল ভবনে অগ্নিকাণ্ড, রাসায়নিক ঝুঁকি ও ভবন ধসে কেন্দ্রীয় ফায়ার রেসকিউ তল্লাশি।',
+    available: '24/7',
+  },
+];
+

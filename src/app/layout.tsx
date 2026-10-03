@@ -15,8 +15,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Nirapod BD — Community Safety & Civic Problem Reporting Platform for Bangladesh',
-  description: 'See a problem. Report it. Help your community solve it. Community-powered, AI-assisted safety and civic incident resolution across Bangladesh.',
+  metadataBase: new URL('https://nirapod-bd-seven.vercel.app'),
+  title: 'Nirapod BD — Community Safety & Emergency Reporting Platform for Bangladesh',
+  description: 'See a problem. Report it. Help your community solve it. Bangladesh community-powered civic safety, road hazard alerts, and emergency response network.',
   manifest: '/manifest.json',
   keywords: [
     'Nirapod BD',
@@ -26,8 +27,31 @@ export const metadata: Metadata = {
     'community problem reporting',
     'road hazard reporting',
     'waterlogging Dhaka',
+    'lost and found Dhaka',
   ],
   authors: [{ name: 'Nirapod BD Community' }],
+  openGraph: {
+    title: 'Nirapod BD — Bangladesh Community Safety & Emergency Network',
+    description: 'See a problem. Report it. Help your community solve it. Real-time civic hazard reports, emergency 999 integration, and neighborhood safety circles.',
+    url: 'https://nirapod-bd-seven.vercel.app',
+    siteName: 'Nirapod BD',
+    locale: 'en_BD',
+    type: 'website',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Nirapod BD — Bangladesh Community Safety & Emergency Reporting Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nirapod BD — Bangladesh Community Safety & Emergency Network',
+    description: 'See a problem. Report it. Help your community solve it.',
+    images: ['/opengraph-image'],
+  },
 };
 
 export default function RootLayout({

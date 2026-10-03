@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Play, 
   Pause, 
@@ -17,7 +17,8 @@ import {
   X,
   Volume2,
   Sparkles,
-  Maximize2
+  Maximize2,
+  ArrowLeft
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import Link from 'next/link';
@@ -48,6 +49,24 @@ export default function CitizenVideoReels() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedReel, setSelectedReel] = useState<IncidentReel | null>(null);
   const [confirmedReels, setConfirmedReels] = useState<Record<string, boolean>>({});
+
+  // Keyboard navigation & body overflow handling for modal
+  React.useEffect(() => {
+    if (!selectedReel) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedReel(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [selectedReel]);
 
   const reels: IncidentReel[] = [
     {
@@ -302,22 +321,38 @@ export default function CitizenVideoReels() {
 
         {/* Video Modal Player (Real Playable Video Player) */}
         {selectedReel && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#06121E]/85 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-blue-100 space-y-0 animate-in zoom-in-95 duration-200">
+          <div 
+            onClick={() => setSelectedReel(null)}
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md animate-in fade-in duration-200 cursor-pointer overflow-y-auto"
+          >
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-white/20 space-y-0 animate-in zoom-in-95 duration-200 my-auto cursor-default"
+            >
               
-              {/* Modal Video Header */}
+              {/* Modal Video Header with Big Back Button */}
               <div className="p-4 bg-navy text-white flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
+                <button
+                  onClick={() => setSelectedReel(null)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition border border-white/20 active:scale-95"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>{language === 'en' ? 'Back to Feed' : 'ফিডে ফিরে যান'}</span>
+                </button>
+
+                <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emergency animate-ping" />
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-200">
-                    {selectedReel.area} Live Incident Reel • {selectedReel.timestamp}
+                  <span className="text-xs font-mono font-bold text-slate-200">
+                    {selectedReel.area} • LIVE REEL
                   </span>
                 </div>
+
                 <button
                   onClick={() => setSelectedReel(null)}
                   className="p-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition"
+                  title="Close (Esc)"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
 
@@ -390,32 +425,41 @@ export default function CitizenVideoReels() {
 
                 <div className="flex items-center justify-between pt-2">
                   <button
-                    onClick={() => handleConfirm(selectedReel.id)}
-                    className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
-                      confirmedReels[selectedReel.id]
-                        ? 'bg-civic-blue text-white shadow-md shadow-blue-500/20'
-                        : 'bg-navy hover:bg-navy-light text-white'
-                    }`}
+                    onClick={() => setSelectedReel(null)}
+                    className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition active:scale-95"
                   >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>{confirmedReels[selectedReel.id] ? 'Confirmed by You' : 'I Can Confirm This Report'}</span>
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>{language === 'en' ? 'Close & Return' : 'বন্ধ করে ফিরে যান'}</span>
                   </button>
 
-                  <button
-                    onClick={() => {
-                      if (navigator.share) {
-                        navigator.share({
-                          title: selectedReel.titleEn,
-                          text: selectedReel.descriptionEn,
-                          url: window.location.href,
-                        }).catch(() => {});
-                      }
-                    }}
-                    className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition"
-                  >
-                    <Share2 className="w-3.5 h-3.5" />
-                    <span>Share Reel</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleConfirm(selectedReel.id)}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
+                        confirmedReels[selectedReel.id]
+                          ? 'bg-civic-blue text-white shadow-md shadow-blue-500/20'
+                          : 'bg-navy hover:bg-navy-light text-white'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>{confirmedReels[selectedReel.id] ? 'Confirmed by You' : 'I Can Confirm This Report'}</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        if (navigator.share) {
+                          navigator.share({
+                            title: selectedReel.titleEn,
+                            text: selectedReel.descriptionEn,
+                            url: window.location.href,
+                          }).catch(() => {});
+                        }
+                      }}
+                      className="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
 

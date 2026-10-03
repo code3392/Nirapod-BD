@@ -139,3 +139,27 @@
 .audio-bar-4 { animation: audioWave1 0.7s ease-in-out infinite 0.2s; }
 .audio-bar-5 { animation: audioWave2 0.85s ease-in-out infinite 0.1s; }
 
+/* findit.works Signature Continuous Kinetic Scroller */
+@keyframes photoScrollUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+@keyframes photoScrollDown {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0); }
+}
+
+.animate-scroll-up {
+  animation: photoScrollUp 20s linear infinite;
+}
+
+.animate-scroll-down {
+  animation: photoScrollDown 24s linear infinite;
+}
+
+.animate-scroll-up-fast {
+  animation: photoScrollUp 16s linear infinite;
+}
+
+

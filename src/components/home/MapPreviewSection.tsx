@@ -14,6 +14,7 @@ import {
   Layers, 
   ArrowRight,
   ShieldAlert,
+  ShieldCheck,
   CheckCircle2,
   AlertTriangle
 } from 'lucide-react';
@@ -213,6 +214,33 @@ export default function MapPreviewSection() {
                 </button>
               );
             })}
+
+            {/* Zero Fake Reports Active State */}
+            {filteredReports.length === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none z-20">
+                <div className="bg-[#071320]/95 backdrop-blur-xl border border-white/20 p-6 sm:p-8 rounded-3xl max-w-md text-center space-y-4 pointer-events-auto shadow-2xl">
+                  <div className="w-12 h-12 rounded-2xl bg-civic-blue/20 text-sky-400 mx-auto flex items-center justify-center border border-civic-blue/30 shadow-glow">
+                    <ShieldCheck className="w-6 h-6 animate-pulse" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-sky-400 bg-civic-blue/10 px-2.5 py-0.5 rounded-full border border-civic-blue/30 inline-block mb-1.5">
+                      Live Telemetry • 0 Active Threats
+                    </span>
+                    <h4 className="text-base font-black text-white">Dhaka Safety Mesh Active</h4>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      Zero unverified hazards currently logged. Real reports submitted by verified citizens will appear directly on this live map.
+                    </p>
+                  </div>
+                  <Link
+                    href="/report/new"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs transition shadow-emergency transform hover:scale-105 active:scale-95"
+                  >
+                    <span>🚨 Log First Community Hazard</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {/* Floating Report Preview Card with Photographic Evidence */}
             {selectedReport && (

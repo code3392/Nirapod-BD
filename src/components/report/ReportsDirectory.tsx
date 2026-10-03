@@ -18,6 +18,8 @@ import {
   CheckCircle2, 
   ExternalLink,
   ChevronRight,
+  ShieldCheck,
+  ArrowRight,
   X
 } from 'lucide-react';
 
@@ -230,8 +232,35 @@ export default function ReportsDirectory() {
         )}
       </div>
 
+      {/* Empty State */}
+      {sorted.length === 0 && (
+        <div className="p-12 sm:p-16 rounded-3xl bg-white border border-surface-border text-center space-y-4 max-w-xl mx-auto shadow-subtle">
+          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-civic-blue mx-auto flex items-center justify-center border border-blue-100 shadow-sm">
+            <ShieldCheck className="w-8 h-8" />
+          </div>
+          <div className="space-y-1.5">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-civic-blue bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+              Clean Neighborhood State
+            </span>
+            <h3 className="text-lg font-black text-navy">No Community Reports Logged</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+              There are currently zero active hazard reports in this area. You can submit the first real report with photos or video evidence!
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link
+              href="/report/new"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs shadow-emergency transition transform hover:scale-105 active:scale-95"
+            >
+              <span>🚨 Report a Problem</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* GRID VIEW */}
-      {viewMode === 'grid' && (
+      {viewMode === 'grid' && sorted.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sorted.map((report) => (
             <Link

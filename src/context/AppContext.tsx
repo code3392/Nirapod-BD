@@ -117,7 +117,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedLang && (savedLang === 'en' || savedLang === 'bn')) setLanguageState(savedLang);
 
         const savedReports = localStorage.getItem('nirapod_reports');
-        if (savedReports) setReports(JSON.parse(savedReports));
+        if (savedReports) {
+          try {
+            const parsed: Report[] = JSON.parse(savedReports);
+            const realReports = parsed.filter(r => !['rep-1', 'rep-2', 'rep-3', 'rep-4', 'rep-5', 'rep-6'].includes(r.id));
+            setReports(realReports);
+            localStorage.setItem('nirapod_reports', JSON.stringify(realReports));
+          } catch {
+            setReports([]);
+          }
+        }
 
         const savedUsers = localStorage.getItem('nirapod_users');
         if (savedUsers) setAllUsers(JSON.parse(savedUsers));
@@ -140,16 +149,52 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
 
         const savedNotifs = localStorage.getItem('nirapod_notifications');
-        if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
+        if (savedNotifs) {
+          try {
+            const parsed: NotificationItem[] = JSON.parse(savedNotifs);
+            const realNotifs = parsed.filter(n => !n.id.startsWith('notif-'));
+            setNotifications(realNotifs);
+            localStorage.setItem('nirapod_notifications', JSON.stringify(realNotifs));
+          } catch {
+            setNotifications([]);
+          }
+        }
 
         const savedMsgs = localStorage.getItem('nirapod_community_msgs');
-        if (savedMsgs) setCommunityMessages(JSON.parse(savedMsgs));
+        if (savedMsgs) {
+          try {
+            const parsed: CommunityMessage[] = JSON.parse(savedMsgs);
+            const realMsgs = parsed.filter(m => !m.id.startsWith('msg-'));
+            setCommunityMessages(realMsgs);
+            localStorage.setItem('nirapod_community_msgs', JSON.stringify(realMsgs));
+          } catch {
+            setCommunityMessages([]);
+          }
+        }
 
         const savedDms = localStorage.getItem('nirapod_direct_msgs');
-        if (savedDms) setDirectMessages(JSON.parse(savedDms));
+        if (savedDms) {
+          try {
+            const parsed: DirectMessage[] = JSON.parse(savedDms);
+            const realDms = parsed.filter(m => !m.id.startsWith('dm-'));
+            setDirectMessages(realDms);
+            localStorage.setItem('nirapod_direct_msgs', JSON.stringify(realDms));
+          } catch {
+            setDirectMessages([]);
+          }
+        }
 
         const savedLaf = localStorage.getItem('nirapod_lost_and_found');
-        if (savedLaf) setLostAndFoundItems(JSON.parse(savedLaf));
+        if (savedLaf) {
+          try {
+            const parsed: LostAndFoundItem[] = JSON.parse(savedLaf);
+            const realLaf = parsed.filter(l => !l.id.startsWith('laf-'));
+            setLostAndFoundItems(realLaf);
+            localStorage.setItem('nirapod_lost_and_found', JSON.stringify(realLaf));
+          } catch {
+            setLostAndFoundItems([]);
+          }
+        }
 
         const savedLogs = localStorage.getItem('nirapod_suspension_logs');
         if (savedLogs) setSuspensionLogs(JSON.parse(savedLogs));

@@ -58,7 +58,7 @@ export default function ReportForm() {
   // Form State
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('road_traffic');
   const [mediaType, setMediaType] = useState<'image' | 'video'>('image');
-  const [mediaUrl, setMediaUrl] = useState<string>('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80');
+  const [mediaUrl, setMediaUrl] = useState<string>('');
   const [isAiAnalyzing, setIsAiAnalyzing] = useState<boolean>(false);
   const [aiAnalysisComplete, setAiAnalysisComplete] = useState<boolean>(false);
   const [aiConfidence, setAiConfidence] = useState<number>(93);
@@ -90,7 +90,7 @@ export default function ReportForm() {
 
   // Rule 25: Proof of work submission modal state
   const [showWorkProofModal, setShowWorkProofModal] = useState<boolean>(false);
-  const [workProofUrl, setWorkProofUrl] = useState<string>('https://images.unsplash.com/photo-1541888946425-d0fbb18615f8?auto=format&fit=crop&w=800&q=80');
+  const [workProofUrl, setWorkProofUrl] = useState<string>('');
   const [workProofType, setWorkProofType] = useState<'image' | 'video'>('image');
   const [workProofComment, setWorkProofComment] = useState<string>('Repaired and verified clear by neighborhood team.');
   const [workProofSuccess, setWorkProofSuccess] = useState<boolean>(false);

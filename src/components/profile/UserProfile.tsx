@@ -95,7 +95,7 @@ export default function UserProfile() {
 
   // Rule 25 modal for quick proof submission
   const [showWorkProofModal, setShowWorkProofModal] = useState(false);
-  const [workProofUrl, setWorkProofUrl] = useState('https://images.unsplash.com/photo-1541888946425-d0fbb18615f8?auto=format&fit=crop&w=800&q=80');
+  const [workProofUrl, setWorkProofUrl] = useState('');
   const [workProofType, setWorkProofType] = useState<'image' | 'video'>('image');
   const [workProofComment, setWorkProofComment] = useState('Pothole completely filled and road restored safely.');
 

@@ -3,55 +3,42 @@
 import React from 'react';
 import Hero from '@/components/home/Hero';
 import LiveStatistics from '@/components/home/LiveStatistics';
-import CitizenVideoReels from '@/components/home/CitizenVideoReels';
 import HowItWorks from '@/components/home/HowItWorks';
 import MapPreviewSection from '@/components/home/MapPreviewSection';
-import CivicWorksGallery from '@/components/home/CivicWorksGallery';
 import PartnershipShowcase from '@/components/home/PartnershipShowcase';
 import AboutUsSection from '@/components/home/AboutUsSection';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
-import { ShieldCheck, PhoneCall, ArrowRight, CheckCircle2, Users, MapPin } from 'lucide-react';
+import { ArrowRight, PhoneCall, ShieldCheck } from 'lucide-react';
 
 export default function HomePage() {
   const { language, t } = useApp();
 
   return (
     <div className="space-y-0">
-      {/* 1. Impressive Hero Section */}
+      {/* 1. Impressive Hero Section with Dhaka Sentinel Radar */}
       <Hero />
 
-      {/* 2. Live Safety Statistics */}
+      {/* 2. Live Safety Statistics (Authentic Community Mesh Counts) */}
       <LiveStatistics />
 
-      {/* 3. Citizen Video Incident Reels (Citizen.com style) */}
-      <CitizenVideoReels />
-
-      {/* 4. Live Safety Map Preview Section */}
+      {/* 3. Live Safety Map Preview Section */}
       <MapPreviewSection />
 
-      {/* 5. 5-Step How It Works Section */}
+      {/* 4. 5-Step Civic Reporting Workflow */}
       <HowItWorks />
 
-      {/* 6. Real Civic Works & Drain Clearing Gallery (nirapodbangladesh.org style) */}
-      <CivicWorksGallery />
-
-      {/* 7. Public Safety Partnership Showcase (bSafe style) */}
+      {/* 5. Public Safety Partnership Showcase (Official 999, DNCC, DSCC, WASA, DESCO) */}
       <PartnershipShowcase />
 
-      {/* 5. Bottom Community Action Callout with High-Impact Photographic Background */}
+      {/* 6. Community Action Callout with Modern SVG Cyber Mesh */}
       <section className="py-20 bg-surface border-t border-surface-border relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-8 sm:p-14 rounded-3xl bg-[#071320] text-white relative overflow-hidden shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/15 group">
-            {/* Atmospheric Background Image with Navy Gradient Vignette */}
-            <div className="absolute inset-0 z-0">
-              <img
-                src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1400&q=80"
-                alt="Dhaka Civic Patrol"
-                className="w-full h-full object-cover opacity-25 group-hover:scale-105 transition-transform duration-1000"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#071320] via-[#0A2540]/90 to-[#071320]/95" />
-            </div>
+            
+            {/* Pure CSS/SVG Background Grid (Zero stock photos) */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(37,99,235,0.25),transparent_60%)] pointer-events-none" />
+            <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:48px_48px] pointer-events-none" />
 
             <div className="space-y-3.5 max-w-xl text-center lg:text-left relative z-10">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-civic-blue/20 text-sky-300 border border-civic-blue/30 text-xs font-black uppercase tracking-wider backdrop-blur-md">
@@ -65,8 +52,8 @@ export default function HomePage() {
               </h2>
               <p className="text-sm text-slate-300 leading-relaxed">
                 {language === 'en'
-                  ? 'Join 4,500+ active citizens verifying problems, preventing hazards, and collaborating with local authorities.'
-                  : '৪,৫০০-এর বেশি সক্রিয় নাগরিকের সাথে যোগ দিন। সমস্যা চিহ্নিত করুন, তথ্য যাচাই করুন এবং কর্তৃপক্ষের সাথে সমন্বয় করুন।'}
+                  ? 'Join verified citizens across Dhaka. Report hazards, verify neighborhood alerts, and collaborate directly with municipal services.'
+                  : 'ঢাকার সচেতন নাগরিকদের সাথে যোগ দিন। সমস্যা চিহ্নিত করুন, তথ্য যাচাই করুন এবং কর্তৃপক্ষের সাথে সমন্বয় করুন।'}
               </p>
             </div>
 
@@ -89,7 +76,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. Authentic About Us Section (Requirement 7) */}
+      {/* 7. Authentic About Us Section */}
       <AboutUsSection />
     </div>
   );

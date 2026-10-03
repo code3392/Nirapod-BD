@@ -14,7 +14,7 @@ export const SUPER_ADMIN_USER: UserProfile = {
   id: 'usr-super-admin',
   name: 'Samiul Haque (Super Admin)',
   email: 'smdsami59@gmail.com',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  avatar: '',
   role: 'Super Admin',
   isSuperAdmin: true,
   phone: '+880 1700-112233',

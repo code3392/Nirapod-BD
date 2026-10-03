@@ -33,7 +33,7 @@ export default function LostAndFoundDirectory() {
   const [newArea, setNewArea] = useState('Mirpur');
   const [newSpecificLocation, setNewSpecificLocation] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [newMediaUrl, setNewMediaUrl] = useState('https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=800&q=80');
+  const [newMediaUrl, setNewMediaUrl] = useState('');
   const [newMediaType, setNewMediaType] = useState<'image' | 'video'>('image');
   const [newContactPhone, setNewContactPhone] = useState(user?.phone || '+880 1711-000000');
   const [newReward, setNewReward] = useState('');

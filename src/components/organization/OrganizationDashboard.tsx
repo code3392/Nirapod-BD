@@ -30,7 +30,7 @@ export default function OrganizationDashboard() {
   // Resolve Modal State
   const [resolvingReport, setResolvingReport] = useState<Report | null>(null);
   const [resolutionDesc, setResolutionDesc] = useState<string>('');
-  const [afterImage, setAfterImage] = useState<string>('https://images.unsplash.com/photo-1541888946425-d0fbb186f5f7?auto=format&fit=crop&w=800&q=80');
+  const [afterImage, setAfterImage] = useState<string>('');
 
   // Tab Filtering
   const openReports = reports.filter(r => r.status === 'SUBMITTED' || r.status === 'VERIFIED' || r.status === 'ASSIGNED');
@@ -47,8 +47,8 @@ export default function OrganizationDashboard() {
 
   const handleOpenResolveModal = (report: Report) => {
     setResolvingReport(report);
-    setResolutionDesc(`Pavement reinforced with C-25 concrete and asphalt compaction completed by DNCC Rapid Maintenance Team. Flow verified unobstructed.`);
-    setAfterImage('https://images.unsplash.com/photo-1541888946425-d0fbb186f5f7?auto=format&fit=crop&w=800&q=80');
+    setResolutionDesc('');
+    setAfterImage('');
   };
 
   const handleConfirmResolution = (e: React.FormEvent) => {

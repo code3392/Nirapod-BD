@@ -26,36 +26,40 @@ export default function AboutUsSection() {
       titleBn: 'তরুণ ও শিক্ষার্থী স্বেচ্ছাসেবক নেটওয়ার্ক',
       roleEn: 'Field Incident Verification & Rapid Alerting',
       roleBn: 'মাঠপর্যায়ে দ্রুত তথ্য সংগ্রহ ও প্রাথমিক সতর্কতা',
-      image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80',
+      icon: <Users2 className="w-8 h-8 text-sky-400" />,
       tag: 'Field Volunteers',
       metric: '1,200+ Active',
+      gradient: 'from-blue-600/30 to-indigo-900/40',
     },
     {
       titleEn: 'Emergency & First Aid Liaison',
       titleBn: 'জরুরি সেবা ও প্রাথমিক চিকিৎসা সমন্বয়',
       roleEn: 'Fast-Track Protocol with 999 & Ambulance Network',
       roleBn: 'জাতীয় ৯৯৯ ও অ্যাম্বুলেন্স নেটওয়ার্কের সাথে দ্রুত যোগাযোগ',
-      image: 'https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?auto=format&fit=crop&w=600&q=80',
+      icon: <HeartHandshake className="w-8 h-8 text-red-400" />,
       tag: 'Emergency Protocol',
       metric: '24/7 Standby',
+      gradient: 'from-red-600/30 to-slate-900/40',
     },
     {
       titleEn: 'Municipal Technical Support Desk',
       titleBn: 'পৌর প্রযুক্তিগত সহায়তা ডেস্ক',
       roleEn: 'Direct Coordination with City Corporations & DESCO',
       roleBn: 'সিটি কর্পোরেশন, ডেসকো ও ওয়াসার সাথে সমন্বয়',
-      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80',
+      icon: <Building2 className="w-8 h-8 text-sky-400" />,
       tag: 'Public Liaison',
       metric: 'Zone 1-10 Dhaka',
+      gradient: 'from-sky-600/30 to-blue-900/40',
     },
     {
       titleEn: 'Neighborhood Safety Circles',
       titleBn: 'ওয়ার্ডভিত্তিক নিরাপত্তা সার্কেল',
       roleEn: 'Community-led Problem Resolution & Accountability',
       roleBn: 'এলাকাভিত্তিক নাগরিক জবাবদিহিতা ও টেকসই সমাধান',
-      image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=600&q=80',
+      icon: <ShieldCheck className="w-8 h-8 text-blue-400" />,
       tag: 'Local Guardianship',
       metric: '54 Wards Covered',
+      gradient: 'from-indigo-600/30 to-navy/40',
     },
   ];
 
@@ -137,13 +141,10 @@ export default function AboutUsSection() {
                 className="bg-white/5 rounded-3xl border border-white/10 overflow-hidden hover:border-civic-blue/50 transition-all duration-300 transform hover:-translate-y-2 group shadow-xl flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative h-44 overflow-hidden bg-slate-800">
-                    <img
-                      src={item.image}
-                      alt={item.titleEn}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#071320] via-transparent to-transparent" />
+                  <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${item.gradient} flex items-center justify-center border-b border-white/10`}>
+                    <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 backdrop-blur-md">
+                      {item.icon}
+                    </div>
                     
                     <div className="absolute top-3 left-3">
                       <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#071320]/80 backdrop-blur-md text-sky-300 border border-white/20">

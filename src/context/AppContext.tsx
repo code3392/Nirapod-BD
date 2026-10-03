@@ -595,7 +595,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       severity: reportData.severity || 'medium',
       status: 'SUBMITTED',
       mediaType: reportData.mediaType || 'image',
-      mediaUrl: reportData.mediaUrl || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      mediaUrl: reportData.mediaUrl || '',
       timeNoticed: reportData.timeNoticed || 'today',
       aiCategory: reportData.aiCategory,
       aiCategoryName: reportData.aiCategoryName,

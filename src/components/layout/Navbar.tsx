@@ -28,7 +28,10 @@ import {
   ShieldCheck,
   UserCheck,
   ChevronDown,
-  UserPlus
+  UserPlus,
+  Sparkles,
+  Layers,
+  HeartHandshake
 } from 'lucide-react';
 import EmergencyDirectoryModal from '@/components/common/EmergencyDirectoryModal';
 
@@ -158,27 +161,28 @@ export default function Navbar() {
     },
     {
       href: '/lost-and-found',
-      label: language === 'en' ? 'Lost & Found' : 'হারানো ও প্রাপ্তি ডেস্ক',
-      desc: language === 'en' ? 'Search & trace lost Smart NID, documents, wallet' : 'স্মার্ট এনআইডি, কাগজপত্র ও হারানো জিনিস খুঁজুন',
+      label: language === 'en' ? 'Lost & Found Directory' : 'হারানো ও প্রাপ্তি তালিকা',
+      desc: language === 'en' ? 'Search and report lost items across Dhaka' : 'ঢাকা শহরের হারানো ও পাওয়া জিনিসপত্র খুঁজুন',
       icon: Search,
-    },
-    {
-      href: '/messages',
-      label: language === 'en' ? 'Citizen Messages' : 'নাগরিক বার্তা',
-      desc: language === 'en' ? 'Direct messages between verified neighbors' : 'বিশ্বস্ত প্রতিবেশীদের মধ্যে প্রত্যক্ষ বার্তা',
-      icon: MessageSquare,
+      badge: 'Civic',
     },
     {
       href: '/safety-circles',
-      label: language === 'en' ? 'Personal Safety Circles' : 'ব্যক্তিগত নিরাপত্তা সার্কেল',
-      desc: language === 'en' ? 'Family emergency network with 1-tap SOS SMS/WhatsApp' : 'পরিবার ও বিশ্বস্তদের জরুরি এসওএস নেটওয়ার্ক',
+      label: language === 'en' ? 'Personal Security Circles' : 'ব্যক্তিগত নিরাপত্তা সার্কেল',
+      desc: language === 'en' ? 'Emergency contacts and family circle alerts' : 'পরিবার ও নিকটজনদের সাথে জরুরি সুরক্ষা নেটওয়ার্ক',
       icon: ShieldCheck,
-      badge: 'Life360',
+      badge: 'Circle',
     },
     {
-      href: '#hotlines',
-      label: language === 'en' ? 'Emergency Hotlines' : 'জরুরি হটলাইন ডিরেক্টরি',
-      desc: language === 'en' ? '999, 16263, 109, 333 & Thana Police numbers' : '৯৯৯, ১৬২৬৩, ১০৯, ৩৩৩ ও থানা পুলিশ নম্বর',
+      href: '/organization',
+      label: language === 'en' ? 'Municipal Dashboard' : 'পৌর কর্তৃপক্ষ ড্যাশবোর্ড',
+      desc: language === 'en' ? 'DNCC, DSCC & WASA work order verification' : 'ডিএনসিসি, ডিএসসিসি ও ওয়াসা কাজের ট্র্যাকিং',
+      icon: Building2,
+    },
+    {
+      href: '#emergency-hotlines',
+      label: language === 'en' ? 'Bangladesh Emergency Hotlines' : 'জরুরি সেবা হটলাইন ডিরেক্টরি',
+      desc: language === 'en' ? 'Police, Ambulance, Fire, WASA, DESCO 24/7' : 'পুলিশ, অ্যাম্বুলেন্স, ফায়ার সার্ভিস, ওয়াসা ও ডেসকো',
       icon: PhoneCall,
       isAction: true,
       onClick: () => {
@@ -187,16 +191,10 @@ export default function Navbar() {
       },
     },
     {
-      href: '/organization',
-      label: language === 'en' ? 'Agency Portal' : 'সরকারি ও সেবা সংস্থা',
-      desc: language === 'en' ? 'DNCC, DSCC, WASA, DESCO resolution triage' : 'সিটি কর্পোরেশন, ওয়াসা ও ডেসকো ট্রায়াজ ডেস্ক',
-      icon: Building2,
-    },
-    {
-      href: '/admin',
-      label: t.nav.admin,
-      desc: language === 'en' ? 'Super Admin moderation & security logs' : 'সুপার অ্যাডমিন ও কনটেন্ট মডারেশন লগ',
-      icon: Sliders,
+      href: '/safety-circles#guidelines',
+      label: language === 'en' ? 'Safety Guidelines & Laws' : 'নাগরিক সুরক্ষা নীতিমালা',
+      desc: language === 'en' ? 'DMP road rules, fire precautions, legal rights' : 'ডিএমপি ট্রাফিক আইন, অগ্নিনির্বাপণ নিয়মাবলি',
+      icon: ShieldAlert,
     },
     {
       href: '/#about-us',
@@ -209,92 +207,61 @@ export default function Navbar() {
   const getNotifIcon = (type: string) => {
     switch (type) {
       case 'verified':
-        return <CheckCircle2 className="w-4 h-4 text-civic-blue" />;
+        return <CheckCircle2 className="w-4 h-4 text-sky-400" />;
       case 'emergency':
         return <AlertTriangle className="w-4 h-4 text-emergency" />;
       case 'points':
-        return <Award className="w-4 h-4 text-warning" />;
+        return <Award className="w-4 h-4 text-amber-400" />;
       default:
-        return <Bell className="w-4 h-4 text-navy" />;
+        return <Bell className="w-4 h-4 text-sky-300" />;
     }
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-surface-border shadow-subtle transition-all">
-      {/* Top Emergency Triage Bar */}
-      <div className="bg-navy-dark text-white text-xs py-1.5 px-4 sm:px-8 border-b border-navy-subtle">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 text-slate-300">
-            <span className="inline-block w-2 h-2 rounded-full bg-emergency animate-ping-slow" />
-            <span className="font-medium text-slate-200">
-              {language === 'en' ? 'Critical Emergency?' : 'জরুরি জীবন বিপদ?'}
-            </span>
-            <span className="hidden md:inline text-slate-400">
-              {language === 'en' 
-                ? 'For immediate police, fire or medical danger, dial 999.' 
-                : 'তাত্ক্ষণিক পুলিশ, ফায়ার সার্ভিস বা অ্যাম্বুলেন্সের জন্য ৯৯৯ ডায়াল করুন।'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a 
-              href="tel:999" 
-              className="inline-flex items-center gap-1.5 bg-emergency hover:bg-emergency-hover text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full transition shadow-sm"
-              title="Direct call to Bangladesh Emergency Hotline 999"
-            >
-              <PhoneCall className="w-3 h-3" />
-              <span>{language === 'en' ? 'Call 999 Now' : '৯৯৯ কল করুন'}</span>
-            </a>
-            <div className="h-3 w-px bg-navy-subtle hidden sm:block" />
-            <span className="hidden sm:inline text-slate-400 text-[11px]">
-              {t.brand.badge}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <header className="sticky top-2 sm:top-4 z-50 w-full px-3 sm:px-6 pointer-events-none mb-4">
+      {/* Floating Dynamic Island Container */}
+      <div className="max-w-7xl mx-auto pointer-events-auto bg-[#071320]/85 backdrop-blur-2xl border border-white/10 rounded-full h-16 px-3.5 sm:px-6 flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.65)] ring-1 ring-sky-500/15 transition-all">
+        
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-navy to-civic-deep flex items-center justify-center shadow-md text-white group-hover:scale-105 transition-transform duration-200">
+        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-sky-500 to-blue-700 flex items-center justify-center shadow-[0_0_18px_rgba(56,189,248,0.4)] text-white group-hover:scale-105 transition-transform duration-200 border border-sky-400/30">
             <div className="relative">
-              <ShieldAlert className="w-6 h-6 text-civic-blue" />
-              <MapPin className="w-3.5 h-3.5 text-emergency absolute -bottom-1 -right-1 fill-emergency" />
+              <ShieldAlert className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-white" />
+              <span className="w-2 h-2 rounded-full bg-emergency absolute -bottom-0.5 -right-0.5 ring-2 ring-[#071320] animate-pulse" />
             </div>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-xl tracking-tight text-navy group-hover:text-civic-blue transition-colors">
-                Nirapod BD
+              <span className="font-black text-lg sm:text-xl tracking-tight text-white group-hover:text-sky-300 transition-colors">
+                Nirapod<span className="text-sky-400">BD</span>
               </span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-blue-50 text-civic-blue border border-blue-200">
+              <span className="text-[9px] uppercase font-mono font-extrabold tracking-wider px-1.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30">
                 Civic
               </span>
             </div>
-            <p className="text-[10px] text-muted font-medium font-bengali leading-none -mt-0.5">
+            <p className="text-[9px] text-slate-400 font-medium font-bengali leading-none -mt-0.5 hidden sm:block">
               নিরাপদ বাংলাদেশ প্ল্যাটফর্ম
             </p>
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+        {/* Desktop Navigation Links (Pill Style) */}
+        <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2">
           {primaryLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-3 py-1.5 text-sm font-semibold rounded-lg transition-colors flex items-center gap-1.5 ${
+                className={`relative px-3.5 py-1.5 text-xs font-bold rounded-full transition-all flex items-center gap-1.5 ${
                   isActive
-                    ? 'text-navy bg-slate-100 font-bold'
-                    : 'text-darktext/80 hover:text-navy hover:bg-slate-50'
+                    ? 'text-white bg-sky-500/20 border border-sky-400/40 shadow-[0_0_15px_rgba(56,189,248,0.25)]'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
                 }`}
               >
                 <span>{link.label}</span>
                 {link.badge && (
-                  <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white animate-pulse">
+                  <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white animate-pulse shadow-sm">
                     {link.badge}
                   </span>
                 )}
@@ -306,29 +273,29 @@ export default function Navbar() {
           <div className="relative" ref={optionsRef}>
             <button
               onClick={() => setOptionsDropdownOpen(!optionsDropdownOpen)}
-              className={`px-3 py-1.5 text-sm font-semibold rounded-lg transition-all flex items-center gap-1.5 border ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-full transition-all flex items-center gap-1.5 border ${
                 optionsDropdownOpen 
-                  ? 'bg-blue-50 text-civic-blue border-blue-200 shadow-sm' 
-                  : 'text-darktext/80 hover:text-navy hover:bg-slate-50 border-transparent'
+                  ? 'bg-sky-500/20 text-sky-300 border-sky-400/40 shadow-sm' 
+                  : 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent'
               }`}
               aria-label="Toggle options menu"
             >
               <span>{language === 'en' ? 'Options' : 'অপশন'}</span>
-              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${optionsDropdownOpen ? 'rotate-180 text-civic-blue' : 'text-slate-400'}`} />
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${optionsDropdownOpen ? 'rotate-180 text-sky-400' : 'text-slate-400'}`} />
             </button>
 
             {optionsDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-elevated border border-blue-100 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                <div className="px-3 py-2 border-b border-slate-100 mb-1 flex items-center justify-between">
-                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">
+              <div className="absolute left-0 mt-3 w-80 sm:w-96 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
+                <div className="px-3.5 py-2.5 border-b border-white/10 mb-1.5 flex items-center justify-between">
+                  <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-400">
                     {language === 'en' ? 'Civic Tools & Portals' : 'নাগরিক সেবা ও অপশন'}
                   </span>
-                  <span className="text-[10px] font-bold text-civic-blue bg-blue-50 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-mono font-bold text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-400/30">
                     {optionLinks.length} Services
                   </span>
                 </div>
 
-                <div className="max-h-[380px] overflow-y-auto space-y-1">
+                <div className="max-h-[380px] overflow-y-auto space-y-1 pr-1 custom-scrollbar">
                   {optionLinks.map((item) => {
                     const Icon = item.icon;
                     const isActive = pathname === item.href;
@@ -338,21 +305,21 @@ export default function Navbar() {
                         <button
                           key={item.label}
                           onClick={item.onClick}
-                          className="w-full text-left p-2.5 rounded-xl hover:bg-red-50/60 border border-transparent hover:border-red-100 transition-colors flex items-center gap-3 group"
+                          className="w-full text-left p-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 transition-all flex items-center gap-3 group"
                         >
-                          <div className="w-9 h-9 rounded-xl bg-red-100 text-emergency flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                          <div className="w-9 h-9 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform border border-red-500/30">
                             <Icon className="w-4 h-4" />
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between">
-                              <h5 className="text-xs font-bold text-navy group-hover:text-emergency transition-colors">
+                              <h5 className="text-xs font-bold text-red-300 group-hover:text-white transition-colors">
                                 {item.label}
                               </h5>
-                              <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white">
+                              <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white">
                                 24/7
                               </span>
                             </div>
-                            <p className="text-[11px] text-slate-500 truncate">{item.desc}</p>
+                            <p className="text-[10px] text-slate-400 truncate mt-0.5">{item.desc}</p>
                           </div>
                         </button>
                       );
@@ -363,27 +330,29 @@ export default function Navbar() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setOptionsDropdownOpen(false)}
-                        className={`p-2.5 rounded-xl transition-all flex items-center gap-3 border ${
+                        className={`p-2.5 rounded-2xl transition-all flex items-center gap-3 border ${
                           isActive
-                            ? 'bg-blue-50/80 border-blue-200 text-civic-blue'
-                            : 'hover:bg-slate-50 border-transparent'
+                            ? 'bg-sky-500/15 border-sky-400/40 text-white'
+                            : 'hover:bg-white/5 border-transparent text-slate-300 hover:text-white'
                         }`}
                       >
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                          isActive ? 'bg-civic-blue text-white' : 'bg-slate-100 text-slate-700'
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${
+                          isActive 
+                            ? 'bg-sky-500/25 border-sky-400/50 text-sky-300' 
+                            : 'bg-white/5 border-white/10 text-slate-400 group-hover:text-sky-300'
                         }`}>
                           <Icon className="w-4 h-4" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between">
-                            <h5 className="text-xs font-bold text-navy truncate">{item.label}</h5>
+                            <h5 className="text-xs font-bold truncate text-white">{item.label}</h5>
                             {item.badge && (
-                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-civic-blue">
+                              <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-blue-500/20 text-sky-300 border border-sky-400/30">
                                 {item.badge}
                               </span>
                             )}
                           </div>
-                          <p className="text-[11px] text-slate-500 truncate">{item.desc}</p>
+                          <p className="text-[10px] text-slate-400 truncate mt-0.5">{item.desc}</p>
                         </div>
                       </Link>
                     );
@@ -394,41 +363,52 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* Actions (Language, Notifs, Profile, Report CTA) */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Right Action Island (999 Hotline, Lang, Notifs, Profile, Report CTA) */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          
+          {/* Integrated 999 Hotline Pill */}
+          <a 
+            href="tel:999" 
+            className="hidden sm:inline-flex items-center gap-1.5 bg-emergency/15 hover:bg-emergency/25 text-red-300 hover:text-red-200 border border-emergency/40 text-xs font-extrabold px-3 py-1.5 rounded-full transition shadow-[0_0_15px_rgba(239,68,68,0.25)]"
+            title="Direct call to Bangladesh Emergency Hotline 999"
+          >
+            <PhoneCall className="w-3.5 h-3.5 text-emergency animate-pulse" />
+            <span>999</span>
+          </a>
+
           {/* Language Toggle */}
           <button
             onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')}
-            className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-lg border border-surface-border text-darktext hover:bg-slate-100 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-full border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
             title="Switch Language / ভাষা পরিবর্তন"
           >
-            <Globe className="w-3.5 h-3.5 text-muted" />
-            <span>{language === 'en' ? 'বাংলা' : 'English'}</span>
+            <Globe className="w-3.5 h-3.5 text-sky-400" />
+            <span className="font-mono">{language === 'en' ? 'বাং' : 'EN'}</span>
           </button>
 
           {/* Notifications Dropdown */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-              className="relative p-2 rounded-lg text-darktext hover:bg-slate-100 transition-colors"
+              className="relative p-2 rounded-full text-slate-300 hover:text-white hover:bg-white/10 transition-colors border border-transparent hover:border-white/10"
               aria-label="View notifications"
             >
-              <Bell className="w-5 h-5 text-slate-700" />
+              <Bell className="w-4 h-4 text-slate-300" />
               {unreadNotificationsCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-emergency text-white text-[10px] font-bold flex items-center justify-center animate-bounce">
+                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-emergency text-white text-[9px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse">
                   {unreadNotificationsCount}
                 </span>
               )}
             </button>
 
-            {/* Dropdown Panel */}
+            {/* Notification Dropdown Panel */}
             {notifDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-elevated border border-surface-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150">
-                <div className="p-3.5 bg-slate-50 border-b border-surface-border flex items-center justify-between">
+              <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
+                <div className="p-3.5 bg-white/5 border-b border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-navy">{t.nav.notifications}</span>
+                    <span className="font-bold text-xs text-white">{t.nav.notifications}</span>
                     {unreadNotificationsCount > 0 && (
-                      <span className="text-xs bg-emergency-light text-emergency font-bold px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-mono bg-emergency/20 text-red-300 border border-emergency/40 font-bold px-2 py-0.5 rounded-full">
                         {unreadNotificationsCount} new
                       </span>
                     )}
@@ -436,16 +416,16 @@ export default function Navbar() {
                   {unreadNotificationsCount > 0 && (
                     <button
                       onClick={markAllNotificationsAsRead}
-                      className="text-xs text-civic-blue hover:underline font-semibold"
+                      className="text-[11px] text-sky-400 hover:underline font-semibold"
                     >
                       {t.nav.markAllRead}
                     </button>
                   )}
                 </div>
 
-                <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                <div className="max-h-80 overflow-y-auto divide-y divide-white/5">
                   {notifications.length === 0 ? (
-                    <div className="p-6 text-center text-sm text-muted">
+                    <div className="p-6 text-center text-xs text-slate-400">
                       {t.nav.noNotifications}
                     </div>
                   ) : (
@@ -457,24 +437,24 @@ export default function Navbar() {
                           markNotificationAsRead(notif.id);
                           setNotifDropdownOpen(false);
                         }}
-                        className={`block p-3.5 hover:bg-slate-50 transition-colors ${
-                          !notif.isRead ? 'bg-blue-50/60' : ''
+                        className={`block p-3.5 hover:bg-white/5 transition-colors ${
+                          !notif.isRead ? 'bg-sky-500/10' : ''
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className="p-1.5 rounded-lg bg-white shadow-sm border border-slate-100 mt-0.5">
+                          <div className="p-2 rounded-xl bg-white/5 border border-white/10 mt-0.5 shrink-0">
                             {getNotifIcon(notif.type)}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-0.5">
-                              <h4 className="text-xs font-bold text-navy truncate">
+                              <h4 className="text-xs font-bold text-white truncate">
                                 {language === 'en' ? notif.titleEn : notif.titleBn}
                               </h4>
-                              <span className="text-[10px] text-muted ml-2 shrink-0">
+                              <span className="text-[9px] font-mono text-slate-400 ml-2 shrink-0">
                                 {notif.timestamp}
                               </span>
                             </div>
-                            <p className="text-xs text-slate-600 line-clamp-2">
+                            <p className="text-[11px] text-slate-300 line-clamp-2">
                               {language === 'en' ? notif.messageEn : notif.messageBn}
                             </p>
                           </div>
@@ -484,11 +464,11 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <div className="p-2 bg-slate-50 border-t border-surface-border text-center">
+                <div className="p-2.5 bg-white/5 border-t border-white/10 text-center">
                   <Link
                     href="/profile"
                     onClick={() => setNotifDropdownOpen(false)}
-                    className="text-xs text-navy font-bold hover:text-civic-blue transition-colors inline-flex items-center gap-1"
+                    className="text-xs text-sky-400 font-bold hover:underline inline-flex items-center gap-1"
                   >
                     <span>{language === 'en' ? 'Manage Alert Preferences' : 'বিজ্ঞপ্তি সেটিংস'}</span>
                     <ChevronRight className="w-3 h-3" />
@@ -503,40 +483,40 @@ export default function Navbar() {
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-blue-200 bg-blue-50/60 hover:bg-blue-100/70 transition-all shadow-2xs"
+                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-sky-400/30 bg-white/5 hover:bg-white/10 transition-all"
                 title="Account Menu"
               >
                 <img
                   src={user.avatar}
                   alt={user.name}
-                  className="w-7 h-7 rounded-full object-cover border border-white shadow-xs"
+                  className="w-7 h-7 rounded-full object-cover border border-sky-400"
                 />
-                <span className="text-xs font-bold text-navy max-w-[90px] truncate hidden sm:inline">
+                <span className="text-xs font-bold text-white max-w-[85px] truncate hidden sm:inline">
                   {user.name.split(' ')[0]}
                 </span>
                 {user.isSuperAdmin || user.email === 'smdsami59@gmail.com' ? (
-                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500 text-white shadow-2xs">
+                  <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
                     SUPER
                   </span>
                 ) : (
-                  <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-civic-blue text-white">
+                  <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
                     {user.points}p
                   </span>
                 )}
-                <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
               </button>
 
               {/* Profile Dropdown */}
               {profileDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-elevated border border-slate-200 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="p-3 border-b border-slate-100 mb-1">
-                    <p className="text-xs font-black text-navy truncate">{user.name}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
-                    <div className="mt-1 flex items-center gap-1.5">
-                      <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-blue-50 text-civic-blue border border-blue-200">
+                <div className="absolute right-0 mt-3 w-64 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
+                  <div className="p-3 border-b border-white/10 mb-1">
+                    <p className="text-xs font-black text-white truncate">{user.name}</p>
+                    <p className="text-[11px] font-mono text-slate-400 truncate">{user.email}</p>
+                    <div className="mt-1.5 flex items-center gap-1.5">
+                      <span className="text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30">
                         {user.role}
                       </span>
-                      <span className="text-[9px] font-bold text-slate-500">
+                      <span className="text-[9px] font-medium text-slate-400">
                         {user.livingPlace.split(',')[0]}
                       </span>
                     </div>
@@ -545,9 +525,9 @@ export default function Navbar() {
                   <Link
                     href="/profile"
                     onClick={() => setProfileDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition"
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 rounded-2xl transition"
                   >
-                    <User className="w-4 h-4 text-slate-500" />
+                    <User className="w-4 h-4 text-sky-400" />
                     <span>{language === 'en' ? 'My Profile & Badges' : 'আমার প্রোফাইল ও ব্যাজ'}</span>
                   </Link>
 
@@ -555,9 +535,9 @@ export default function Navbar() {
                     <Link
                       href="/admin"
                       onClick={() => setProfileDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-amber-800 bg-amber-50/70 hover:bg-amber-100 rounded-xl transition mt-0.5"
+                      className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 rounded-2xl transition mt-0.5 border border-amber-500/30"
                     >
-                      <Sliders className="w-4 h-4 text-amber-600" />
+                      <Sliders className="w-4 h-4 text-amber-400" />
                       <span>{language === 'en' ? 'Super Admin Console' : 'সুপার অ্যাডমিন ড্যাশবোর্ড'}</span>
                     </Link>
                   )}
@@ -565,35 +545,35 @@ export default function Navbar() {
                   <Link
                     href="/safety-circles"
                     onClick={() => setProfileDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition"
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 rounded-2xl transition"
                   >
-                    <ShieldCheck className="w-4 h-4 text-slate-500" />
+                    <ShieldCheck className="w-4 h-4 text-sky-400" />
                     <span>{language === 'en' ? 'Family Safety Circles' : 'ব্যক্তিগত নিরাপত্তা সার্কেল'}</span>
                   </Link>
 
-                  <div className="my-1 border-t border-slate-100" />
+                  <div className="my-1 border-t border-white/10" />
 
                   <button
                     onClick={() => {
                       setProfileDropdownOpen(false);
                       logout();
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-emergency hover:bg-red-50 rounded-xl transition text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-red-400 hover:bg-red-500/10 rounded-2xl transition text-left"
                   >
-                    <LogOut className="w-4 h-4 text-emergency" />
+                    <LogOut className="w-4 h-4 text-red-400" />
                     <span>{language === 'en' ? 'Sign Out' : 'লগআউট'}</span>
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <button
                 onClick={() => {
                   setAuthMode('login');
                   setAuthModalOpen(true);
                 }}
-                className="px-3 py-1.5 text-xs font-bold text-navy hover:bg-slate-100 rounded-xl border border-slate-200 transition shadow-2xs"
+                className="px-3 py-1.5 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/10 rounded-full transition"
               >
                 {language === 'en' ? 'Sign In' : 'লগইন'}
               </button>
@@ -602,47 +582,48 @@ export default function Navbar() {
                   setAuthMode('register');
                   setAuthModalOpen(true);
                 }}
-                className="hidden sm:inline-flex px-3 py-1.5 text-xs font-bold bg-civic-blue hover:bg-civic-royal text-white rounded-xl shadow-sm transition"
+                className="hidden sm:inline-flex px-3.5 py-1.5 text-xs font-black bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-300 hover:to-blue-400 text-[#071320] rounded-full shadow-[0_0_15px_rgba(56,189,248,0.35)] transition"
               >
                 {language === 'en' ? 'Register' : 'নিবন্ধন'}
               </button>
             </div>
           )}
 
-          {/* Report CTA Button */}
+          {/* Primary Report CTA Button */}
           <Link
             href="/report/new"
-            className="inline-flex items-center gap-1.5 bg-emergency hover:bg-emergency-hover text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-2 rounded-xl shadow-md transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+            className="inline-flex items-center gap-1.5 bg-emergency hover:bg-emergency-hover text-white text-xs sm:text-sm font-extrabold px-3.5 sm:px-4 py-2 rounded-full shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all transform hover:scale-105 active:scale-95 border border-emergency/50"
           >
-            <AlertTriangle className="w-4 h-4 fill-white text-emergency" />
-            <span>{t.nav.reportProblem}</span>
+            <AlertTriangle className="w-3.5 h-3.5 fill-white text-emergency" />
+            <span className="hidden sm:inline">{t.nav.reportProblem}</span>
+            <span className="sm:hidden">Report</span>
           </Link>
 
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg text-darktext hover:bg-slate-100 lg:hidden"
+            className="p-2 rounded-full text-slate-300 hover:text-white hover:bg-white/10 lg:hidden"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer Navigation (Futuristic Dark Glass) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-surface-border bg-white px-4 pt-3 pb-6 space-y-3 shadow-lg animate-in slide-in-from-top-4 duration-200">
+        <div className="lg:hidden mt-2 pointer-events-auto bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl border border-white/15 p-4 space-y-3 shadow-2xl animate-in slide-in-from-top-4 duration-200 ring-1 ring-sky-500/20">
           {user ? (
-            <div className="flex items-center justify-between p-3 rounded-xl bg-blue-50/70 border border-blue-100">
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
               <div className="flex items-center gap-3">
                 <img
                   src={user.avatar}
                   alt={user.name}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-civic-blue"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-sky-400"
                 />
                 <div>
-                  <p className="font-bold text-sm text-navy">{user.name}</p>
-                  <p className="text-xs text-muted">{user.role} • {user.points} Points</p>
+                  <p className="font-bold text-sm text-white">{user.name}</p>
+                  <p className="text-xs text-slate-400">{user.role} • {user.points} Points</p>
                 </div>
               </div>
               <button
@@ -650,16 +631,16 @@ export default function Navbar() {
                   setMobileMenuOpen(false);
                   logout();
                 }}
-                className="text-xs font-bold text-emergency hover:underline"
+                className="text-xs font-bold text-red-400 hover:underline"
               >
                 Sign Out
               </button>
             </div>
           ) : (
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
               <div>
-                <p className="font-bold text-xs text-navy">Browsing as Guest</p>
-                <p className="text-[11px] text-slate-500">Sign in to report and track issues</p>
+                <p className="font-bold text-xs text-white">Browsing as Guest</p>
+                <p className="text-[11px] text-slate-400">Sign in to report and track issues</p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -668,7 +649,7 @@ export default function Navbar() {
                     setAuthMode('login');
                     setAuthModalOpen(true);
                   }}
-                  className="px-2.5 py-1 text-xs font-bold bg-navy text-white rounded-lg"
+                  className="px-3 py-1.5 text-xs font-bold bg-white/10 text-white rounded-full border border-white/10"
                 >
                   Sign In
                 </button>
@@ -678,7 +659,7 @@ export default function Navbar() {
                     setAuthMode('register');
                     setAuthModalOpen(true);
                   }}
-                  className="px-2.5 py-1 text-xs font-bold bg-civic-blue text-white rounded-lg"
+                  className="px-3 py-1.5 text-xs font-black bg-sky-400 text-[#071320] rounded-full"
                 >
                   Register
                 </button>
@@ -692,15 +673,15 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition ${
+                className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition ${
                   pathname === link.href
-                    ? 'bg-slate-100 text-navy font-bold'
-                    : 'text-darktext/80 hover:bg-slate-50'
+                    ? 'bg-sky-500/20 text-sky-300 border border-sky-400/40'
+                    : 'text-slate-300 hover:bg-white/5'
                 }`}
               >
                 <span>{link.label}</span>
                 {link.badge && (
-                  <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emergency text-white">
+                  <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded-full bg-emergency text-white">
                     {link.badge}
                   </span>
                 )}
@@ -708,8 +689,8 @@ export default function Navbar() {
             ))}
 
             {/* Mobile Options & Services Section */}
-            <div className="pt-2 border-t border-slate-100 space-y-1">
-              <span className="px-3 text-[10px] font-black uppercase text-slate-400 tracking-wider block mb-1">
+            <div className="pt-2 border-t border-white/10 space-y-1">
+              <span className="px-3 text-[10px] font-mono font-black uppercase text-slate-400 tracking-wider block mb-1">
                 {language === 'en' ? 'Options & Services' : 'অপশন ও নাগরিক সেবা'}
               </span>
               {optionLinks.map((item) => {
@@ -722,13 +703,13 @@ export default function Navbar() {
                         setMobileMenuOpen(false);
                         item.onClick();
                       }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold text-emergency hover:bg-red-50 transition"
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-red-300 hover:bg-red-500/10 transition"
                     >
                       <span className="flex items-center gap-2.5">
                         <Icon className="w-4 h-4 text-emergency" />
                         <span>{item.label}</span>
                       </span>
-                      <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white">
+                      <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white">
                         24/7
                       </span>
                     </button>
@@ -739,14 +720,14 @@ export default function Navbar() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                    className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-white/5 transition"
                   >
                     <span className="flex items-center gap-2.5">
-                      <Icon className="w-4 h-4 text-slate-500" />
+                      <Icon className="w-4 h-4 text-sky-400" />
                       <span>{item.label}</span>
                     </span>
                     {item.badge && (
-                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-civic-blue">
+                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
                         {item.badge}
                       </span>
                     )}
@@ -758,30 +739,30 @@ export default function Navbar() {
             <Link
               href="/profile"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-darktext/80 hover:bg-slate-50"
+              className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-300 hover:bg-white/5"
             >
               <span>{t.nav.profile}</span>
-              <User className="w-4 h-4 text-muted" />
+              <User className="w-4 h-4 text-sky-400" />
             </Link>
           </div>
 
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-            <span className="text-xs text-muted">
+          <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+            <span className="text-xs text-slate-400 font-mono">
               {language === 'en' ? 'Language' : 'ভাষা'}:
             </span>
             <div className="flex gap-2">
               <button
                 onClick={() => setLanguage('en')}
-                className={`px-3 py-1 rounded-md text-xs font-bold ${
-                  language === 'en' ? 'bg-navy text-white' : 'bg-slate-100 text-slate-700'
+                className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  language === 'en' ? 'bg-sky-400 text-[#071320]' : 'bg-white/5 text-slate-300'
                 }`}
               >
                 English
               </button>
               <button
                 onClick={() => setLanguage('bn')}
-                className={`px-3 py-1 rounded-md text-xs font-bold ${
-                  language === 'bn' ? 'bg-navy text-white' : 'bg-slate-100 text-slate-700'
+                className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  language === 'bn' ? 'bg-sky-400 text-[#071320]' : 'bg-white/5 text-slate-300'
                 }`}
               >
                 বাংলা
@@ -791,21 +772,22 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* AUTHENTIC AUTHENTICATION MODAL (Rule 13, Rule 20 & Rule 21) */}
+      {/* AUTHENTIC AUTHENTICATION MODAL (Dark Obsidian Glass Theme) */}
       {authModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/70 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-blue-100 space-y-5 animate-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150 pointer-events-auto">
+          <div className="bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 space-y-5 animate-in zoom-in-95 duration-150 ring-1 ring-sky-500/20 text-white">
+            
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-navy text-white flex items-center justify-center shadow-xs">
-                  <ShieldCheck className="w-5 h-5 text-civic-blue" />
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-[0_0_12px_rgba(56,189,248,0.4)]">
+                  <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-black text-navy text-base">
+                  <h3 className="font-black text-white text-base">
                     {authMode === 'login' ? 'Citizen & Admin Sign In' : 'Register Citizen Account'}
                   </h3>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-slate-400">
                     {authMode === 'login' ? 'Access your verified civic dashboard' : 'Join verified community safety network'}
                   </p>
                 </div>
@@ -815,14 +797,14 @@ export default function Navbar() {
                   setAuthModalOpen(false);
                   setAuthFeedback(null);
                 }}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Mode Switcher Tabs */}
-            <div className="flex border-b border-slate-200 text-xs font-bold">
+            <div className="flex border-b border-white/10 text-xs font-bold">
               <button
                 onClick={() => {
                   setAuthMode('login');
@@ -830,8 +812,8 @@ export default function Navbar() {
                 }}
                 className={`flex-1 py-2.5 text-center border-b-2 transition ${
                   authMode === 'login'
-                    ? 'border-civic-blue text-civic-blue font-extrabold'
-                    : 'border-transparent text-slate-500 hover:text-navy'
+                    ? 'border-sky-400 text-sky-300 font-black'
+                    : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
                 Sign In
@@ -843,8 +825,8 @@ export default function Navbar() {
                 }}
                 className={`flex-1 py-2.5 text-center border-b-2 transition ${
                   authMode === 'register'
-                    ? 'border-civic-blue text-civic-blue font-extrabold'
-                    : 'border-transparent text-slate-500 hover:text-navy'
+                    ? 'border-sky-400 text-sky-300 font-black'
+                    : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
                 Register (Requirement 20)
@@ -853,10 +835,10 @@ export default function Navbar() {
 
             {/* Feedback Message */}
             {authFeedback && (
-              <div className={`p-3 rounded-xl text-xs font-bold ${
+              <div className={`p-3 rounded-2xl text-xs font-bold ${
                 authFeedback.type === 'success'
-                  ? 'bg-blue-50 text-blue-800 border border-blue-200'
-                  : 'bg-red-50 text-red-800 border border-red-200'
+                  ? 'bg-sky-500/20 text-sky-200 border border-sky-400/40'
+                  : 'bg-red-500/20 text-red-200 border border-red-500/40'
               }`}>
                 {authFeedback.message}
               </div>
@@ -866,12 +848,12 @@ export default function Navbar() {
             {authMode === 'login' && (
               <div className="space-y-4">
                 {/* 1-Tap Super Admin Access Button */}
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-navy via-navy to-civic-deep text-white shadow-sm space-y-2">
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-600/10 to-transparent border border-amber-500/30 text-white shadow-sm space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">
+                    <span className="text-[10px] font-mono font-black uppercase tracking-wider text-amber-400">
                       Rule 13 Root Authority
                     </span>
-                    <span className="text-[10px] bg-amber-500 text-white font-black px-1.5 py-0.2 rounded">
+                    <span className="text-[10px] font-mono bg-amber-500 text-[#071320] font-black px-1.5 py-0.2 rounded">
                       SUPER ADMIN
                     </span>
                   </div>
@@ -887,7 +869,7 @@ export default function Navbar() {
                         setAuthFeedback(null);
                       }, 500);
                     }}
-                    className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow transition flex items-center justify-center gap-2"
+                    className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#071320] text-xs font-black shadow transition flex items-center justify-center gap-2"
                   >
                     <UserCheck className="w-4 h-4" />
                     <span>Sign In as Super Admin (smdsami59@gmail.com)</span>
@@ -895,15 +877,15 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                  <div className="flex-1 h-px bg-slate-200" />
-                  <span>OR SIGN IN WITH CITIZEN EMAIL</span>
-                  <div className="flex-1 h-px bg-slate-200" />
+                  <div className="flex-1 h-px bg-white/10" />
+                  <span className="font-mono text-[10px]">OR SIGN IN WITH CITIZEN EMAIL</span>
+                  <div className="flex-1 h-px bg-white/10" />
                 </div>
 
                 {/* Email Sign In */}
                 <form onSubmit={handleLoginSubmit} className="space-y-3">
                   <div>
-                    <label className="text-xs font-bold text-navy block mb-1">
+                    <label className="text-xs font-bold text-slate-300 block mb-1">
                       Email Address
                     </label>
                     <input
@@ -912,25 +894,25 @@ export default function Navbar() {
                       placeholder="e.g. your.email@domain.com"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                      className="w-full px-3.5 py-2.5 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-2.5 bg-navy hover:bg-navy-dark text-white rounded-xl text-xs font-bold shadow transition"
+                    className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white rounded-xl text-xs font-bold shadow-lg transition"
                   >
                     Sign In
                   </button>
                 </form>
 
-                <p className="text-center text-xs text-slate-500 pt-1">
+                <p className="text-center text-xs text-slate-400 pt-1">
                   Don&apos;t have an account?{' '}
                   <button
                     onClick={() => {
                       setAuthMode('register');
                       setAuthFeedback(null);
                     }}
-                    className="text-civic-blue font-bold hover:underline"
+                    className="text-sky-400 font-bold hover:underline"
                   >
                     Create one here
                   </button>
@@ -938,73 +920,73 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* TAB 2: REGISTER (REQUIREMENT 20: Name, email, phone, living place, area, age, blood group) */}
+            {/* TAB 2: REGISTER (REQUIREMENT 20) */}
             {authMode === 'register' && (
-              <form onSubmit={handleRegisterSubmit} className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+              <form onSubmit={handleRegisterSubmit} className="space-y-3 max-h-[420px] overflow-y-auto pr-1 custom-scrollbar">
                 <div>
-                  <label className="text-[11px] font-bold text-navy block mb-1">Full Legal Name *</label>
+                  <label className="text-[11px] font-bold text-slate-300 block mb-1">Full Legal Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Mohammad Samiul"
                     value={regName}
                     onChange={(e) => setRegName(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div>
-                    <label className="text-[11px] font-bold text-navy block mb-1">Email *</label>
+                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Email *</label>
                     <input
                       type="email"
                       required
                       placeholder="smdsami59@gmail.com"
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
-                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                      className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-navy block mb-1">Mobile Phone *</label>
+                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Mobile Phone *</label>
                     <input
                       type="tel"
                       required
                       placeholder="+880 1712-345678"
                       value={regPhone}
                       onChange={(e) => setRegPhone(e.target.value)}
-                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                      className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-bold text-navy block mb-1">Living Place / Address *</label>
+                  <label className="text-[11px] font-bold text-slate-300 block mb-1">Living Place / Address *</label>
                   <input
                     type="text"
                     required
                     placeholder="Road 4, Block D, Mirpur-10"
                     value={regLivingPlace}
                     onChange={(e) => setRegLivingPlace(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
                   />
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-[11px] font-bold text-navy block mb-1">Area *</label>
+                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Area *</label>
                     <select
                       value={regArea}
                       onChange={(e) => setRegArea(e.target.value)}
-                      className="w-full px-2 py-2 text-xs border border-slate-200 rounded-xl bg-white focus:outline-none"
+                      className="w-full px-2 py-2 text-xs bg-[#0A1628] border border-white/15 rounded-xl text-white focus:outline-none"
                     >
                       {DHAKA_AREAS.map((a) => (
-                        <option key={a} value={a}>{a}</option>
+                        <option key={a} value={a} className="bg-[#0A1628] text-white">{a}</option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-navy block mb-1">Age *</label>
+                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Age *</label>
                     <input
                       type="number"
                       min={16}
@@ -1012,25 +994,25 @@ export default function Navbar() {
                       required
                       value={regAge}
                       onChange={(e) => setRegAge(Number(e.target.value))}
-                      className="w-full px-2 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none"
+                      className="w-full px-2 py-2 text-xs bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-navy block mb-1">Blood *</label>
+                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Blood *</label>
                     <select
                       value={regBlood}
                       onChange={(e) => setRegBlood(e.target.value)}
-                      className="w-full px-2 py-2 text-xs border border-slate-200 rounded-xl bg-white focus:outline-none"
+                      className="w-full px-2 py-2 text-xs bg-[#0A1628] border border-white/15 rounded-xl text-white focus:outline-none"
                     >
                       {BLOOD_GROUPS.map((b) => (
-                        <option key={b} value={b}>{b}</option>
+                        <option key={b} value={b} className="bg-[#0A1628] text-white">{b}</option>
                       ))}
                     </select>
                   </div>
                 </div>
 
-                <div className="p-3 bg-blue-50/70 rounded-xl text-[11px] text-slate-600 border border-blue-100 flex items-start gap-2">
-                  <ShieldCheck className="w-4 h-4 text-civic-blue shrink-0 mt-0.5" />
+                <div className="p-3 bg-sky-500/10 rounded-2xl text-[11px] text-slate-300 border border-sky-400/20 flex items-start gap-2">
+                  <ShieldCheck className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
                   <span>
                     Your identity will be awarded the <strong>Greatly Verified Guardian</strong> badge with 100 reputation points upon registration.
                   </span>
@@ -1038,13 +1020,13 @@ export default function Navbar() {
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-civic-blue hover:bg-civic-royal text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-300 hover:to-blue-400 text-[#071320] rounded-xl text-xs font-black shadow-lg transition flex items-center justify-center gap-1.5"
                 >
                   <UserPlus className="w-4 h-4" />
                   <span>Register & Verify Account</span>
                 </button>
 
-                <p className="text-center text-xs text-slate-500 pt-1">
+                <p className="text-center text-xs text-slate-400 pt-1">
                   Already have an account?{' '}
                   <button
                     type="button"
@@ -1052,7 +1034,7 @@ export default function Navbar() {
                       setAuthMode('login');
                       setAuthFeedback(null);
                     }}
-                    className="text-civic-blue font-bold hover:underline"
+                    className="text-sky-400 font-bold hover:underline"
                   >
                     Sign in here
                   </button>

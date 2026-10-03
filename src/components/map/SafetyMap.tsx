@@ -21,7 +21,8 @@ import {
   List,
   Map as MapIcon,
   ChevronRight,
-  Filter
+  Filter,
+  Radio
 } from 'lucide-react';
 
 export default function SafetyMap() {
@@ -80,9 +81,10 @@ export default function SafetyMap() {
       // Add Zoom control to top-right
       L.control.zoom({ position: 'topright' }).addTo(map);
 
-      // OpenStreetMap Tile Layer
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      // Dark Matter Map Tile Layer (Cyber Mission Control Aesthetic)
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
         maxZoom: 19,
       }).addTo(map);
 
@@ -118,9 +120,9 @@ export default function SafetyMap() {
 
     // Helper to generate marker pin color
     const getPinBg = (report: Report) => {
-      if (report.status === 'RESOLVED') return '#0284C7'; // Sky Blue
-      if (report.severity === 'emergency') return '#E53935'; // Red
-      if (report.severity === 'high') return '#F59E0B'; // Orange
+      if (report.status === 'RESOLVED') return '#38BDF8'; // Sky Blue
+      if (report.severity === 'emergency') return '#EF4444'; // Red
+      if (report.severity === 'high') return '#F97316'; // Orange
       if (report.severity === 'medium') return '#EAB308'; // Amber
       return '#2563EB'; // Royal Blue
     };
@@ -136,117 +138,118 @@ export default function SafetyMap() {
           <div style="
             position: relative;
             background-color: ${pinColor};
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            width: 34px;
+            height: 34px;
+            border-radius: 9999px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 14px;
+            box-shadow: 0 0 15px ${pinColor}88;
+            border: 2px solid white;
             cursor: pointer;
             transition: transform 0.2s;
-          " class="${isEmergency ? 'animate-pulse' : ''}">
-            <span>${
-              report.status === 'RESOLVED' ? '✓' :
-              report.categoryId === 'road_traffic' ? '🚗' :
-              report.categoryId === 'waste' ? '🗑️' :
-              report.categoryId === 'waterlogging' ? '💧' :
-              report.categoryId === 'electrical' ? '⚡' :
-              report.categoryId === 'fire' ? '🔥' : '⚠️'
-            }</span>
+          ">
+            ${isEmergency ? `<span style="position: absolute; inset: -4px; border-radius: 9999px; background-color: ${pinColor}; opacity: 0.5; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>` : ''}
+            <svg style="width: 16px; height: 16px; position: relative; z-index: 10;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
           </div>
         `,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
+        iconSize: [34, 34],
+        iconAnchor: [17, 17],
       });
 
-      const marker = L.marker([report.latitude, report.longitude], { icon: customIcon }).addTo(map);
-
-      marker.on('click', () => {
-        setActiveReport(report);
-        map.panTo([report.latitude, report.longitude], { animate: true });
-      });
+      const marker = L.marker([report.latitude, report.longitude], { icon: customIcon })
+        .addTo(map)
+        .on('click', () => {
+          setActiveReport(report);
+          map.setView([report.latitude, report.longitude], 15, { animate: true });
+        });
 
       markersRef.current.push(marker);
     });
   };
 
-  // Near Me GPS Handler
-  const handleNearMe = () => {
-    setUserLocating(true);
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          setMapCenter({ lat, lng });
-          if (leafletMapRef.current) {
-            leafletMapRef.current.setView([lat, lng], 14, { animate: true });
-          }
-          setUserLocating(false);
-        },
-        () => {
-          // Fallback to Mirpur Road
-          setMapCenter({ lat: 23.8041, lng: 90.3667 });
-          if (leafletMapRef.current) {
-            leafletMapRef.current.setView([23.8041, 90.3667], 14, { animate: true });
-          }
-          setUserLocating(false);
-        }
-      );
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
     }
+
+    setUserLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocating(false);
+        const { latitude, longitude } = pos.coords;
+        setMapCenter({ lat: latitude, lng: longitude });
+        if (leafletMapRef.current) {
+          leafletMapRef.current.setView([latitude, longitude], 15, { animate: true });
+        }
+      },
+      (err) => {
+        setUserLocating(false);
+        alert('Could not retrieve your location. Showing default Dhaka map view.');
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
   };
 
   return (
-    <div className="relative h-[calc(100vh-64px)] w-full flex flex-col overflow-hidden bg-slate-900">
-      {/* Top Floating Filter & Search Bar */}
-      <div className="absolute top-4 left-4 right-4 z-30 flex flex-col gap-2 max-w-7xl mx-auto pointer-events-none">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 pointer-events-auto">
-          {/* Search Box + Near Me */}
-          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-elevated border border-surface-border p-1.5 flex-1 max-w-xl">
-            <div className="flex items-center gap-2 pl-3 flex-1">
-              <Search className="w-4 h-4 text-slate-400 shrink-0" />
-              <input
-                type="text"
-                placeholder={language === 'en' ? 'Search area, hazard, or ID (e.g. Mirpur, NRP-10482)...' : 'এলাকা বা আইডি খুঁজুন (যেমন: মিরপুর, NRP-10482)...'}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full text-xs sm:text-sm font-semibold text-navy bg-transparent border-none focus:outline-none placeholder:text-slate-400"
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} className="p-1 text-slate-400 hover:text-slate-600">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
+    <div className="relative w-full h-[calc(100vh-80px)] flex flex-col overflow-hidden bg-[#060D1A] text-white">
+      {/* Top Floating Control Bar */}
+      <div className="absolute top-4 left-4 right-4 z-20 pointer-events-none flex flex-col gap-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-3 pointer-events-auto">
+          {/* Search Box */}
+          <div className="relative flex-1 max-w-md bg-[#0A1628]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/15">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder={language === 'en' ? 'Search Dhaka hazards (e.g. Mirpur, potholes)...' : 'ঝুঁকি বা এলাকা খুঁজুন...'}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-10 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold bg-transparent text-white placeholder:text-slate-500 focus:outline-none"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
 
+          {/* Map Controls */}
+          <div className="flex items-center gap-2">
+            {/* Auto Locate Button */}
             <button
-              onClick={handleNearMe}
+              onClick={handleLocateMe}
               disabled={userLocating}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-[#0A1628]/95 backdrop-blur-2xl border border-white/15 text-xs font-bold text-white hover:bg-white/10 transition shadow-lg disabled:opacity-50"
               title="Locate my position in Dhaka"
             >
-              <Navigation className={`w-3.5 h-3.5 text-civic-blue ${userLocating ? 'animate-spin' : ''}`} />
-              <span className="hidden sm:inline">Near Me</span>
+              <Navigation className={`w-3.5 h-3.5 text-sky-400 ${userLocating ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">
+                {userLocating ? 'Locating...' : 'Locate Me'}
+              </span>
             </button>
 
+            {/* List / Map Toggle (Mobile) */}
             <button
               onClick={() => setIsListView(!isListView)}
-              className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition lg:hidden"
-              title="Toggle List View"
+              className="lg:hidden p-2.5 rounded-2xl bg-[#0A1628]/95 backdrop-blur-2xl border border-white/15 text-white transition shadow-lg"
+              title="Toggle list view"
             >
-              {isListView ? <MapIcon className="w-4 h-4 text-navy" /> : <List className="w-4 h-4 text-navy" />}
+              {isListView ? <MapIcon className="w-4 h-4 text-sky-400" /> : <List className="w-4 h-4 text-sky-400" />}
             </button>
           </div>
 
           {/* Quick Stats Pill */}
-          <div className="hidden sm:flex items-center gap-2 bg-navy-dark/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 text-xs text-white">
-            <span className="w-2 h-2 rounded-full bg-civic-blue animate-pulse" />
+          <div className="hidden sm:flex items-center gap-2 bg-[#0A1628]/95 backdrop-blur-2xl px-4 py-2 rounded-2xl border border-white/15 text-xs text-white font-mono shadow-lg">
+            <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
             <span>
-              <strong>{filteredReports.length}</strong> Hazards Displayed
+              <strong>{filteredReports.length}</strong> Active Hazards
             </span>
           </div>
         </div>
@@ -266,10 +269,10 @@ export default function SafetyMap() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition shadow-sm whitespace-nowrap ${
                 selectedCategory === cat.id
-                  ? 'bg-civic-blue text-white ring-2 ring-white/30'
-                  : 'bg-white/95 text-navy hover:bg-white border border-slate-200'
+                  ? 'bg-sky-400 text-[#071320] font-black shadow-[0_0_12px_rgba(56,189,248,0.4)]'
+                  : 'bg-[#0A1628]/90 text-slate-300 hover:text-white border border-white/10'
               }`}
             >
               <span>{cat.icon}</span>
@@ -289,20 +292,20 @@ export default function SafetyMap() {
 
         {/* Floating Active Report Preview Card */}
         {activeReport && !isListView && (
-          <div className="absolute bottom-6 left-4 right-4 sm:left-6 sm:right-auto sm:w-96 bg-white rounded-3xl shadow-elevated border border-surface-border p-5 z-20 animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <div className="absolute bottom-6 left-4 right-4 sm:left-6 sm:right-auto sm:w-96 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-5 z-20 animate-in fade-in slide-in-from-bottom-4 duration-200 ring-1 ring-sky-500/20 text-white">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] uppercase font-black tracking-wider text-muted font-mono">
+              <span className="text-[10px] uppercase font-mono font-black tracking-wider text-sky-300">
                 {activeReport.publicId} • {activeReport.area}
               </span>
               <button
                 onClick={() => setActiveReport(null)}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-white/10"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="relative h-36 rounded-2xl overflow-hidden mb-3 bg-slate-100 border border-slate-200">
+            <div className="relative h-36 rounded-2xl overflow-hidden mb-3 bg-slate-900 border border-white/10">
               {activeReport.mediaType === 'video' ? (
                 <video
                   src={activeReport.mediaUrl || activeReport.imageUrl}
@@ -318,6 +321,7 @@ export default function SafetyMap() {
                   className="w-full h-full object-cover"
                 />
               )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               <div className="absolute top-2.5 left-2.5">
                 <StatusBadge status={activeReport.status} size="sm" />
               </div>
@@ -326,21 +330,21 @@ export default function SafetyMap() {
               </div>
             </div>
 
-            <h3 className="font-extrabold text-navy text-sm leading-tight line-clamp-2">
+            <h3 className="font-extrabold text-white text-sm leading-tight line-clamp-2">
               {activeReport.title}
             </h3>
 
-            <p className="text-xs text-slate-500 flex items-center gap-1 mt-1.5">
+            <p className="text-xs text-slate-300 flex items-center gap-1 mt-1.5">
               <MapPin className="w-3.5 h-3.5 text-emergency shrink-0" />
               <span className="truncate">{activeReport.locationName}</span>
             </p>
 
-            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-              <div className="flex items-center gap-1.5 font-bold text-navy">
-                <Users className="w-3.5 h-3.5 text-civic-blue" />
+            <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-300 font-mono">
+              <div className="flex items-center gap-1.5 font-bold text-white">
+                <Users className="w-3.5 h-3.5 text-sky-400" />
                 <span>{activeReport.confirmationsCount} confirmations</span>
               </div>
-              <span className="text-[11px] text-muted">
+              <span className="text-[11px] text-slate-400">
                 {activeReport.timeNoticed}
               </span>
             </div>
@@ -348,13 +352,13 @@ export default function SafetyMap() {
             <div className="mt-4 flex items-center gap-2">
               <Link
                 href={`/report/${activeReport.id}`}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-navy hover:bg-navy-dark text-white font-extrabold text-xs text-center shadow-md transition"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-extrabold text-xs text-center shadow-md transition"
               >
                 View Full Details →
               </Link>
               <button
                 onClick={() => verifyReport(activeReport.id, 'confirm')}
-                className="py-2.5 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-civic-blue font-bold text-xs transition border border-blue-200"
+                className="py-2.5 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-bold text-xs transition border border-sky-400/30"
                 title="Confirm this hazard report"
               >
                 ✓ Confirm
@@ -364,15 +368,15 @@ export default function SafetyMap() {
         )}
 
         {/* Side Panel or Mobile Fullscreen List View */}
-        {(isListView || false) && (
-          <div className="absolute inset-0 z-20 bg-surface overflow-y-auto p-4 sm:p-6 lg:hidden">
+        {isListView && (
+          <div className="absolute inset-0 z-20 bg-[#060D1A] overflow-y-auto p-4 sm:p-6 lg:hidden">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-black text-navy">
+              <h3 className="text-lg font-black text-white">
                 Nearby Civic Hazards ({filteredReports.length})
               </h3>
               <button
                 onClick={() => setIsListView(false)}
-                className="px-3 py-1.5 rounded-xl bg-navy text-white text-xs font-bold"
+                className="px-3.5 py-1.5 rounded-full bg-sky-400 text-[#071320] text-xs font-black"
               >
                 Back to Map
               </button>
@@ -389,7 +393,7 @@ export default function SafetyMap() {
                       leafletMapRef.current.setView([report.latitude, report.longitude], 15, { animate: true });
                     }
                   }}
-                  className="p-4 rounded-2xl bg-white border border-surface-border shadow-subtle flex gap-4 cursor-pointer hover:border-slate-300"
+                  className="p-4 rounded-2xl bg-[#0A182B] border border-white/10 shadow-lg flex gap-4 cursor-pointer hover:border-sky-400/40"
                 >
                   <img
                     src={report.mediaUrl || report.imageUrl}
@@ -398,19 +402,19 @@ export default function SafetyMap() {
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] font-mono font-bold text-muted">
+                      <span className="text-[10px] font-mono font-bold text-sky-300">
                         {report.publicId}
                       </span>
                       <StatusBadge status={report.status} size="sm" />
                     </div>
-                    <h4 className="text-xs font-extrabold text-navy truncate">
+                    <h4 className="text-xs font-extrabold text-white truncate">
                       {report.title}
                     </h4>
-                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                    <p className="text-[11px] text-slate-400 truncate mt-0.5">
                       {report.locationName}
                     </p>
-                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[11px]">
-                      <span className="text-civic-blue font-bold">
+                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10 text-[11px]">
+                      <span className="text-sky-400 font-bold">
                         👥 {report.confirmationsCount} votes
                       </span>
                       <SeverityBadge severity={report.severity} size="sm" showIcon={false} />

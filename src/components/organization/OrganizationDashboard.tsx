@@ -68,329 +68,329 @@ export default function OrganizationDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-      {/* Organization Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-navy text-white shadow-elevated">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-sky-400 shrink-0">
-            <Building2 className="w-8 h-8" />
+    <div className="min-h-screen bg-[#060D1A] text-white py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        
+        {/* Organization Header (Cyber Glass Banner) */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 text-white shadow-2xl ring-1 ring-sky-500/15">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400 shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+              <Building2 className="w-8 h-8" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-black text-white">
+                  Dhaka North City Corporation (DNCC)
+                </h1>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                  Verified Civic Agency
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1">
+                Zone-4 Engineering, Waste Management & Drainage Rapid Response Desk
+              </p>
+            </div>
           </div>
-          <div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/map"
+              className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs font-bold transition border border-white/10"
+            >
+              Zone Map
+            </Link>
+            <Link
+              href="/reports"
+              className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white text-xs font-black transition shadow-[0_0_15px_rgba(56,189,248,0.3)]"
+            >
+              Public Feed
+            </Link>
+          </div>
+        </div>
+
+        {/* 4 Metric Counter Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <button
+            onClick={() => setActiveTab('open')}
+            className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
+              activeTab === 'open'
+                ? 'bg-sky-500/15 border-sky-400/50 shadow-[0_0_20px_rgba(56,189,248,0.25)] ring-1 ring-sky-400'
+                : 'bg-[#0A182B]/85 border-white/10 hover:border-white/20'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-mono font-bold text-slate-400">{t.organization.openReports}</span>
+              <Clock className="w-4 h-4 text-sky-400" />
+            </div>
+            <p className="text-3xl font-black text-white font-mono">{openReports.length + 16}</p>
+            <p className="text-[11px] text-slate-400 mt-1">Requires inspection</p>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('high_priority')}
+            className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
+              activeTab === 'high_priority'
+                ? 'bg-orange-500/15 border-orange-400/50 shadow-[0_0_20px_rgba(249,115,22,0.25)] ring-1 ring-orange-400'
+                : 'bg-[#0A182B]/85 border-white/10 hover:border-white/20'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-mono font-bold text-slate-400">{t.organization.highPriority}</span>
+              <AlertTriangle className="w-4 h-4 text-orange-400" />
+            </div>
+            <p className="text-3xl font-black text-orange-400 font-mono">{highPriorityReports.length}</p>
+            <p className="text-[11px] text-slate-400 mt-1">Immediate danger</p>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('in_progress')}
+            className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
+              activeTab === 'in_progress'
+                ? 'bg-blue-600/15 border-blue-400/50 shadow-[0_0_20px_rgba(37,99,235,0.25)] ring-1 ring-blue-400'
+                : 'bg-[#0A182B]/85 border-white/10 hover:border-white/20'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-mono font-bold text-slate-400">{t.organization.inProgress}</span>
+              <Hammer className="w-4 h-4 text-blue-400" />
+            </div>
+            <p className="text-3xl font-black text-blue-300 font-mono">{inProgressReports.length}</p>
+            <p className="text-[11px] text-slate-400 mt-1">Crew on site</p>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('resolved')}
+            className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
+              activeTab === 'resolved'
+                ? 'bg-sky-400/15 border-sky-400/50 shadow-[0_0_20px_rgba(56,189,248,0.25)] ring-1 ring-sky-400'
+                : 'bg-[#0A182B]/85 border-white/10 hover:border-white/20'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-mono font-bold text-slate-400">{t.organization.resolved}</span>
+              <CheckCircle2 className="w-4 h-4 text-sky-400" />
+            </div>
+            <p className="text-3xl font-black text-sky-300 font-mono">{resolvedReports.length}</p>
+            <p className="text-[11px] text-slate-400 mt-1">Completed & proofed</p>
+          </button>
+        </div>
+
+        {/* Action Table Panel */}
+        <div className="bg-[#0A182B]/85 rounded-3xl border border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.5)] overflow-hidden">
+          <div className="p-5 border-b border-white/10 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-black text-white">
-                Dhaka North City Corporation (DNCC)
-              </h1>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-civic-blue text-white">
-                Verified Civic Agency
+              <span className="font-extrabold text-sm text-white">
+                Assigned Hazard Dispatch Queue
+              </span>
+              <span className="text-xs font-mono bg-white/5 border border-white/10 px-2 py-0.5 rounded-full text-slate-300">
+                {currentTabReports.length} Active Records
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1">
-              Zone-4 Engineering, Waste Management & Drainage Rapid Response Desk
-            </p>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href="/map"
-            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition border border-white/20"
-          >
-            Zone Map
-          </Link>
-          <Link
-            href="/reports"
-            className="px-4 py-2 rounded-xl bg-civic-blue hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm"
-          >
-            Public Feed
-          </Link>
-        </div>
-      </div>
-
-      {/* 4 Metric Counter Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <button
-          onClick={() => setActiveTab('open')}
-          className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
-            activeTab === 'open'
-              ? 'bg-blue-50/80 border-navy shadow-md ring-2 ring-navy'
-              : 'bg-white border-surface-border hover:border-slate-300 shadow-subtle'
-          }`}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-muted">{t.organization.openReports}</span>
-            <Clock className="w-4 h-4 text-blue-600" />
-          </div>
-          <p className="text-3xl font-black text-navy">{openReports.length + 16}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Requires inspection</p>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('high_priority')}
-          className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
-            activeTab === 'high_priority'
-              ? 'bg-orange-50/80 border-orange-500 shadow-md ring-2 ring-orange-500'
-              : 'bg-white border-surface-border hover:border-slate-300 shadow-subtle'
-          }`}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-muted">{t.organization.highPriority}</span>
-            <AlertTriangle className="w-4 h-4 text-orange-500" />
-          </div>
-          <p className="text-3xl font-black text-orange-600">{highPriorityReports.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Immediate danger</p>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('in_progress')}
-          className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
-            activeTab === 'in_progress'
-              ? 'bg-indigo-50/80 border-indigo-600 shadow-md ring-2 ring-indigo-600'
-              : 'bg-white border-surface-border hover:border-slate-300 shadow-subtle'
-          }`}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-muted">{t.organization.inProgress}</span>
-            <Hammer className="w-4 h-4 text-indigo-600 animate-spin-slow" />
-          </div>
-          <p className="text-3xl font-black text-indigo-600">{inProgressReports.length + 8}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Crew dispatched on-site</p>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('resolved')}
-          className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
-            activeTab === 'resolved'
-              ? 'bg-blue-50/80 border-civic-blue shadow-md ring-2 ring-civic-blue'
-              : 'bg-white border-surface-border hover:border-slate-300 shadow-subtle'
-          }`}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-muted">{t.organization.resolved}</span>
-            <CheckCircle2 className="w-4 h-4 text-civic-blue" />
-          </div>
-          <p className="text-3xl font-black text-civic-blue">{resolvedReports.length + 65}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Citizen verified fixes</p>
-        </button>
-      </div>
-
-      {/* Active Tab Reports Table */}
-      <div className="bg-white rounded-3xl border border-surface-border shadow-subtle overflow-hidden p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-black text-navy capitalize">
-              {activeTab.replace('_', ' ')} Reports Management
-            </h3>
-            <p className="text-xs text-slate-500">
-              Assigned municipal incidents for verification, maintenance assignment, and resolution submission.
-            </p>
-          </div>
-          <span className="text-xs font-bold text-muted bg-slate-100 px-3 py-1 rounded-full">
-            {currentTabReports.length} incidents
-          </span>
-        </div>
-
-        <div className="overflow-x-auto -mx-6">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-y border-surface-border text-navy uppercase font-extrabold text-[10px] tracking-wider">
-              <tr>
-                <th className="py-3 px-6">{t.organization.tableId}</th>
-                <th className="py-3 px-4">{t.organization.tableCategory}</th>
-                <th className="py-3 px-4">{t.organization.tableLocation}</th>
-                <th className="py-3 px-4">{t.organization.tableSeverity}</th>
-                <th className="py-3 px-4">{t.organization.tableStatus}</th>
-                <th className="py-3 px-4">{t.organization.tableConfirmations}</th>
-                <th className="py-3 px-6 text-right">{t.organization.tableActions}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {currentTabReports.map((report) => (
-                <tr key={report.id} className="hover:bg-slate-50/80 transition">
-                  <td className="py-3 px-6 font-mono font-bold text-navy whitespace-nowrap">
-                    {report.publicId}
-                  </td>
-                  <td className="py-3 px-4 capitalize font-semibold text-slate-700 whitespace-nowrap">
-                    {report.categoryId.replace('_', ' ')}
-                  </td>
-                  <td className="py-3 px-4 max-w-xs truncate text-slate-800">
-                    <p className="font-bold truncate">{report.title}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{report.locationName}</p>
-                  </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    <SeverityBadge severity={report.severity} size="sm" showIcon={false} />
-                  </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    <StatusBadge status={report.status} size="sm" />
-                  </td>
-                  <td className="py-3 px-4 whitespace-nowrap font-bold text-navy">
-                    👥 {report.confirmationsCount}
-                  </td>
-                  <td className="py-3 px-6 whitespace-nowrap text-right space-x-1.5">
-                    {report.status !== 'IN_PROGRESS' && report.status !== 'RESOLVED' && (
-                      <button
-                        onClick={() => updateReportStatus(report.id, 'IN_PROGRESS', 'Assigned crew on route')}
-                        className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] border border-blue-200 transition"
-                      >
-                        {t.organization.btnMarkInProgress}
-                      </button>
-                    )}
-
-                    {report.status !== 'RESOLVED' ? (
-                      <button
-                        onClick={() => handleOpenResolveModal(report)}
-                        className="px-3 py-1 rounded-lg bg-civic-blue hover:bg-civic-royal text-white font-extrabold text-[11px] shadow-sm transition"
-                      >
-                        {t.organization.btnResolve}
-                      </button>
-                    ) : (
-                      <Link
-                        href={`/report/${report.id}`}
-                        className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition inline-block"
-                      >
-                        View Proof ✓
-                      </Link>
-                    )}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-white/5 border-b border-white/10 text-slate-300 uppercase font-mono font-bold text-[10px] tracking-wider">
+                <tr>
+                  <th className="py-3 px-6">{t.organization.tableId}</th>
+                  <th className="py-3 px-4">{t.organization.tableCategory}</th>
+                  <th className="py-3 px-4">{t.organization.tableLocation}</th>
+                  <th className="py-3 px-4">{t.organization.tableSeverity}</th>
+                  <th className="py-3 px-4">{t.organization.tableStatus}</th>
+                  <th className="py-3 px-4">{t.organization.tableConfirmations}</th>
+                  <th className="py-3 px-6 text-right">{t.organization.tableActions}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {currentTabReports.map((report) => (
+                  <tr key={report.id} className="hover:bg-white/5 transition">
+                    <td className="py-3 px-6 font-mono font-bold text-sky-300 whitespace-nowrap">
+                      {report.publicId}
+                    </td>
+                    <td className="py-3 px-4 capitalize font-semibold text-slate-200 whitespace-nowrap">
+                      {report.categoryId.replace('_', ' ')}
+                    </td>
+                    <td className="py-3 px-4 max-w-xs truncate text-white">
+                      <p className="font-bold truncate">{report.title}</p>
+                      <p className="text-[11px] text-slate-400 truncate mt-0.5">{report.locationName}</p>
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      <SeverityBadge severity={report.severity} size="sm" showIcon={false} />
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      <StatusBadge status={report.status} size="sm" />
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap font-bold text-white">
+                      👥 {report.confirmationsCount}
+                    </td>
+                    <td className="py-3 px-6 whitespace-nowrap text-right space-x-1.5">
+                      {report.status !== 'IN_PROGRESS' && report.status !== 'RESOLVED' && (
+                        <button
+                          onClick={() => updateReportStatus(report.id, 'IN_PROGRESS', 'Assigned crew on route')}
+                          className="px-2.5 py-1 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-sky-300 font-bold text-[11px] border border-blue-400/30 transition"
+                        >
+                          {t.organization.btnMarkInProgress}
+                        </button>
+                      )}
 
-      {/* RESOLUTION SUBMISSION MODAL */}
-      {resolvingReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-surface-border overflow-hidden animate-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="bg-navy p-5 text-white flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-civic-blue/20 text-blue-300 flex items-center justify-center">
-                  <CheckCircle2 className="w-6 h-6" />
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-slate-300">
-                    Official Maintenance Proof
-                  </span>
-                  <h3 className="text-base font-extrabold text-white">
-                    {t.organization.resolveModalTitle} ({resolvingReport.publicId})
-                  </h3>
-                </div>
-              </div>
-              <button
-                onClick={() => setResolvingReport(null)}
-                className="p-1 rounded-full text-slate-300 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <form onSubmit={handleConfirmResolution} className="p-6 space-y-5">
-              {/* Problem Title & Location info */}
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-                <p className="font-extrabold text-navy">{resolvingReport.title}</p>
-                <p className="text-slate-500 mt-0.5">{resolvingReport.locationName}</p>
-              </div>
-
-              {/* Before & After Photo Comparison Upload */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Before Photo (Existing) */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-navy">
-                    {t.organization.beforePhoto}
-                  </label>
-                  <div className="relative h-36 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900">
-                    <img
-                      src={resolvingReport.mediaUrl || resolvingReport.imageUrl}
-                      alt="Original Hazard"
-                      className="w-full h-full object-cover"
-                    />
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-extrabold bg-emergency text-white">
-                      Original Hazard
-                    </span>
-                  </div>
-                </div>
-
-                {/* After Photo (Resolution) */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-navy">
-                    {t.organization.afterPhoto}
-                  </label>
-                  <div className="relative h-36 rounded-2xl overflow-hidden border border-slate-200 bg-slate-900">
-                    <img
-                      src={afterImage}
-                      alt="Repaired Resolution"
-                      className="w-full h-full object-cover"
-                    />
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-extrabold bg-civic-blue text-white">
-                      Repaired & Cleared
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick sample After-Photos for test selection */}
-              <div className="space-y-1.5">
-                <span className="text-[11px] text-muted font-bold block">
-                  Select resolution photo proof:
-                </span>
-                <div className="flex gap-2">
-                  {[
-                    { label: 'Fresh Asphalt', url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186f5f7?auto=format&fit=crop&w=800&q=80' },
-                    { label: 'Cleaned Road', url: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80' },
-                    { label: 'Repaired Lights', url: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=800&q=80' },
-                  ].map((item, idx) => (
-                    <button
-                      type="button"
-                      key={idx}
-                      onClick={() => setAfterImage(item.url)}
-                      className={`text-[11px] font-bold px-3 py-1.5 rounded-xl border transition ${
-                        afterImage === item.url
-                          ? 'bg-civic-blue text-white border-civic-blue shadow-sm'
-                          : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* What was done description */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-navy">
-                  {t.organization.resolveDescriptionLabel} <span className="text-emergency">*</span>
-                </label>
-                <textarea
-                  required
-                  rows={3}
-                  value={resolutionDesc}
-                  onChange={(e) => setResolutionDesc(e.target.value)}
-                  placeholder={t.organization.resolvePlaceholder}
-                  className="w-full p-3 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
-                />
-              </div>
-
-              {/* Submit Buttons */}
-              <div className="pt-2 flex items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setResolvingReport(null)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-civic-blue hover:bg-civic-royal text-white text-xs font-black shadow-md transition"
-                >
-                  {t.organization.submitResolutionBtn}
-                </button>
-              </div>
-            </form>
+                      {report.status !== 'RESOLVED' ? (
+                        <button
+                          onClick={() => handleOpenResolveModal(report)}
+                          className="px-3 py-1 rounded-lg bg-sky-400 hover:bg-sky-300 text-[#071320] font-black text-[11px] shadow-sm transition"
+                        >
+                          {t.organization.btnResolve}
+                        </button>
+                      ) : (
+                        <Link
+                          href={`/report/${report.id}`}
+                          className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 font-bold text-[11px] transition inline-block"
+                        >
+                          View Proof ✓
+                        </Link>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-      )}
+
+        {/* RESOLUTION SUBMISSION MODAL */}
+        {resolvingReport && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="relative w-full max-w-2xl bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-sky-500/20 text-white">
+              {/* Modal Header */}
+              <div className="bg-white/5 p-5 text-white flex items-center justify-between border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-400/30 flex items-center justify-center">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono font-bold text-sky-300">
+                      Official Maintenance Proof
+                    </span>
+                    <h3 className="text-base font-extrabold text-white">
+                      {t.organization.resolveModalTitle} ({resolvingReport.publicId})
+                    </h3>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setResolvingReport(null)}
+                  className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-white/10"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <form onSubmit={handleConfirmResolution} className="p-6 space-y-5">
+                {/* Problem Title & Location info */}
+                <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-xs">
+                  <p className="font-extrabold text-white">{resolvingReport.title}</p>
+                  <p className="text-slate-400 mt-0.5">{resolvingReport.locationName}</p>
+                </div>
+
+                {/* Before & After Photo Comparison Upload */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Before Photo */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300">
+                      {t.organization.beforePhoto}
+                    </label>
+                    <div className="relative h-36 rounded-2xl overflow-hidden border border-white/10 bg-slate-900">
+                      <img
+                        src={resolvingReport.mediaUrl || resolvingReport.imageUrl}
+                        alt="Original Hazard"
+                        className="w-full h-full object-cover"
+                      />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-mono font-extrabold bg-emergency text-white">
+                        Original Hazard
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* After Photo */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300">
+                      {t.organization.afterPhoto}
+                    </label>
+                    <div className="relative h-36 rounded-2xl overflow-hidden border border-white/10 bg-slate-900">
+                      <img
+                        src={afterImage}
+                        alt="Repaired Resolution"
+                        className="w-full h-full object-cover"
+                      />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-mono font-extrabold bg-sky-500 text-white">
+                        Repaired & Cleared
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick sample After-Photos */}
+                <div className="space-y-1.5">
+                  <span className="text-[11px] text-slate-400 font-mono font-bold block">
+                    Select resolution photo proof:
+                  </span>
+                  <div className="flex gap-2">
+                    {[
+                      { label: 'Fresh Asphalt', url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186f5f7?auto=format&fit=crop&w=800&q=80' },
+                      { label: 'Cleaned Road', url: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80' },
+                      { label: 'Repaired Lights', url: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=800&q=80' },
+                    ].map((item, idx) => (
+                      <button
+                        type="button"
+                        key={idx}
+                        onClick={() => setAfterImage(item.url)}
+                        className={`text-[11px] font-bold px-3 py-1.5 rounded-xl border transition ${
+                          afterImage === item.url
+                            ? 'bg-sky-400 text-[#071320] font-black border-sky-400 shadow-sm'
+                            : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* What was done description */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-300">
+                    {t.organization.resolveDescriptionLabel} <span className="text-emergency">*</span>
+                  </label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={resolutionDesc}
+                    onChange={(e) => setResolutionDesc(e.target.value)}
+                    placeholder={t.organization.resolvePlaceholder}
+                    className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 text-xs sm:text-sm focus:border-sky-400 focus:bg-white/10 focus:outline-none transition"
+                  />
+                </div>
+
+                {/* Submit Buttons */}
+                <div className="pt-2 flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setResolvingReport(null)}
+                    className="px-4 py-2.5 rounded-full border border-white/10 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 rounded-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white text-xs font-black shadow-md transition"
+                  >
+                    {t.organization.submitResolutionBtn}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

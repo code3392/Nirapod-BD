@@ -32,7 +32,7 @@ export default function HomePage() {
       <PartnershipShowcase />
 
       {/* 6. Community Action Callout with Modern SVG Cyber Mesh */}
-      <section className="py-20 bg-surface border-t border-surface-border relative overflow-hidden">
+      <section className="py-20 bg-[#060D1A] border-t border-white/10 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-8 sm:p-14 rounded-3xl bg-[#071320] text-white relative overflow-hidden shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/15 group">
             

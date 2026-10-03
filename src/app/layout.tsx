@@ -69,7 +69,7 @@ export default function RootLayout({
           rel="stylesheet" 
         />
       </head>
-      <body className="min-h-screen flex flex-col font-sans bg-surface text-darktext antialiased relative overflow-x-hidden selection:bg-civic-blue/20 selection:text-navy">
+      <body className="min-h-screen flex flex-col font-sans bg-[#060D1A] text-slate-100 antialiased relative overflow-x-hidden selection:bg-sky-500/30 selection:text-white">
         <AppProvider>
           <BackgroundCyberCanvas />
           <OfflineBanner />

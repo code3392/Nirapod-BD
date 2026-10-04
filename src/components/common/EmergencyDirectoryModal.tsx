@@ -157,7 +157,7 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
                   <span className="text-[9px] font-mono uppercase font-bold text-sky-400">DMP Police Thana</span>
                   <h4 className="text-xs font-bold text-white truncate">{activePolice.thanaName}</h4>
                   <p className="text-[11px] text-slate-400 truncate">{activePolice.address}</p>
-                  <p className="text-xs font-mono font-bold text-slate-300 mt-1">Duty Officer: {activePolice.dutyOfficerMobile}</p>
+                  <p className="text-xs font-display tabular-nums font-bold text-slate-300 mt-1">Duty Officer: {activePolice.dutyOfficerMobile}</p>
                 </div>
                 <a
                   href={`tel:${activePolice.dutyOfficerMobile}`}
@@ -172,10 +172,10 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
               {/* Hospital Box */}
               <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <span className="text-[9px] font-mono uppercase font-bold text-red-400">Emergency Hospital</span>
+                  <span className="text-[9px] font-sans uppercase font-bold text-red-400">Emergency Hospital</span>
                   <h4 className="text-xs font-bold text-white truncate">{activeHospital.hospitalName}</h4>
                   <p className="text-[11px] text-slate-400 truncate">{activeHospital.address}</p>
-                  <p className="text-xs font-mono font-bold text-slate-300 mt-1">Ambulance: {activeHospital.ambulanceHotline}</p>
+                  <p className="text-xs font-display tabular-nums font-bold text-slate-300 mt-1">Ambulance: {activeHospital.ambulanceHotline}</p>
                 </div>
                 <a
                   href={`tel:${activeHospital.ambulanceHotline}`}
@@ -223,8 +223,8 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
 
                   <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
                     <div>
-                      <span className="text-[9px] font-mono text-slate-400 block font-semibold">DIAL NUMBER</span>
-                      <span className="text-lg font-mono font-black text-sky-300">{provider.number}</span>
+                      <span className="text-[9px] font-sans text-slate-400 block font-bold tracking-wider">DIAL NUMBER</span>
+                      <span className="text-xl font-display font-black text-sky-300 tabular-nums tracking-wide">{provider.number}</span>
                     </div>
 
                     <a

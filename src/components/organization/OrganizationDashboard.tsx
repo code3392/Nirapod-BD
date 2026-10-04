@@ -119,10 +119,10 @@ export default function OrganizationDashboard() {
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-mono font-bold text-slate-400">{t.organization.openReports}</span>
+              <span className="text-xs font-sans font-bold text-slate-400">{t.organization.openReports}</span>
               <Clock className="w-4 h-4 text-sky-400" />
             </div>
-            <p className="text-3xl font-black text-white font-mono">{openReports.length + 16}</p>
+            <p className="text-3xl font-black text-white font-display tabular-nums">{openReports.length + 16}</p>
             <p className="text-[11px] text-slate-400 mt-1">Requires inspection</p>
           </button>
 
@@ -135,10 +135,10 @@ export default function OrganizationDashboard() {
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-mono font-bold text-slate-400">{t.organization.highPriority}</span>
+              <span className="text-xs font-sans font-bold text-slate-400">{t.organization.highPriority}</span>
               <AlertTriangle className="w-4 h-4 text-orange-400" />
             </div>
-            <p className="text-3xl font-black text-orange-400 font-mono">{highPriorityReports.length}</p>
+            <p className="text-3xl font-black text-orange-400 font-display tabular-nums">{highPriorityReports.length}</p>
             <p className="text-[11px] text-slate-400 mt-1">Immediate danger</p>
           </button>
 
@@ -151,10 +151,10 @@ export default function OrganizationDashboard() {
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-mono font-bold text-slate-400">{t.organization.inProgress}</span>
+              <span className="text-xs font-sans font-bold text-slate-400">{t.organization.inProgress}</span>
               <Hammer className="w-4 h-4 text-blue-400" />
             </div>
-            <p className="text-3xl font-black text-blue-300 font-mono">{inProgressReports.length}</p>
+            <p className="text-3xl font-black text-blue-300 font-display tabular-nums">{inProgressReports.length}</p>
             <p className="text-[11px] text-slate-400 mt-1">Crew on site</p>
           </button>
 
@@ -167,10 +167,10 @@ export default function OrganizationDashboard() {
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-mono font-bold text-slate-400">{t.organization.resolved}</span>
+              <span className="text-xs font-sans font-bold text-slate-400">{t.organization.resolved}</span>
               <CheckCircle2 className="w-4 h-4 text-sky-400" />
             </div>
-            <p className="text-3xl font-black text-sky-300 font-mono">{resolvedReports.length}</p>
+            <p className="text-3xl font-black text-sky-300 font-display tabular-nums">{resolvedReports.length}</p>
             <p className="text-[11px] text-slate-400 mt-1">Completed & proofed</p>
           </button>
         </div>

@@ -82,7 +82,7 @@ export default function HowItWorks() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/15 border border-sky-400/30 text-xs font-mono font-bold text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/15 border border-sky-400/30 text-xs font-display font-bold text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
             <ShieldCheck className="w-4 h-4 text-sky-400" />
             <span>5-Step Verified Protocol</span>
           </div>
@@ -97,7 +97,7 @@ export default function HowItWorks() {
 
           {/* Connected Flow Ribbon */}
           <div className="pt-2">
-            <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl text-xs font-mono font-semibold text-slate-300 shadow-glass">
+            <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl text-xs font-display font-semibold text-slate-300 shadow-glass">
               <span className="text-white flex items-center gap-1.5 font-bold">
                 <Camera className="w-3.5 h-3.5 text-sky-400" /> 01 Report
               </span>
@@ -132,10 +132,10 @@ export default function HowItWorks() {
               <div className="space-y-5">
                 {/* Header with Step Number & Tag */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-black px-2.5 py-1 rounded-xl bg-white/5 text-sky-300 border border-white/10 group-hover:bg-sky-400 group-hover:text-[#071320] transition-colors">
+                  <span className="text-xs font-display font-black px-2.5 py-1 rounded-xl bg-white/5 text-sky-300 border border-white/10 group-hover:bg-sky-400 group-hover:text-[#071320] transition-colors tabular-nums">
                     {step.number}
                   </span>
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30">
+                  <span className="text-[10px] font-sans font-bold px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30">
                     {step.tag}
                   </span>
                 </div>

@@ -12,7 +12,7 @@
     --font-sans: 'DM Sans', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
     --font-display: 'Space Grotesk', 'Hind Siliguri', system-ui, sans-serif;
     --font-hind: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-mono: 'Space Grotesk', 'DM Sans', sans-serif;
   }
 
   html {
@@ -37,6 +37,12 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.025em;
+  }
+
+  /* Clean modern geometric numbers without slashed zeros */
+  .font-mono, .font-num, .font-numbers, .tabular-nums {
+    font-family: 'Space Grotesk', 'DM Sans', sans-serif;
+    font-feature-settings: "zero" 0, "tnum" 1;
   }
 
   /* Bengali text typography refinement */

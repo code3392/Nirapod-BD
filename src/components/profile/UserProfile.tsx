@@ -382,19 +382,19 @@ export default function UserProfile() {
         {/* 4 Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-100">
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-navy">{user.reportsSubmitted}</span>
+            <span className="text-2xl sm:text-3xl font-black text-navy font-display tabular-nums">{user.reportsSubmitted}</span>
             <p className="text-xs text-muted font-bold mt-0.5">{t.profile.reportsSubmitted}</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-civic-blue">{user.reportsVerified}</span>
+            <span className="text-2xl sm:text-3xl font-black text-civic-blue font-display tabular-nums">{user.reportsVerified}</span>
             <p className="text-xs text-muted font-bold mt-0.5">{t.profile.reportsVerified}</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-indigo-600">{user.helpfulConfirmations}</span>
+            <span className="text-2xl sm:text-3xl font-black text-indigo-600 font-display tabular-nums">{user.helpfulConfirmations}</span>
             <p className="text-xs text-muted font-bold mt-0.5">{t.profile.helpfulVotes}</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-warning">{user.points}</span>
+            <span className="text-2xl sm:text-3xl font-black text-warning font-display tabular-nums">{user.points}</span>
             <p className="text-xs text-muted font-bold mt-0.5">{t.profile.points}</p>
           </div>
         </div>

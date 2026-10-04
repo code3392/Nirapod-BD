@@ -283,7 +283,7 @@ export default function Navbar() {
                   <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-400">
                     {language === 'en' ? 'Civic Tools & Portals' : 'নাগরিক সেবা ও অপশন'}
                   </span>
-                  <span className="text-[10px] font-mono font-bold text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-400/30">
+                  <span className="text-[10px] font-display font-bold text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-400/30 tabular-nums">
                     {optionLinks.length} Services
                   </span>
                 </div>
@@ -401,7 +401,7 @@ export default function Navbar() {
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-xs text-white">{t.nav.notifications}</span>
                     {unreadNotificationsCount > 0 && (
-                      <span className="text-[10px] font-mono bg-emergency/20 text-red-300 border border-emergency/40 font-bold px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-display bg-emergency/20 text-red-300 border border-emergency/40 font-bold px-2 py-0.5 rounded-full tabular-nums">
                         {unreadNotificationsCount} new
                       </span>
                     )}
@@ -492,7 +492,7 @@ export default function Navbar() {
                     SUPER
                   </span>
                 ) : (
-                  <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                  <span className="text-[9px] font-display font-extrabold px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 tabular-nums">
                     {user.points}p
                   </span>
                 )}

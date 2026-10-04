@@ -93,7 +93,7 @@ export default function MapPreviewSection() {
           
           {/* Top Filter Bar inside Map */}
           <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 bg-[#0A1628]/90 backdrop-blur-xl p-3 rounded-2xl border border-white/10 shadow-lg">
-            <div className="flex flex-wrap items-center gap-2 text-xs font-bold font-mono">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-bold font-sans">
               <button
                 onClick={() => setFilterSeverity('all')}
                 className={`px-3 py-1.5 rounded-xl transition ${
@@ -230,7 +230,7 @@ export default function MapPreviewSection() {
                     <ShieldCheck className="w-6 h-6 animate-pulse" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-400/30 inline-block mb-1.5">
+                    <span className="text-[10px] font-display font-bold uppercase tracking-widest text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-400/30 inline-block mb-1.5 tabular-nums">
                       Live Telemetry • 0 Active Threats
                     </span>
                     <h4 className="text-base font-black text-white">Dhaka Safety Mesh Active</h4>

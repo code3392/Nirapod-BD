@@ -55,7 +55,7 @@ export default function Hero() {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-400" />
               </span>
               <span>Bangladesh Civic Safety Network</span>
-              <span className="text-[11px] text-slate-400 font-mono hidden sm:inline">• 24/7 Verified</span>
+              <span className="text-[11px] text-slate-400 font-display font-medium hidden sm:inline">• 24/7 Verified</span>
             </div>
 
             {/* Headline */}
@@ -109,7 +109,7 @@ export default function Hero() {
 
               <a
                 href="tel:999"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-xs h-12 w-full min-[420px]:w-auto rounded-xl border-emergency/40 bg-emergency/15 px-4 font-bold text-red-300 hover:bg-emergency/25 backdrop-blur-md font-mono"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-xs h-12 w-full min-[420px]:w-auto rounded-xl border-emergency/40 bg-emergency/15 px-4 font-bold text-red-300 hover:bg-emergency/25 backdrop-blur-md font-display"
                 title="Immediate Police / Fire / Ambulance Emergency"
               >
                 <PhoneCall className="w-3.5 h-3.5 text-emergency" />
@@ -200,14 +200,14 @@ export default function Hero() {
                       <div className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-emergency" />
                         <span className="font-extrabold text-white">{current.name}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">({current.area})</span>
+                        <span className="text-[10px] text-slate-400 font-display">({current.area})</span>
                       </div>
-                      <span className="text-[10px] font-mono font-bold text-sky-400 bg-sky-400/10 px-2 py-0.5 rounded border border-sky-400/20">
+                      <span className="text-[10px] font-display font-bold text-sky-400 bg-sky-400/10 px-2 py-0.5 rounded border border-sky-400/20">
                         {current.status}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-slate-400 pt-1 border-t border-white/5">
+                    <div className="grid grid-cols-2 gap-2 text-[10px] font-display tabular-nums text-slate-400 pt-1 border-t border-white/5">
                       <div>GPS: <span className="text-slate-200">{current.lat}, {current.lng}</span></div>
                       <div className="text-right">Threats: <span className="text-sky-300 font-bold">0 Active</span></div>
                     </div>

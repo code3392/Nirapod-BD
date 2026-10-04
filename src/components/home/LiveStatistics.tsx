@@ -85,13 +85,13 @@ export default function LiveStatistics() {
               <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-400/30 flex items-center justify-center text-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.2)] group-hover:scale-110 transition-transform">
                 <FileText className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-full bg-blue-500/10 text-sky-300 border border-blue-400/25">
+              <span className="text-[10px] font-sans font-bold uppercase px-2.5 py-1 rounded-full bg-blue-500/10 text-sky-300 border border-blue-400/25">
                 {language === 'en' ? 'Submissions' : 'মোট অভিযোগ'}
               </span>
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-mono">
+              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-display tabular-nums">
                 {counts.reports.toLocaleString()}
               </h3>
               <p className="text-xs sm:text-sm font-bold text-slate-300">
@@ -108,13 +108,13 @@ export default function LiveStatistics() {
               <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.2)] group-hover:scale-110 transition-transform">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-300 border border-sky-400/25">
+              <span className="text-[10px] font-display font-bold uppercase px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-300 border border-sky-400/25">
                 {resolutionRate}% {language === 'en' ? 'Resolved' : 'সমাধান'}
               </span>
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-sky-200 to-white font-mono">
+              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-sky-200 to-white font-display tabular-nums">
                 {counts.resolved.toLocaleString()}
               </h3>
               <p className="text-xs sm:text-sm font-bold text-slate-300">
@@ -131,13 +131,13 @@ export default function LiveStatistics() {
               <div className="w-12 h-12 rounded-2xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-300 shadow-[0_0_15px_rgba(37,99,235,0.2)] group-hover:scale-110 transition-transform">
                 <Users className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-full bg-blue-600/10 text-blue-300 border border-blue-500/25">
+              <span className="text-[10px] font-sans font-bold uppercase px-2.5 py-1 rounded-full bg-blue-600/10 text-blue-300 border border-blue-500/25">
                 {language === 'en' ? 'Guardians' : 'সচেতন প্রহরী'}
               </span>
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-mono">
+              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-display tabular-nums">
                 {counts.members.toLocaleString()}
               </h3>
               <p className="text-xs sm:text-sm font-bold text-slate-300">
@@ -154,13 +154,13 @@ export default function LiveStatistics() {
               <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)] group-hover:scale-110 transition-transform">
                 <AlertCircle className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-400/25">
+              <span className="text-[10px] font-sans font-bold uppercase px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-400/25">
                 {language === 'en' ? 'Active Action' : 'তদন্তাধীন'}
               </span>
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-amber-300 font-mono">
+              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-amber-300 font-display tabular-nums">
                 {counts.active.toLocaleString()}
               </h3>
               <p className="text-xs sm:text-sm font-bold text-slate-300">

@@ -221,7 +221,7 @@ export default function SafetyCirclesView() {
               </div>
 
               {sosCountdown !== null && (
-                <div className="text-6xl font-black text-emergency font-mono animate-pulse">
+                <div className="text-6xl font-black text-emergency font-display tabular-nums tracking-tight animate-pulse">
                   0{sosCountdown}
                 </div>
               )}

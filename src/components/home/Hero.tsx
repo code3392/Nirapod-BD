@@ -31,13 +31,6 @@ export default function Hero() {
     { name: 'Motijheel', area: 'Zone 6', lat: '23.7330° N', lng: '90.4172° E', status: 'Optimal', x: 72, y: 74 },
   ];
 
-  const quickCategories = [
-    { id: 'road_traffic', labelEn: 'Road Hazard', labelBn: 'সড়ক সমস্যা', icon: '🚗' },
-    { id: 'waterlogging', labelEn: 'Waterlogging', labelBn: 'জলাবদ্ধতা', icon: '💧' },
-    { id: 'electrical', labelEn: 'Electrical Wire', labelBn: 'বিদ্যুৎ বিপর্যয়', icon: '⚡' },
-    { id: 'streetlight', labelEn: 'Streetlight', labelBn: 'নিষ্ক্রিয় বাতি', icon: '💡' },
-  ];
-
   return (
     <section className="relative min-h-[92svh] w-full border-b border-white/10 bg-[#071320] flex items-center overflow-hidden text-white py-14 lg:py-20">
       {/* Background Subtle Gradient & Pure CSS Civic Grid */}
@@ -96,25 +89,6 @@ export default function Hero() {
               </p>
             </div>
 
-            {/* Quick Category Launchers */}
-            <div className="space-y-2">
-              <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold">
-                {language === 'en' ? 'Quick Hazard Report Launchpad:' : 'দ্রুত রিপোর্ট করুন:'}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {quickCategories.map((cat) => (
-                  <Link
-                    key={cat.id}
-                    href={`/report/new?cat=${cat.id}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-sky-400/40 text-xs font-semibold text-slate-200 hover:text-white transition shadow-sm backdrop-blur-sm tracking-[-0.01em]"
-                  >
-                    <span>{cat.icon}</span>
-                    <span>{language === 'en' ? cat.labelEn : cat.labelBn}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
             {/* Primary & Secondary Action Buttons */}
             <div className="flex flex-col min-[420px]:flex-row flex-wrap gap-3 pt-2">
               <Link
@@ -141,30 +115,6 @@ export default function Hero() {
                 <PhoneCall className="w-3.5 h-3.5 text-emergency" />
                 <span>Call 999 Hotline</span>
               </a>
-            </div>
-
-            {/* 3-Column Metrics Ribbon (findit.works signature component) */}
-            <div className="grid max-w-xl grid-cols-3 border-y border-white/10 pt-1">
-              <div className="border-r border-white/10 py-3 sm:py-4 px-2 sm:px-4">
-                <p className="truncate text-xs sm:text-sm font-black text-white font-mono tracking-tight">0 Fake Reports</p>
-                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-wider text-sky-400 font-mono font-bold">
-                  100% VERIFIED
-                </p>
-              </div>
-
-              <div className="border-r border-white/10 py-3 sm:py-4 px-2 sm:px-4">
-                <p className="truncate text-xs sm:text-sm font-black text-white font-mono tracking-tight">54 Wards</p>
-                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-mono font-bold">
-                  DHAKA LIVE MESH
-                </p>
-              </div>
-
-              <div className="py-3 sm:py-4 px-2 sm:px-4">
-                <p className="truncate text-xs sm:text-sm font-black text-white font-mono tracking-tight">Toll-Free 999</p>
-                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-wider text-red-400 font-mono font-bold">
-                  EMERGENCY READY
-                </p>
-              </div>
             </div>
 
           </div>

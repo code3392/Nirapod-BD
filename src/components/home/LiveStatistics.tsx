@@ -98,14 +98,6 @@ export default function LiveStatistics() {
                 {t.stats.totalReportsLabel}
               </p>
             </div>
-
-            <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
-              <span>Authentic Records</span>
-              <span className="text-sky-400 font-bold flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping" />
-                Live Mesh
-              </span>
-            </div>
           </div>
 
           {/* Card 2: Resolution Velocity & Percentage */}
@@ -128,14 +120,6 @@ export default function LiveStatistics() {
               <p className="text-xs sm:text-sm font-bold text-slate-300">
                 {t.stats.resolvedLabel}
               </p>
-            </div>
-
-            <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
-              <span>Verified Repairs</span>
-              <span className="text-sky-300 font-bold flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-                Rule 25 Sealed
-              </span>
             </div>
           </div>
 
@@ -160,14 +144,6 @@ export default function LiveStatistics() {
                 {t.stats.membersLabel}
               </p>
             </div>
-
-            <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
-              <span>Dhaka City Patrols</span>
-              <span className="text-blue-300 font-bold flex items-center gap-1.5">
-                <Radio className="w-3.5 h-3.5 text-blue-400" />
-                54 Wards
-              </span>
-            </div>
           </div>
 
           {/* Card 4: Under Active Action */}
@@ -191,32 +167,8 @@ export default function LiveStatistics() {
                 {t.stats.activeReportsLabel}
               </p>
             </div>
-
-            <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
-              <span>Authority Triage</span>
-              <span className="text-amber-400 font-bold flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-amber-400" />
-                In Progress
-              </span>
-            </div>
           </div>
 
-        </div>
-
-        {/* Live Network Telemetry Ticker (Cyber Obsidian Bar) */}
-        <div className="p-3.5 rounded-2xl bg-[#0A182B]/60 backdrop-blur-xl border border-white/10 shadow-glass flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2.5 text-slate-300">
-            <Activity className="w-4 h-4 text-sky-400 animate-pulse" />
-            <span className="font-mono font-bold text-white uppercase tracking-wider text-[11px]">Mesh Telemetry:</span>
-            <span className="text-slate-400 text-xs">
-              Dhaka Metropolitan Safety Mesh Active • 54 Ward Sentinel Nodes Online • AI Anti-Fraud Filter Active
-            </span>
-          </div>
-
-          <p className="inline-flex items-center gap-1.5 text-[11px] font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-full border border-white/10 shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping" />
-            <span>Zero Fake Personas • 100% Real Records</span>
-          </p>
         </div>
 
       </div>

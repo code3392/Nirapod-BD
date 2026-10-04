@@ -56,7 +56,7 @@ export default function Hero() {
           <div className="lg:col-span-7 space-y-6 sm:space-y-8">
             
             {/* Top Status Pill */}
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-sky-400/25 bg-white/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-sky-300 backdrop-blur-md">
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-sky-400/25 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-sky-300 backdrop-blur-md">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-400" />
@@ -66,28 +66,30 @@ export default function Hero() {
             </div>
 
             {/* Headline */}
-            <div className="space-y-3">
-              <h1 className="font-display text-[clamp(2.75rem,7.5vw,5.5rem)] font-black leading-[0.88] tracking-[-0.06em] text-white">
+            <div className="space-y-4">
+              <h1 className="text-[clamp(2.5rem,6.2vw,4.85rem)] font-black text-white font-display">
                 {language === 'en' ? (
-                  <>
+                  <span className="block leading-[1.05] tracking-[-0.03em]">
                     MAKE YOUR<br />
                     COMMUNITY<br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-white">
                       SAFER.
                     </span>
-                  </>
+                  </span>
                 ) : (
-                  <>
+                  <span className="block font-bengali leading-[1.22] tracking-normal font-extrabold">
                     আপনার এলাকাকে<br />
                     করুন আরও<br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-white">
                       নিরাপদ।
                     </span>
-                  </>
+                  </span>
                 )}
               </h1>
 
-              <p className="max-w-xl text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+              <p className={`max-w-xl text-base sm:text-lg text-slate-300 leading-relaxed font-normal ${
+                language === 'bn' ? 'font-bengali text-[17px]' : 'tracking-[-0.01em]'
+              }`}>
                 {language === 'en'
                   ? 'See a problem. Report it. Help your community solve it. Nirapod BD unites proactive citizens, AI-assisted verification, and rapid municipal responders across Bangladesh.'
                   : 'সমস্যা দেখুন। রিপোর্ট করুন। এলাকাবাসীর সাথে সমাধান করুন। নিরাপদ বিডি নাগরিকদের সক্রিয় অংশগ্রহণ, কৃত্রিম বুদ্ধিমত্তা ও স্থানীয় কর্তৃপক্ষের সমন্বয়ে একটি নিরাপদ সমাজ গড়ে তোলে।'}
@@ -104,7 +106,7 @@ export default function Hero() {
                   <Link
                     key={cat.id}
                     href={`/report/new?cat=${cat.id}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-sky-400/40 text-xs font-semibold text-slate-200 hover:text-white transition shadow-sm backdrop-blur-sm"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-sky-400/40 text-xs font-semibold text-slate-200 hover:text-white transition shadow-sm backdrop-blur-sm tracking-[-0.01em]"
                   >
                     <span>{cat.icon}</span>
                     <span>{language === 'en' ? cat.labelEn : cat.labelBn}</span>
@@ -117,7 +119,7 @@ export default function Hero() {
             <div className="flex flex-col min-[420px]:flex-row flex-wrap gap-3 pt-2">
               <Link
                 href="/report/new"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] shadow-lg text-base h-12 w-full min-[420px]:w-auto rounded-xl bg-emergency hover:bg-emergency-hover px-7 font-extrabold text-white border border-emergency/50 group"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] shadow-lg text-base h-12 w-full min-[420px]:w-auto rounded-xl bg-emergency hover:bg-emergency-hover px-7 font-extrabold text-white border border-emergency/50 group tracking-[-0.01em]"
               >
                 <span>🚨 {t.hero.primaryCta}</span>
                 <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -125,7 +127,7 @@ export default function Hero() {
 
               <Link
                 href="/map"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-base h-12 w-full min-[420px]:w-auto rounded-xl border-white/25 bg-white/[0.05] px-7 font-semibold text-white hover:bg-white/10 hover:border-sky-400/50 backdrop-blur-md"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-base h-12 w-full min-[420px]:w-auto rounded-xl border-white/25 bg-white/[0.05] px-7 font-semibold text-white hover:bg-white/10 hover:border-sky-400/50 backdrop-blur-md tracking-[-0.01em]"
               >
                 <span>🗺️ {t.hero.secondaryCta}</span>
                 <ArrowUpRight className="w-4 h-4 ml-1 text-slate-300" />
@@ -133,7 +135,7 @@ export default function Hero() {
 
               <a
                 href="tel:999"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-xs h-12 w-full min-[420px]:w-auto rounded-xl border-emergency/40 bg-emergency/15 px-4 font-bold text-red-300 hover:bg-emergency/25 backdrop-blur-md"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-xs h-12 w-full min-[420px]:w-auto rounded-xl border-emergency/40 bg-emergency/15 px-4 font-bold text-red-300 hover:bg-emergency/25 backdrop-blur-md font-mono"
                 title="Immediate Police / Fire / Ambulance Emergency"
               >
                 <PhoneCall className="w-3.5 h-3.5 text-emergency" />
@@ -144,22 +146,22 @@ export default function Hero() {
             {/* 3-Column Metrics Ribbon (findit.works signature component) */}
             <div className="grid max-w-xl grid-cols-3 border-y border-white/10 pt-1">
               <div className="border-r border-white/10 py-3 sm:py-4 px-2 sm:px-4">
-                <p className="truncate text-xs sm:text-sm font-black text-white">0 Fake Reports</p>
-                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-[0.08em] sm:tracking-[0.16em] text-sky-400 font-mono">
+                <p className="truncate text-xs sm:text-sm font-black text-white font-mono tracking-tight">0 Fake Reports</p>
+                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-wider text-sky-400 font-mono font-bold">
                   100% VERIFIED
                 </p>
               </div>
 
               <div className="border-r border-white/10 py-3 sm:py-4 px-2 sm:px-4">
-                <p className="truncate text-xs sm:text-sm font-black text-white">54 Wards</p>
-                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-[0.08em] sm:tracking-[0.16em] text-slate-400 font-mono">
+                <p className="truncate text-xs sm:text-sm font-black text-white font-mono tracking-tight">54 Wards</p>
+                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-mono font-bold">
                   DHAKA LIVE MESH
                 </p>
               </div>
 
               <div className="py-3 sm:py-4 px-2 sm:px-4">
-                <p className="truncate text-xs sm:text-sm font-black text-white">Toll-Free 999</p>
-                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-[0.08em] sm:tracking-[0.16em] text-red-400 font-mono">
+                <p className="truncate text-xs sm:text-sm font-black text-white font-mono tracking-tight">Toll-Free 999</p>
+                <p className="mt-0.5 sm:mt-1 truncate text-[9px] sm:text-[11px] uppercase tracking-wider text-red-400 font-mono font-bold">
                   EMERGENCY READY
                 </p>
               </div>

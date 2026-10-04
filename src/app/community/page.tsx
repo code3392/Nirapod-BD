@@ -2,8 +2,8 @@ import React from 'react';
 import CommunityHub from '@/components/community/CommunityHub';
 
 export const metadata = {
-  title: 'Community Neighborhood Hubs | Nirapod BD',
-  description: 'Area-wise civic discussions, neighborhood safety alerts, and mutual community assistance across Dhaka wards.',
+  title: 'Civic Community & Personal Groups | Nirapod BD',
+  description: '1 unified Bangladesh public safety community and private personal groups for family, workplace, and neighborhood safety coordination.',
 };
 
 export default function CommunityPage() {

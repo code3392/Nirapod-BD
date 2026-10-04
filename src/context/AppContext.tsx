@@ -11,6 +11,7 @@ import {
   ResolutionData,
   UserRole,
   CommunityMessage,
+  PersonalGroup,
   DirectMessage,
   LostAndFoundItem,
   SuspensionAuditLog
@@ -76,10 +77,13 @@ interface AppContextType {
   getReportById: (id: string) => Report | undefined;
   checkDuplicateReport: (lat: number, lng: number, categoryId: string) => { isDuplicate: boolean; matchedReport?: Report; distanceMeters?: number };
   
-  // Community Hub & Direct Messages
+  // 1 Main Community & Personal Groups
+  personalGroups: PersonalGroup[];
   communityMessages: CommunityMessage[];
   directMessages: DirectMessage[];
-  sendCommunityMessage: (area: string, content: string, fileAttachment?: CommunityMessage['fileAttachment']) => { success: boolean; violationReason?: string };
+  createPersonalGroup: (name: string, description: string, category: PersonalGroup['category'], isPrivate?: boolean) => { success: boolean; group?: PersonalGroup; error?: string };
+  joinPersonalGroup: (inviteCode: string) => { success: boolean; group?: PersonalGroup; error?: string };
+  sendCommunityMessage: (groupIdOrArea: string, content: string, fileAttachment?: CommunityMessage['fileAttachment']) => { success: boolean; violationReason?: string };
   sendDirectMessage: (recipientId: string, recipientName: string, content: string, fileAttachment?: DirectMessage['fileAttachment']) => { success: boolean; violationReason?: string };
   
   // Lost & Found
@@ -104,6 +108,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [isOffline, setIsOffline] = useState<boolean>(false);
   const [offlineQueue, setOfflineQueue] = useState<Partial<Report>[]>([]);
+  const [personalGroups, setPersonalGroups] = useState<PersonalGroup[]>([]);
   const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>(INITIAL_COMMUNITY_MESSAGES);
   const [directMessages, setDirectMessages] = useState<DirectMessage[]>(INITIAL_DIRECT_MESSAGES);
   const [lostAndFoundItems, setLostAndFoundItems] = useState<LostAndFoundItem[]>(INITIAL_LOST_AND_FOUND);
@@ -169,6 +174,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             localStorage.setItem('nirapod_community_msgs', JSON.stringify(realMsgs));
           } catch {
             setCommunityMessages([]);
+          }
+        }
+
+        const savedGroups = localStorage.getItem('nirapod_personal_groups');
+        if (savedGroups) {
+          try {
+            setPersonalGroups(JSON.parse(savedGroups));
+          } catch {
+            setPersonalGroups([]);
           }
         }
 
@@ -908,8 +922,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return { success: true };
   };
 
-  // Community Hub Messaging with File Support & Moderation
-  const sendCommunityMessage = (area: string, content: string, fileAttachment?: CommunityMessage['fileAttachment']): { success: boolean; violationReason?: string } => {
+  // 1 Main Community & Personal Groups Messaging with File Support & Moderation
+  const sendCommunityMessage = (groupIdOrArea: string, content: string, fileAttachment?: CommunityMessage['fileAttachment']): { success: boolean; violationReason?: string } => {
     if (user?.bannedFromCommunities) {
       return { success: false, violationReason: 'You have been restricted from participating in community discussion rooms by administration.' };
     }
@@ -920,12 +934,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return { success: false, violationReason: scan.reasonEn };
     }
 
+    const targetGroupId = groupIdOrArea || 'main-community';
+
     const newMsg: CommunityMessage = {
       id: `msg-${Date.now()}`,
-      area,
+      groupId: targetGroupId,
+      area: targetGroupId === 'main-community' ? 'Bangladesh' : targetGroupId,
       senderId: user ? user.id : 'usr-guest',
-      senderName: user ? user.name : 'Community Neighbor',
-      senderAvatar: user ? user.avatar : 'https://api.dicebear.com/7.x/initials/svg?seed=Neighbor&backgroundColor=0A2540&textColor=ffffff',
+      senderName: user ? user.name : 'Community Citizen',
+      senderAvatar: user ? user.avatar : 'https://api.dicebear.com/7.x/initials/svg?seed=Citizen&backgroundColor=0A2540&textColor=ffffff',
       senderBadge: user ? user.verificationBadge : 'Citizen',
       content,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -936,6 +953,80 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setCommunityMessages(updated);
     if (typeof window !== 'undefined') localStorage.setItem('nirapod_community_msgs', JSON.stringify(updated));
     return { success: true };
+  };
+
+  const createPersonalGroup = (
+    name: string,
+    description: string,
+    category: PersonalGroup['category'],
+    isPrivate: boolean = true
+  ): { success: boolean; group?: PersonalGroup; error?: string } => {
+    if (!name.trim()) return { success: false, error: 'Group name is required' };
+
+    const newGroup: PersonalGroup = {
+      id: `grp-${Date.now()}`,
+      name: name.trim(),
+      description: description.trim() || 'Private personal safety circle',
+      category,
+      creatorId: user ? user.id : 'usr-guest',
+      creatorName: user ? user.name : 'Group Founder',
+      inviteCode: `NBD-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+      membersCount: 1,
+      members: [
+        {
+          id: user ? user.id : 'usr-guest',
+          name: user ? `${user.name} (You)` : 'You (Founder)',
+          role: 'admin',
+          phone: user?.phone,
+          joinedAt: 'Just now',
+        },
+      ],
+      createdAt: new Date().toISOString(),
+      isPrivate,
+      avatarSeed: name.trim(),
+    };
+
+    const updated = [newGroup, ...personalGroups];
+    setPersonalGroups(updated);
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_personal_groups', JSON.stringify(updated));
+    return { success: true, group: newGroup };
+  };
+
+  const joinPersonalGroup = (
+    inviteCode: string
+  ): { success: boolean; group?: PersonalGroup; error?: string } => {
+    const cleanCode = inviteCode.trim().toUpperCase();
+    if (!cleanCode) return { success: false, error: 'Invite code is required' };
+
+    const group = personalGroups.find((g) => g.inviteCode.toUpperCase() === cleanCode);
+    if (!group) {
+      return { success: false, error: 'Group with this invite code was not found.' };
+    }
+
+    const currentUserId = user ? user.id : 'usr-guest';
+    if (group.members.some((m) => m.id === currentUserId)) {
+      return { success: true, group };
+    }
+
+    const updatedGroup: PersonalGroup = {
+      ...group,
+      membersCount: group.membersCount + 1,
+      members: [
+        ...group.members,
+        {
+          id: currentUserId,
+          name: user ? `${user.name}` : 'Joined Member',
+          role: 'member',
+          phone: user?.phone,
+          joinedAt: 'Just now',
+        },
+      ],
+    };
+
+    const updated = personalGroups.map((g) => (g.id === group.id ? updatedGroup : g));
+    setPersonalGroups(updated);
+    if (typeof window !== 'undefined') localStorage.setItem('nirapod_personal_groups', JSON.stringify(updated));
+    return { success: true, group: updatedGroup };
   };
 
   // Direct P2P Messaging
@@ -1057,6 +1148,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         addComment,
         getReportById,
         checkDuplicateReport,
+        personalGroups,
+        createPersonalGroup,
+        joinPersonalGroup,
         communityMessages,
         directMessages,
         sendCommunityMessage,

@@ -173,7 +173,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/community" className="hover:text-sky-400 transition-colors">
-                  {language === 'en' ? 'Area Communities' : 'এলাকাভিত্তিক ফোরাম'}
+                  {language === 'en' ? 'Civic Community & Groups' : 'কমিউনিটি ও ব্যক্তিগত গ্রুপ'}
                 </Link>
               </li>
               <li>

@@ -154,10 +154,10 @@ export default function Navbar() {
   const optionLinks = [
     {
       href: '/community',
-      label: language === 'en' ? 'Area Communities' : 'এলাকাভিত্তিক কমিউনিটি',
-      desc: language === 'en' ? 'Mirpur, Dhanmondi, Uttara neighborhood feeds' : 'মিরপুর, ধানমন্ডি, উত্তরা আলোচনা ও তথ্য',
+      label: language === 'en' ? 'Civic Community & Groups' : 'কমিউনিটি ও পার্সোনাল গ্রুপ',
+      desc: language === 'en' ? '1 Main community & personal safety circles' : 'মূল নিরাপদ কমিউনিটি ও ব্যক্তিগত সেফটি গ্রুপ',
       icon: Users,
-      badge: 'Hubs',
+      badge: '1 Hub',
     },
     {
       href: '/lost-and-found',

@@ -282,10 +282,35 @@ export interface DuplicateCheckResult {
   similarityPercentage?: number;
 }
 
-// Community Discussion & Messaging (Area-wise)
+// 1 Unified Main Community & Personal Safety Groups
+export interface PersonalGroupMember {
+  id: string;
+  name: string;
+  role: 'admin' | 'member';
+  phone?: string;
+  avatar?: string;
+  joinedAt: string;
+}
+
+export interface PersonalGroup {
+  id: string;
+  name: string;
+  description: string;
+  category: 'family' | 'neighborhood' | 'office' | 'friends' | 'volunteer' | 'other';
+  creatorId: string;
+  creatorName: string;
+  inviteCode: string;
+  membersCount: number;
+  members: PersonalGroupMember[];
+  createdAt: string;
+  isPrivate: boolean;
+  avatarSeed?: string;
+}
+
 export interface CommunityMessage {
   id: string;
-  area: string; // 'Mirpur', 'Dhanmondi', 'Uttara', etc.
+  groupId: string; // 'main-community' or personal group id
+  area?: string; // Optional fallback
   senderId: string;
   senderName: string;
   senderAvatar: string;

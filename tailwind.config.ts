@@ -50,9 +50,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
-          '"Plus Jakarta Sans"',
+          '"DM Sans"',
           '"Hind Siliguri"',
-          'Inter',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -61,13 +60,13 @@ const config: Config = {
           'sans-serif',
         ],
         display: [
-          '"Plus Jakarta Sans"',
+          '"Space Grotesk"',
           '"Hind Siliguri"',
           'system-ui',
           'sans-serif',
         ],
         heading: [
-          '"Plus Jakarta Sans"',
+          '"Space Grotesk"',
           '"Hind Siliguri"',
           'system-ui',
           'sans-serif',

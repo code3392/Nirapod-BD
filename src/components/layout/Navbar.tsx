@@ -37,11 +37,6 @@ import {
 } from 'lucide-react';
 import EmergencyDirectoryModal from '@/components/common/EmergencyDirectoryModal';
 
-const DHAKA_AREAS = [
-  'Mirpur', 'Uttara', 'Dhanmondi', 'Gulshan', 'Banani', 'Mohammadpur',
-  'Motijheel', 'Old Dhaka', 'Badda', 'Bashundhara', 'Khilgaon', 'Rampura'
-];
-
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
 export default function Navbar() {
@@ -71,7 +66,6 @@ export default function Navbar() {
   const [regEmail, setRegEmail] = useState('');
   const [regPhone, setRegPhone] = useState('');
   const [regLivingPlace, setRegLivingPlace] = useState('');
-  const [regArea, setRegArea] = useState('Mirpur');
   const [regAge, setRegAge] = useState(27);
   const [regBlood, setRegBlood] = useState('B+');
   const [authFeedback, setAuthFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -126,8 +120,8 @@ export default function Navbar() {
       name: regName,
       email: regEmail,
       phone: regPhone || '+880 1700-000000',
-      livingPlace: regLivingPlace || `${regArea}, Dhaka`,
-      area: regArea,
+      livingPlace: regLivingPlace || 'Dhaka, Bangladesh',
+      area: 'Dhaka',
       age: regAge,
       bloodGroup: regBlood,
       occupation: 'Citizen Volunteer',
@@ -817,41 +811,6 @@ export default function Navbar() {
             {/* TAB 1: SIGN IN */}
             {authMode === 'login' && (
               <div className="space-y-4">
-                {/* 1-Tap Super Admin Access Button */}
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-600/10 to-transparent border border-amber-500/30 text-white shadow-sm space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-black uppercase tracking-wider text-amber-400">
-                      Rule 13 Root Authority
-                    </span>
-                    <span className="text-[10px] font-mono bg-amber-500 text-[#0E081B] font-black px-1.5 py-0.2 rounded">
-                      SUPER ADMIN
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-300">
-                    Direct access for platform founder & root administrator.
-                  </p>
-                  <button
-                    onClick={() => {
-                      login('smdsami59@gmail.com');
-                      setAuthFeedback({ message: 'Welcome back, Super Admin!', type: 'success' });
-                      setTimeout(() => {
-                        setAuthModalOpen(false);
-                        setAuthFeedback(null);
-                      }, 500);
-                    }}
-                    className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0E081B] text-xs font-black shadow transition flex items-center justify-center gap-2"
-                  >
-                    <UserCheck className="w-4 h-4" />
-                    <span>Sign In as Super Admin (smdsami59@gmail.com)</span>
-                  </button>
-                </div>
-
-                <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                  <div className="flex-1 h-px bg-white/10" />
-                  <span className="font-mono text-[10px]">OR SIGN IN WITH CITIZEN EMAIL</span>
-                  <div className="flex-1 h-px bg-white/10" />
-                </div>
-
                 {/* Email Sign In */}
                 <form onSubmit={handleLoginSubmit} className="space-y-3">
                   <div>
@@ -911,7 +870,7 @@ export default function Navbar() {
                     <input
                       type="email"
                       required
-                      placeholder="smdsami59@gmail.com"
+                      placeholder="your.email@example.com"
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
                       className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
@@ -942,19 +901,7 @@ export default function Navbar() {
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Area *</label>
-                    <select
-                      value={regArea}
-                      onChange={(e) => setRegArea(e.target.value)}
-                      className="w-full px-2 py-2 text-xs bg-[#150D28] border border-white/15 rounded-xl text-white focus:outline-none"
-                    >
-                      {DHAKA_AREAS.map((a) => (
-                        <option key={a} value={a} className="bg-[#150D28] text-white">{a}</option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-[11px] font-bold text-slate-300 block mb-1">Age *</label>
                     <input
@@ -964,15 +911,15 @@ export default function Navbar() {
                       required
                       value={regAge}
                       onChange={(e) => setRegAge(Number(e.target.value))}
-                      className="w-full px-2 py-2 text-xs bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none"
+                      className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Blood *</label>
+                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Blood Group *</label>
                     <select
                       value={regBlood}
                       onChange={(e) => setRegBlood(e.target.value)}
-                      className="w-full px-2 py-2 text-xs bg-[#150D28] border border-white/15 rounded-xl text-white focus:outline-none"
+                      className="w-full px-3 py-2 text-xs bg-[#150D28] border border-white/15 rounded-xl text-white focus:outline-none"
                     >
                       {BLOOD_GROUPS.map((b) => (
                         <option key={b} value={b} className="bg-[#150D28] text-white">{b}</option>

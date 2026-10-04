@@ -81,7 +81,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <Link
           href="/reports"
-          className="inline-flex items-center gap-2 text-xs font-bold text-navy hover:text-civic-blue transition"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{language === 'en' ? 'Back to All Reports' : 'সকল রিপোর্টে ফিরে যান'}</span>
@@ -93,7 +93,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             href={`https://wa.me/?text=${encodeURIComponent(`[Nirapod BD Hazard Alert] ${report.title} at ${report.locationName}. Public ID: ${report.publicId}. View report: https://nirapodbd.gov.bd/report/${report.id}`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-2xs transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow transition"
           >
             <MessageCircle className="w-3.5 h-3.5 text-sky-400" />
             <span>Share WhatsApp</span>
@@ -101,29 +101,29 @@ export default function ReportDetail({ report }: ReportDetailProps) {
 
           <button
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 text-xs font-bold shadow-2xs transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 text-white bg-white/5 hover:bg-white/10 text-xs font-bold shadow transition"
           >
             <Share2 className="w-3.5 h-3.5" />
             <span>{copiedLink ? (language === 'en' ? 'Link Copied!' : 'লিঙ্ক কপি হয়েছে!') : t.detail.share}</span>
           </button>
           <Link
             href="/map"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold shadow-sm transition"
           >
-            <MapPin className="w-3.5 h-3.5 text-civic-blue" />
+            <MapPin className="w-3.5 h-3.5 text-sky-400" />
             <span>{language === 'en' ? 'Locate on Map' : 'মানচিত্রে দেখুন'}</span>
           </Link>
         </div>
       </div>
 
       {/* Main Report Header Card */}
-      <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-card border border-surface-border space-y-6">
+      <div className="bg-[#130C24]/85 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/10 space-y-6 text-white">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs uppercase font-black px-2.5 py-1 rounded-lg bg-navy/5 text-navy font-mono">
+            <span className="text-xs uppercase font-black px-2.5 py-1 rounded-lg bg-white/10 text-white font-mono">
               {report.publicId}
             </span>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               {report.categoryId.replace('_', ' ')}
             </span>
           </div>
@@ -135,12 +135,12 @@ export default function ReportDetail({ report }: ReportDetailProps) {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl sm:text-3xl font-black text-navy tracking-tight leading-snug">
+        <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug">
           {report.title}
         </h1>
 
         {/* Location & Metadata Bar */}
-        <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-slate-600 border-y border-slate-100 py-3.5">
+        <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-slate-400 border-y border-white/10 py-3.5">
           <span className="flex items-center gap-1.5 font-semibold">
             <MapPin className="w-4 h-4 text-emergency shrink-0" />
             {report.locationName}
@@ -302,22 +302,22 @@ export default function ReportDetail({ report }: ReportDetailProps) {
         </div>
 
         {/* AI Analysis Card */}
-        <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+        <div className="p-5 rounded-2xl bg-[#150D28] border border-white/10 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs font-black text-navy uppercase tracking-wider">
+                <h4 className="text-xs font-black text-white uppercase tracking-wider">
                   {t.detail.aiAnalysis}
                 </h4>
-                <p className="text-[11px] text-muted">
+                <p className="text-[11px] text-slate-400">
                   Computer vision hazard confirmation
                 </p>
               </div>
             </div>
-            <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-civic-blue">
+            <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-sky-400">
               {report.aiConfidence || 94}% Confidence
             </span>
           </div>
@@ -326,7 +326,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             {(report.aiRisks || ['Public safety hazard', 'Vehicle disturbance']).map((risk, idx) => (
               <span
                 key={idx}
-                className="text-xs bg-white border border-slate-200 px-2.5 py-1 rounded-lg text-slate-700 font-medium"
+                className="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg text-slate-300 font-medium"
               >
                 ⚠️ {risk}
               </span>
@@ -335,22 +335,22 @@ export default function ReportDetail({ report }: ReportDetailProps) {
         </div>
 
         {/* COMMUNITY VERIFICATION VOTING BAR */}
-        <div className="p-6 rounded-3xl bg-surface border border-surface-border space-y-4">
+        <div className="p-6 rounded-3xl bg-[#150D28] border border-white/10 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="text-base font-extrabold text-navy">
+              <h3 className="text-base font-extrabold text-white">
                 {t.detail.communityVerification}
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 {report.confirmationsCount} {t.detail.confirmedCount} ({confidencePercent}% Consensus)
               </p>
             </div>
 
             {/* Voting Consensus Progress Bar */}
             <div className="w-full sm:w-48 space-y-1">
-              <div className="h-2 rounded-full bg-slate-200 overflow-hidden flex">
+              <div className="h-2 rounded-full bg-white/10 overflow-hidden flex">
                 <div
-                  className="bg-civic-blue transition-all duration-500"
+                  className="bg-sky-400 transition-all duration-500"
                   style={{ width: `${confidencePercent}%` }}
                 />
                 <div
@@ -358,7 +358,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                   style={{ width: `${100 - confidencePercent}%` }}
                 />
               </div>
-              <div className="flex justify-between text-[10px] text-muted font-bold">
+              <div className="flex justify-between text-[10px] text-slate-400 font-bold">
                 <span>{report.confirmationsCount} Verified</span>
                 <span>{report.incorrectCount} Challenged</span>
               </div>
@@ -367,7 +367,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
 
           {/* Verification Buttons */}
           <div className="pt-2">
-            <span className="text-xs font-bold text-navy block mb-2">
+            <span className="text-xs font-bold text-white block mb-2">
               {t.detail.confirmPrompt}
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -376,11 +376,11 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                 onClick={() => handleVote('confirm')}
                 className={`py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
                   userVoted === 'confirm'
-                    ? 'bg-civic-blue text-white shadow-sm ring-2 ring-civic-blue'
-                    : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                    ? 'bg-purple-600 text-white shadow ring-2 ring-purple-400'
+                    : 'bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10'
                 }`}
               >
-                <CheckCircle2 className="w-4 h-4 text-civic-blue" />
+                <CheckCircle2 className="w-4 h-4 text-sky-400" />
                 <span>{t.detail.confirmYes} (+5 pts)</span>
               </button>
 
@@ -389,8 +389,8 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                 onClick={() => handleVote('not_sure')}
                 className={`py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
                   userVoted === 'not_sure'
-                    ? 'bg-slate-700 text-white'
-                    : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                    ? 'bg-purple-800 text-white ring-2 ring-purple-400'
+                    : 'bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10'
                 }`}
               >
                 <HelpCircle className="w-4 h-4 text-slate-400" />
@@ -402,11 +402,11 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                 onClick={() => handleVote('incorrect')}
                 className={`py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
                   userVoted === 'incorrect'
-                    ? 'bg-emergency text-white'
-                    : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                    ? 'bg-rose-600 text-white ring-2 ring-rose-400'
+                    : 'bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10'
                 }`}
               >
-                <XCircle className="w-4 h-4 text-emergency" />
+                <XCircle className="w-4 h-4 text-rose-400" />
                 <span>{t.detail.confirmIncorrect}</span>
               </button>
             </div>
@@ -414,13 +414,13 @@ export default function ReportDetail({ report }: ReportDetailProps) {
 
           {/* Confirm Resolution Button if Resolved */}
           {report.status === 'RESOLVED' && (
-            <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-600">
+            <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-300">
                 Did the authority fix this problem satisfactorily?
               </span>
               <button
                 onClick={() => confirmResolution(report.id)}
-                className="px-4 py-2 rounded-xl bg-civic-blue hover:bg-civic-royal text-white text-xs font-bold shadow-sm transition"
+                className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow transition"
               >
                 {t.detail.confirmResolutionBtn}
               </button>
@@ -429,27 +429,27 @@ export default function ReportDetail({ report }: ReportDetailProps) {
         </div>
 
         {/* TIMELINE SECTION */}
-        <div className="space-y-4 pt-4 border-t border-slate-100">
-          <h3 className="text-base font-extrabold text-navy">
+        <div className="space-y-4 pt-4 border-t border-white/10">
+          <h3 className="text-base font-extrabold text-white">
             {t.detail.timelineTitle}
           </h3>
 
-          <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+          <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-white/10">
             {report.timeline.map((event, idx) => (
               <div key={event.id} className="relative group">
-                <div className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-white border-2 border-navy group-last:border-civic-blue group-last:bg-civic-blue" />
+                <div className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-[#0E081B] border-2 border-purple-500 group-last:border-sky-400 group-last:bg-sky-400" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-navy">
+                    <span className="text-xs font-bold text-white">
                       {language === 'en' ? event.titleEn : event.titleBn}
                     </span>
                     {event.actor && (
-                      <span className="text-[10px] text-muted font-medium bg-slate-100 px-1.5 py-0.2 rounded">
+                      <span className="text-[10px] text-purple-300 font-medium bg-purple-500/20 px-1.5 py-0.2 rounded border border-purple-500/30">
                         {event.actor}
                       </span>
                     )}
                   </div>
-                  <span className="text-[11px] text-muted font-mono block mt-0.5">
+                  <span className="text-[11px] text-slate-400 font-mono block mt-0.5">
                     {new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} •{' '}
                     {new Date(event.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                   </span>
@@ -460,10 +460,10 @@ export default function ReportDetail({ report }: ReportDetailProps) {
         </div>
 
         {/* COMMENTS & COMMUNITY UPDATES SECTION */}
-        <div className="space-y-4 pt-6 border-t border-slate-100">
+        <div className="space-y-4 pt-6 border-t border-white/10">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-extrabold text-navy flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-civic-blue" />
+            <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-sky-400" />
               <span>{t.detail.commentsTitle} ({report.comments.length})</span>
             </h3>
           </div>
@@ -475,11 +475,11 @@ export default function ReportDetail({ report }: ReportDetailProps) {
               placeholder={t.detail.addCommentPlaceholder}
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 text-white placeholder-slate-400 text-xs sm:text-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
             />
             <button
               type="submit"
-              className="px-4 py-2.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow transition flex items-center gap-1.5 shrink-0"
             >
               <Send className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{t.detail.postComment}</span>
@@ -489,7 +489,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
           {/* Comment list */}
           <div className="space-y-3 pt-2">
             {report.comments.length === 0 ? (
-              <p className="text-xs text-muted italic">
+              <p className="text-xs text-slate-400 italic">
                 {language === 'en' ? 'No comments posted yet. Be the first to share an update.' : 'এখনও কোনো মন্তব্য নেই। প্রথম মন্তব্যটি আপনি করুন।'}
               </p>
             ) : (
@@ -498,24 +498,24 @@ export default function ReportDetail({ report }: ReportDetailProps) {
                   key={comment.id}
                   className={`p-3.5 rounded-2xl border text-xs space-y-1 ${
                     comment.isOfficial
-                      ? 'bg-blue-50/60 border-blue-200'
-                      : 'bg-white border-slate-200'
+                      ? 'bg-purple-950/40 border-purple-500/30'
+                      : 'bg-[#150D28] border-white/10'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-navy flex items-center gap-1.5">
+                    <span className="font-bold text-white flex items-center gap-1.5">
                       {comment.userName}
                       {comment.isOfficial && (
-                        <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-extrabold">
+                        <span className="text-[10px] bg-purple-600 text-white px-1.5 py-0.2 rounded font-extrabold">
                           Official
                         </span>
                       )}
                     </span>
-                    <span className="text-[10px] text-muted">
+                    <span className="text-[10px] text-slate-400">
                       {new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <p className="text-slate-700 leading-relaxed">{comment.content}</p>
+                  <p className="text-slate-300 leading-relaxed">{comment.content}</p>
                 </div>
               ))
             )}

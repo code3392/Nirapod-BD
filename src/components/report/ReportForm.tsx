@@ -330,21 +330,21 @@ export default function ReportForm() {
 
       {/* RULE 25 PROOF UPLOAD MODAL */}
       {showWorkProofModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/75 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-surface-border space-y-5 animate-in zoom-in-95">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="bg-[#150D28] rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-white/15 space-y-5 animate-in zoom-in-95 text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-black text-navy text-base">Civic Work Verification (Rule 25)</h3>
-                  <p className="text-[11px] text-slate-500">Ticket: {user?.unresolvedReportIdForWorkProof}</p>
+                  <h3 className="font-black text-white text-base">Civic Work Verification (Rule 25)</h3>
+                  <p className="text-[11px] text-slate-400">Ticket: {user?.unresolvedReportIdForWorkProof}</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowWorkProofModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+                className="p-1 rounded-lg text-slate-400 hover:text-white transition"
               >
                 ✕
               </button>
@@ -352,22 +352,22 @@ export default function ReportForm() {
 
             {workProofSuccess ? (
               <div className="p-6 text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-blue-50 text-civic-blue mx-auto flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 mx-auto flex items-center justify-center">
                   <CheckCircle2 className="w-8 h-8 animate-bounce" />
                 </div>
-                <h4 className="text-lg font-black text-navy">Work Proof Accepted!</h4>
-                <p className="text-xs text-slate-500">+20 Reputation Points Awarded. Reporting unlocked.</p>
+                <h4 className="text-lg font-black text-white">Work Proof Accepted!</h4>
+                <p className="text-xs text-slate-400">+20 Reputation Points Awarded. Reporting unlocked.</p>
               </div>
             ) : (
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-navy">Media Type</label>
+                  <label className="text-xs font-bold text-white">Media Type</label>
                   <div className="flex gap-3">
                     <button
                       type="button"
                       onClick={() => setWorkProofType('image')}
                       className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition ${
-                        workProofType === 'image' ? 'bg-navy text-white border-navy' : 'bg-slate-50 border-slate-200'
+                        workProofType === 'image' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'
                       }`}
                     >
                       📷 Photo Evidence
@@ -376,7 +376,7 @@ export default function ReportForm() {
                       type="button"
                       onClick={() => setWorkProofType('video')}
                       className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition ${
-                        workProofType === 'video' ? 'bg-navy text-white border-navy' : 'bg-slate-50 border-slate-200'
+                        workProofType === 'video' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'
                       }`}
                     >
                       🎥 Video Evidence
@@ -385,13 +385,13 @@ export default function ReportForm() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-navy">Upload Photo / Video or Use URL</label>
+                  <label className="text-xs font-bold text-white">Upload Photo / Video or Use URL</label>
                   <input
                     type="text"
                     value={workProofUrl}
                     onChange={(e) => setWorkProofUrl(e.target.value)}
                     placeholder="https://... or choose file below"
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl"
+                    className="w-full px-3 py-2 text-xs border border-white/15 bg-white/5 text-white placeholder-slate-400 rounded-xl focus:outline-none focus:border-purple-400"
                   />
                   <input
                     type="file"
@@ -403,12 +403,12 @@ export default function ReportForm() {
                         setWorkProofType(file.type.startsWith('video') ? 'video' : 'image');
                       }
                     }}
-                    className="text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-navy file:text-white cursor-pointer"
+                    className="text-xs text-slate-300 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-white/10 file:text-white cursor-pointer"
                   />
                 </div>
 
                 {/* Media Preview */}
-                <div className="h-40 rounded-2xl bg-black overflow-hidden flex items-center justify-center">
+                <div className="h-40 rounded-2xl bg-black border border-white/10 overflow-hidden flex items-center justify-center">
                   {workProofType === 'video' ? (
                     <video src={workProofUrl} controls className="w-full h-full object-cover" />
                   ) : (
@@ -417,19 +417,19 @@ export default function ReportForm() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-navy">Citizen Verification Comments</label>
+                  <label className="text-xs font-bold text-white">Citizen Verification Comments</label>
                   <textarea
                     rows={2}
                     value={workProofComment}
                     onChange={(e) => setWorkProofComment(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl"
+                    className="w-full px-3 py-2 text-xs border border-white/15 bg-white/5 text-white placeholder-slate-400 rounded-xl focus:outline-none focus:border-purple-400"
                   />
                 </div>
 
                 <button
                   type="button"
                   onClick={handleResolveWorkProof}
-                  className="w-full py-3 rounded-xl bg-civic-blue hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold text-xs shadow-md transition"
                 >
                   Verify Work & Unlock Reporting
                 </button>
@@ -449,44 +449,44 @@ export default function ReportForm() {
 
       {/* SUCCESS SCREEN (Step 6) */}
       {currentStep === 6 && submittedReport && (
-        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 sm:p-12 shadow-elevated border border-surface-border text-center space-y-6 animate-in zoom-in-95 duration-200">
-          <div className="w-20 h-20 rounded-full bg-blue-50 text-civic-blue mx-auto flex items-center justify-center shadow-glow animate-bounce">
-            <CheckCircle2 className="w-10 h-10" />
+        <div className="bg-[#130C24]/85 backdrop-blur-2xl rounded-3xl p-8 sm:p-12 shadow-2xl border border-white/10 text-center space-y-6 animate-in zoom-in-95 duration-200 text-white">
+          <div className="w-20 h-20 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 mx-auto flex items-center justify-center shadow-lg animate-bounce">
+            <CheckCircle2 className="w-10 h-10 text-sky-400" />
           </div>
 
           <div className="space-y-2">
-            <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-blue-50 text-civic-blue border border-blue-200">
+            <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
               Broadcast Active
             </span>
-            <h2 className="text-3xl font-black text-navy tracking-tight">
+            <h2 className="text-3xl font-black text-white tracking-tight">
               {t.report.successTitle}
             </h2>
-            <p className="text-slate-600 max-w-md mx-auto text-sm">
+            <p className="text-slate-300 max-w-md mx-auto text-sm">
               {t.report.successSubtitle}
             </p>
           </div>
 
           {/* Ticket ID Box */}
-          <div className="max-w-md mx-auto p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="max-w-md mx-auto p-5 rounded-2xl bg-[#150D28] border border-white/10 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted font-bold">{t.report.reportId}</span>
-              <span className="text-base font-black font-mono text-navy bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-2xs">
+              <span className="text-xs text-slate-400 font-bold">{t.report.reportId}</span>
+              <span className="text-base font-black font-mono text-white bg-white/5 px-3 py-1 rounded-lg border border-white/10 shadow-sm">
                 {submittedReport.publicId}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted font-bold">{t.report.currentStatus}</span>
+              <span className="text-xs text-slate-400 font-bold">{t.report.currentStatus}</span>
               <StatusBadge status={submittedReport.status} size="sm" />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted font-bold">Media Uploaded</span>
-              <span className="text-xs font-bold text-navy uppercase bg-slate-200 px-2 py-0.5 rounded">
+              <span className="text-xs text-slate-400 font-bold">Media Uploaded</span>
+              <span className="text-xs font-bold text-white uppercase bg-white/10 px-2 py-0.5 rounded border border-white/10">
                 {submittedReport.mediaType}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted font-bold">Reputation Award</span>
-              <span className="text-xs font-black text-civic-blue bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+              <span className="text-xs text-slate-400 font-bold">Reputation Award</span>
+              <span className="text-xs font-black text-sky-400 bg-sky-500/20 px-2 py-0.5 rounded-full border border-sky-500/30">
                 +25 Points
               </span>
             </div>
@@ -625,9 +625,9 @@ export default function ReportForm() {
 
       {/* STEPPED REPORT FORM (Steps 1 to 5) */}
       {currentStep <= 5 && (
-        <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-elevated border border-surface-border overflow-hidden">
+        <div className="bg-[#130C24]/85 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/10 overflow-hidden text-white">
           {/* Form Header & Step Progress Bar */}
-          <div className="p-6 sm:p-8 bg-gradient-to-r from-navy via-navy to-navy-light text-white border-b border-navy-subtle">
+          <div className="p-6 sm:p-8 bg-[#150D28] text-white border-b border-white/10">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <span className="text-xs uppercase font-extrabold tracking-widest text-sky-400">

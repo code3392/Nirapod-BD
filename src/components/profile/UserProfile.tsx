@@ -41,38 +41,35 @@ export default function UserProfile() {
   if (!user) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-blue-100 shadow-card text-center space-y-6">
-          <div className="w-20 h-20 rounded-3xl bg-blue-50 text-civic-blue flex items-center justify-center mx-auto border border-blue-200 shadow-sm">
-            <ShieldCheck className="w-10 h-10 text-civic-blue" />
+        <div className="bg-[#130C24]/85 backdrop-blur-2xl rounded-3xl p-8 sm:p-12 border border-white/10 shadow-2xl text-center space-y-6 text-white">
+          <div className="w-20 h-20 rounded-3xl bg-purple-500/15 text-purple-400 flex items-center justify-center mx-auto border border-purple-400/30 shadow-[0_0_20px_rgba(168,85,247,0.25)]">
+            <ShieldCheck className="w-10 h-10 text-purple-400" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-[11px] font-extrabold uppercase px-3 py-1 rounded-full bg-blue-50 text-civic-blue border border-blue-200">
-              {language === 'en' ? 'Guest Citizen Portal' : 'নাগরিক প্রোফাইল ডেস্ক'}
+            <span className="text-[11px] font-mono font-bold uppercase px-3 py-1 rounded-full bg-purple-500/15 text-purple-300 border border-purple-400/30">
+              {language === 'en' ? 'Citizen Profile Hub' : 'নাগরিক প্রোফাইল ডেস্ক'}
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-navy tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               {language === 'en' ? 'Welcome to Nirapod BD' : 'নিরাপদ বিডিতে স্বাগতম'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               {language === 'en'
-                ? 'You are currently browsing as a guest. Sign in with your registered email or create an account with your living area and phone number to submit civic reports, verify community hazards, and unlock verified citizen badges.'
-                : 'আপনি অতিথি হিসেবে ব্রাউজ করছেন। সমস্যা রিপোর্ট করতে, যাচাই কার্যক্রমে অংশ নিতে এবং নাগরিক পয়েন্ট অর্জন করতে আপনার একাউন্টে লগইন বা নিবন্ধন করুন।'}
+                ? 'Sign in with your registered citizen email or create an account to submit civic reports, verify community hazards, and unlock verified guardian badges.'
+                : 'সমস্যা রিপোর্ট করতে, যাচাই কার্যক্রমে অংশ নিতে এবং নাগরিক পয়েন্ট অর্জন করতে আপনার একাউন্টে লগইন বা নিবন্ধন করুন।'}
             </p>
           </div>
 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
-            <button
-              onClick={() => {
-                login('smdsami59@gmail.com');
-              }}
-              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black shadow transition flex items-center justify-center gap-2"
+            <Link
+              href="/"
+              className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white text-xs font-black shadow-lg transition transform hover:scale-105"
             >
-              <span>👑</span>
-              <span>Sign In as Super Admin (smdsami59@gmail.com)</span>
-            </button>
+              {language === 'en' ? 'Sign In / Register' : 'লগইন বা নিবন্ধন'}
+            </Link>
             <Link
               href="/map"
-              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow transition"
+              className="w-full sm:w-auto px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs font-bold border border-white/10 transition"
             >
               {language === 'en' ? 'Explore Safety Map' : 'নিরাপত্তা ম্যাপ দেখুন'}
             </Link>
@@ -132,48 +129,48 @@ export default function UserProfile() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Rule 25 Warning Banner if user has pending work proof */}
       {user.unresolvedReportIdForWorkProof && (
-        <div className="p-6 rounded-3xl bg-amber-50 border-2 border-amber-300 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="p-6 rounded-3xl bg-amber-500/15 border border-amber-400/40 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-white">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow">
               <FileCheck className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-200 text-amber-900">
+              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500/30 text-amber-300 border border-amber-400/30 font-mono">
                 Rule 25 Requirement
               </span>
-              <h4 className="text-sm font-black text-navy mt-0.5">
+              <h4 className="text-sm font-black text-white mt-0.5">
                 Work Completion Evidence Pending for Ticket {user.unresolvedReportIdForWorkProof}
               </h4>
-              <p className="text-xs text-slate-600">
+              <p className="text-xs text-slate-300">
                 Submit photo or video confirmation of the resolved issue to unlock new reporting.
               </p>
             </div>
           </div>
           <button
             onClick={() => setShowWorkProofModal(true)}
-            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition shrink-0"
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0E081B] text-xs font-black shadow transition shrink-0"
           >
             Upload Work Proof
           </button>
         </div>
       )}
 
-      {/* Profile Overview Card */}
-      <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-card border border-surface-border">
+      {/* Profile Overview Card (Dark Purplish-Black) */}
+      <div className="bg-[#130C24]/85 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/10 text-white ring-1 ring-purple-500/15">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {/* Avatar with Calm Blue Ring */}
+          {/* Avatar with Calm Purple Ring */}
           <div className="relative">
             <img
               src={user.avatar}
               alt={user.name}
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-civic-blue shadow-lg"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-purple-400/80 shadow-lg"
             />
             {user.isSuperAdmin ? (
-              <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-white shadow">
+              <div className="absolute -bottom-2 -right-2 bg-amber-500 text-[#0E081B] text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-[#130C24] shadow font-mono">
                 SUPER ADMIN
               </div>
             ) : (
-              <div className="absolute -bottom-2 -right-2 bg-civic-blue text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-white shadow">
+              <div className="absolute -bottom-2 -right-2 bg-purple-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-[#130C24] shadow font-mono">
                 GUARDIAN
               </div>
             )}
@@ -184,21 +181,21 @@ export default function UserProfile() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center justify-center sm:justify-start gap-2">
-                  <h1 className="text-2xl sm:text-3xl font-black text-navy">
+                  <h1 className="text-2xl sm:text-3xl font-black text-white">
                     {user.name}
                   </h1>
                   {user.verificationStatus === 'GREATLY_VERIFIED' && (
                     <span 
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-[11px] font-extrabold border border-blue-200 shadow-2xs"
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[11px] font-extrabold border border-purple-400/30 shadow-sm"
                       title="Identity fully verified by Bangladesh National ID & Mobile OTP"
                     >
-                      <BadgeCheck className="w-3.5 h-3.5 text-civic-blue" />
+                      <BadgeCheck className="w-3.5 h-3.5 text-purple-400" />
                       <span>Greatly Verified Guardian</span>
                     </span>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-civic-blue flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
-                  <ShieldCheck className="w-4 h-4 text-civic-blue" />
+                <p className="text-xs sm:text-sm font-semibold text-purple-300 flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
+                  <ShieldCheck className="w-4 h-4 text-purple-400" />
                   <span>{user.role} • {user.livingPlace}</span>
                 </p>
               </div>
@@ -206,14 +203,14 @@ export default function UserProfile() {
               <div className="flex items-center gap-2 self-center sm:self-start">
                 <button
                   onClick={() => setIsEditing(!isEditing)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 bg-slate-50 hover:bg-slate-100 text-xs font-bold transition shadow-2xs"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-white/10 text-white bg-white/5 hover:bg-white/10 text-xs font-bold transition shadow-sm"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
                   <span>{isEditing ? 'Cancel Edit' : 'Edit Profile'}</span>
                 </button>
                 <Link
                   href="/privacy"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 bg-slate-50 hover:bg-slate-100 text-xs font-bold transition shadow-2xs"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-white/10 text-white bg-white/5 hover:bg-white/10 text-xs font-bold transition shadow-sm"
                 >
                   <Settings className="w-3.5 h-3.5" />
                   <span>Privacy</span>
@@ -221,89 +218,89 @@ export default function UserProfile() {
               </div>
             </div>
 
-            <p className="text-xs text-slate-500 max-w-xl">
+            <p className="text-xs text-slate-300 max-w-xl">
               Active citizen member in Bangladesh. Verified contributor to community safety, local hazard monitoring, and public infrastructure reporting.
             </p>
 
             {/* Reputation Progress Bar */}
             <div className="pt-3 space-y-1.5 max-w-md mx-auto sm:mx-0">
               <div className="flex items-center justify-between text-xs font-bold">
-                <span className="text-navy flex items-center gap-1">
-                  <Award className="w-3.5 h-3.5 text-warning" />
+                <span className="text-amber-400 flex items-center gap-1 font-display tabular-nums">
+                  <Award className="w-3.5 h-3.5 text-amber-400" />
                   {currentTierScore} Reputation Points
                 </span>
-                <span className="text-muted">{progressPercent}% to Senior Guardian</span>
+                <span className="text-slate-400 font-display tabular-nums">{progressPercent}% to Senior Guardian</span>
               </div>
-              <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
+              <div className="h-2.5 rounded-full bg-white/10 overflow-hidden border border-white/10">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-600 via-civic-blue to-sky-400 transition-all duration-700"
+                  className="h-full rounded-full bg-gradient-to-r from-purple-500 via-violet-400 to-sky-400 transition-all duration-700"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
-              <p className="text-[11px] text-muted">{t.profile.nextTier}</p>
+              <p className="text-[11px] text-slate-400">{t.profile.nextTier}</p>
             </div>
           </div>
         </div>
 
         {/* REQUIREMENT 20: AUTHENTIC CITIZEN VERIFICATION DETAILS CARD */}
         {isEditing ? (
-          <form onSubmit={handleSaveProfile} className="mt-6 p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 animate-in fade-in">
-            <h4 className="text-xs uppercase font-extrabold text-navy tracking-wider">
+          <form onSubmit={handleSaveProfile} className="mt-6 p-5 rounded-2xl bg-[#150D28]/90 border border-white/10 space-y-4 animate-in fade-in">
+            <h4 className="text-xs uppercase font-extrabold text-white tracking-wider">
               Edit Verified Citizen Details
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <div>
-                <label className="text-[11px] font-bold text-slate-600 block mb-1">Full Name</label>
+                <label className="text-[11px] font-bold text-slate-300 block mb-1">Full Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white"
+                  className="w-full text-xs p-2.5 border border-white/15 rounded-xl bg-white/5 text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
               <div>
-                <label className="text-[11px] font-bold text-slate-600 block mb-1">Mobile Number</label>
+                <label className="text-[11px] font-bold text-slate-300 block mb-1">Mobile Number</label>
                 <input
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white"
+                  className="w-full text-xs p-2.5 border border-white/15 rounded-xl bg-white/5 text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
               <div>
-                <label className="text-[11px] font-bold text-slate-600 block mb-1">Living Place / Ward</label>
+                <label className="text-[11px] font-bold text-slate-300 block mb-1">Living Place / Ward</label>
                 <input
                   type="text"
                   value={livingPlace}
                   onChange={(e) => setLivingPlace(e.target.value)}
-                  className="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white"
+                  className="w-full text-xs p-2.5 border border-white/15 rounded-xl bg-white/5 text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
               <div>
-                <label className="text-[11px] font-bold text-slate-600 block mb-1">Age</label>
+                <label className="text-[11px] font-bold text-slate-300 block mb-1">Age</label>
                 <input
                   type="number"
                   value={age}
                   onChange={(e) => setAge(Number(e.target.value))}
-                  className="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white"
+                  className="w-full text-xs p-2.5 border border-white/15 rounded-xl bg-white/5 text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
               <div>
-                <label className="text-[11px] font-bold text-slate-600 block mb-1">Occupation</label>
+                <label className="text-[11px] font-bold text-slate-300 block mb-1">Occupation</label>
                 <input
                   type="text"
                   value={occupation}
                   onChange={(e) => setOccupation(e.target.value)}
-                  className="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white"
+                  className="w-full text-xs p-2.5 border border-white/15 rounded-xl bg-white/5 text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
               <div>
-                <label className="text-[11px] font-bold text-slate-600 block mb-1">Blood Group</label>
+                <label className="text-[11px] font-bold text-slate-300 block mb-1">Blood Group</label>
                 <input
                   type="text"
                   value={bloodGroup}
                   onChange={(e) => setBloodGroup(e.target.value)}
-                  className="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white"
+                  className="w-full text-xs p-2.5 border border-white/15 rounded-xl bg-white/5 text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
             </div>
@@ -311,13 +308,13 @@ export default function UserProfile() {
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-1.5 text-xs text-slate-600 font-bold hover:bg-slate-200 rounded-lg"
+                className="px-4 py-1.5 text-xs text-slate-300 font-bold hover:bg-white/10 rounded-lg transition"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-civic-blue text-white text-xs font-bold rounded-lg shadow-sm hover:bg-civic-royal flex items-center gap-1.5"
+                className="px-4 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-lg shadow-sm flex items-center gap-1.5 transition"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>Save Changes</span>
@@ -325,45 +322,45 @@ export default function UserProfile() {
             </div>
           </form>
         ) : (
-          <div className="mt-6 p-5 rounded-2xl bg-slate-50/70 border border-slate-200 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
+          <div className="mt-6 p-5 rounded-2xl bg-[#150D28]/90 border border-white/10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Phone Number</span>
-              <p className="font-bold text-navy flex items-center gap-1">
-                <Phone className="w-3 h-3 text-civic-blue" />
+              <p className="font-bold text-white flex items-center gap-1">
+                <Phone className="w-3 h-3 text-sky-400" />
                 <span>{user.phone || '01711-234567'}</span>
               </p>
-              <span className="text-[9px] text-civic-blue font-bold">✓ OTP Verified</span>
+              <span className="text-[9px] text-sky-400 font-bold">✓ OTP Verified</span>
             </div>
 
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Email</span>
-              <p className="font-bold text-navy flex items-center gap-1 truncate">
-                <Mail className="w-3 h-3 text-sky-500" />
+              <p className="font-bold text-white flex items-center gap-1 truncate">
+                <Mail className="w-3 h-3 text-purple-400" />
                 <span className="truncate">{user.email}</span>
               </p>
-              <span className="text-[9px] text-civic-blue font-bold">✓ Verified</span>
+              <span className="text-[9px] text-sky-400 font-bold">✓ Verified</span>
             </div>
 
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Living Place</span>
-              <p className="font-bold text-navy flex items-center gap-1 truncate">
-                <Home className="w-3 h-3 text-amber-500" />
+              <p className="font-bold text-white flex items-center gap-1 truncate">
+                <Home className="w-3 h-3 text-amber-400" />
                 <span className="truncate">{user.livingPlace || 'Mirpur-10, Dhaka'}</span>
               </p>
             </div>
 
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Age</span>
-              <p className="font-bold text-navy flex items-center gap-1">
-                <UserIcon className="w-3 h-3 text-indigo-500" />
+              <p className="font-bold text-white flex items-center gap-1">
+                <UserIcon className="w-3 h-3 text-indigo-400" />
                 <span>{user.age || 29} Years</span>
               </p>
             </div>
 
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Blood Group</span>
-              <p className="font-bold text-emergency flex items-center gap-1">
-                <Droplet className="w-3 h-3 text-emergency fill-emergency" />
+              <p className="font-bold text-rose-400 flex items-center gap-1">
+                <Droplet className="w-3 h-3 text-rose-400 fill-rose-400" />
                 <span>{user.bloodGroup || 'B+'}</span>
               </p>
               <span className="text-[9px] text-slate-400">Emergency Ready</span>
@@ -371,54 +368,54 @@ export default function UserProfile() {
 
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">National ID</span>
-              <p className="font-mono font-bold text-navy">
+              <p className="font-mono font-bold text-white">
                 {user.nidNumber || '5928 4910 23'}
               </p>
-              <span className="text-[9px] text-civic-blue font-bold">✓ NID Verified</span>
+              <span className="text-[9px] text-sky-400 font-bold">✓ NID Verified</span>
             </div>
           </div>
         )}
 
         {/* 4 Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-100">
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-navy font-display tabular-nums">{user.reportsSubmitted}</span>
-            <p className="text-xs text-muted font-bold mt-0.5">{t.profile.reportsSubmitted}</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-8 border-t border-white/10">
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
+            <span className="text-2xl sm:text-3xl font-black text-white font-display tabular-nums">{user.reportsSubmitted}</span>
+            <p className="text-xs text-slate-400 font-bold mt-0.5">{t.profile.reportsSubmitted}</p>
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-civic-blue font-display tabular-nums">{user.reportsVerified}</span>
-            <p className="text-xs text-muted font-bold mt-0.5">{t.profile.reportsVerified}</p>
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
+            <span className="text-2xl sm:text-3xl font-black text-sky-400 font-display tabular-nums">{user.reportsVerified}</span>
+            <p className="text-xs text-slate-400 font-bold mt-0.5">{t.profile.reportsVerified}</p>
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-indigo-600 font-display tabular-nums">{user.helpfulConfirmations}</span>
-            <p className="text-xs text-muted font-bold mt-0.5">{t.profile.helpfulVotes}</p>
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
+            <span className="text-2xl sm:text-3xl font-black text-purple-400 font-display tabular-nums">{user.helpfulConfirmations}</span>
+            <p className="text-xs text-slate-400 font-bold mt-0.5">{t.profile.helpfulVotes}</p>
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-2xl sm:text-3xl font-black text-warning font-display tabular-nums">{user.points}</span>
-            <p className="text-xs text-muted font-bold mt-0.5">{t.profile.points}</p>
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
+            <span className="text-2xl sm:text-3xl font-black text-amber-400 font-display tabular-nums">{user.points}</span>
+            <p className="text-xs text-slate-400 font-bold mt-0.5">{t.profile.points}</p>
           </div>
         </div>
 
         {/* Account Integrity & Warning Strikes (Rules 12, 16, 17) */}
-        <div className="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-6 p-4 rounded-2xl bg-[#150D28]/90 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-navy text-white flex items-center justify-center shrink-0">
-              <ShieldAlert className="w-4 h-4 text-civic-blue" />
+            <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center justify-center shrink-0">
+              <ShieldAlert className="w-4 h-4 text-purple-300" />
             </div>
             <div>
-              <p className="text-xs font-bold text-navy">Account Integrity Record</p>
-              <p className="text-[11px] text-slate-500">Zero-tolerance policy for fake reports, profanity & hate speech</p>
+              <p className="text-xs font-bold text-white">Account Integrity Record</p>
+              <p className="text-[11px] text-slate-400">Zero-tolerance policy for fake reports, profanity & hate speech</p>
             </div>
           </div>
           <div className="flex items-center gap-3 text-xs">
-            <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 font-bold text-slate-700">
-              Fake Reports: <strong className="text-navy">{user.warningStrikes?.fakePostCount || 0} / 3 strikes</strong>
+            <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 font-bold text-slate-300">
+              Fake Reports: <strong className="text-white">{user.warningStrikes?.fakePostCount || 0} / 3 strikes</strong>
             </span>
-            <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 font-bold text-slate-700">
-              Profanity: <strong className="text-navy">{user.warningStrikes?.badWordsCount || 0} / 3 strikes</strong>
+            <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 font-bold text-slate-300">
+              Profanity: <strong className="text-white">{user.warningStrikes?.badWordsCount || 0} / 3 strikes</strong>
             </span>
-            <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 font-bold text-slate-700">
-              Hate Speech: <strong className="text-navy">{user.warningStrikes?.racismCount || 0} / 3 strikes</strong>
+            <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 font-bold text-slate-300">
+              Hate Speech: <strong className="text-white">{user.warningStrikes?.racismCount || 0} / 3 strikes</strong>
             </span>
           </div>
         </div>
@@ -427,10 +424,10 @@ export default function UserProfile() {
       {/* Badges & Gamification Showcase */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-xl font-extrabold text-navy">
+          <h2 className="text-xl font-extrabold text-white">
             {t.profile.badgesEarned} ({user.badges.filter(b => b.isUnlocked).length}/{user.badges.length})
           </h2>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-400">
             Earned through high-accuracy verification, civic collaboration, and genuine community hazard resolution.
           </p>
         </div>
@@ -441,45 +438,45 @@ export default function UserProfile() {
               key={badge.id}
               className={`p-5 rounded-3xl border transition-all duration-200 flex items-start gap-4 ${
                 badge.isUnlocked
-                  ? 'bg-white border-surface-border shadow-subtle'
-                  : 'bg-slate-50/60 border-slate-200 opacity-70'
+                  ? 'bg-[#150D28]/90 border-white/10 shadow-lg text-white'
+                  : 'bg-white/5 border-white/5 opacity-60 text-slate-400'
               }`}
             >
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 ${
-                badge.isUnlocked ? 'bg-amber-50 border border-amber-200 shadow-sm' : 'bg-slate-200/80 grayscale'
+                badge.isUnlocked ? 'bg-amber-500/20 border border-amber-500/30 shadow-sm' : 'bg-white/5 border border-white/10 grayscale'
               }`}>
                 {badge.icon}
               </div>
 
               <div className="space-y-1 flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black text-navy truncate">
+                  <h4 className="text-xs font-black text-white truncate">
                     {language === 'en' ? badge.titleEn : badge.titleBn}
                   </h4>
                   {badge.isUnlocked ? (
-                    <span className="text-[10px] font-bold text-civic-blue bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-sky-400 bg-sky-500/20 border border-sky-500/30 px-2 py-0.5 rounded-full">
                       Earned ✓
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold text-muted bg-slate-200 px-1.5 py-0.2 rounded">
+                    <span className="text-[10px] font-bold text-slate-400 bg-white/5 border border-white/10 px-1.5 py-0.2 rounded">
                       Locked
                     </span>
                   )}
                 </div>
 
-                <p className="text-[11px] text-slate-600 line-clamp-2">
+                <p className="text-[11px] text-slate-300 line-clamp-2">
                   {language === 'en' ? badge.descriptionEn : badge.descriptionBn}
                 </p>
 
                 {!badge.isUnlocked && badge.progress && badge.maxProgress && (
                   <div className="pt-2 space-y-1">
-                    <div className="h-1.5 rounded-full bg-slate-200 overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
                       <div
-                        className="h-full bg-navy rounded-full"
+                        className="h-full bg-gradient-to-r from-purple-500 to-sky-400 rounded-full"
                         style={{ width: `${(badge.progress / badge.maxProgress) * 100}%` }}
                       />
                     </div>
-                    <span className="text-[10px] text-muted font-bold block text-right">
+                    <span className="text-[10px] text-slate-400 font-bold block text-right">
                       {badge.progress} / {badge.maxProgress}
                     </span>
                   </div>
@@ -494,14 +491,14 @@ export default function UserProfile() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-extrabold text-navy">
+            <h2 className="text-xl font-extrabold text-white">
               {t.profile.activityHistory}
             </h2>
-            <p className="text-xs text-slate-500">Track and manage reports filed under your identity</p>
+            <p className="text-xs text-slate-400">Track and manage reports filed under your identity</p>
           </div>
           <Link
             href="/report/new"
-            className="text-xs font-bold text-civic-blue hover:underline"
+            className="text-xs font-bold text-sky-400 hover:text-sky-300 hover:underline"
           >
             + Submit New Issue
           </Link>
@@ -509,50 +506,50 @@ export default function UserProfile() {
 
         <div className="space-y-3">
           {userReports.length === 0 ? (
-            <div className="p-8 text-center rounded-3xl bg-white border border-surface-border text-xs text-muted">
+            <div className="p-8 text-center rounded-3xl bg-[#150D28]/90 border border-white/10 text-xs text-slate-400">
               {t.profile.noReportsYet}
             </div>
           ) : (
             userReports.map((report) => (
               <div
                 key={report.id}
-                className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 transition"
+                className="p-5 rounded-3xl bg-[#150D28]/90 border border-white/10 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/20 transition"
               >
                 <div className="flex items-center gap-4">
                   <img
                     src={report.mediaUrl || report.imageUrl}
                     alt={report.title}
-                    className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-slate-200"
+                    className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-white/10"
                   />
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono font-bold text-muted">
+                      <span className="text-[10px] font-mono font-bold text-slate-400">
                         {report.publicId}
                       </span>
                       <StatusBadge status={report.status} size="sm" />
                       {report.requiresCitizenProofOfWork && (
-                        <span className="text-[10px] bg-amber-500 text-white font-extrabold px-1.5 py-0.2 rounded">
+                        <span className="text-[10px] bg-amber-500 text-[#0E081B] font-extrabold px-1.5 py-0.2 rounded">
                           Proof Required
                         </span>
                       )}
                     </div>
-                    <h4 className="text-sm font-extrabold text-navy line-clamp-1">
+                    <h4 className="text-sm font-extrabold text-white line-clamp-1">
                       {report.title}
                     </h4>
-                    <p className="text-xs text-slate-500 flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-emergency" />
+                    <p className="text-xs text-slate-400 flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-rose-400" />
                       <span>{report.locationName}</span>
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
-                  <span className="text-xs font-bold text-civic-blue">
+                  <span className="text-xs font-bold text-sky-400">
                     👥 {report.confirmationsCount} votes
                   </span>
                   <Link
                     href={`/report/${report.id}`}
-                    className="px-3.5 py-1.5 rounded-xl bg-navy hover:bg-navy-dark text-white font-bold text-xs shadow-2xs transition"
+                    className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow transition"
                   >
                     View Details
                   </Link>
@@ -565,13 +562,13 @@ export default function UserProfile() {
 
       {/* Rule 25 Proof Submission Modal */}
       {showWorkProofModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/75 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-surface-border space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-black text-navy text-base">Submit Work Completion Proof</h3>
-              <button onClick={() => setShowWorkProofModal(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="bg-[#150D28] rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-white/15 space-y-4 text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-black text-white text-base">Submit Work Completion Proof</h3>
+              <button onClick={() => setShowWorkProofModal(false)} className="text-slate-400 hover:text-white transition">✕</button>
             </div>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-slate-300">
               Upload photo or video verifying that ticket <strong>{user.unresolvedReportIdForWorkProof}</strong> was indeed resolved.
             </p>
             <div className="space-y-3">
@@ -579,14 +576,14 @@ export default function UserProfile() {
                 <button
                   type="button"
                   onClick={() => setWorkProofType('image')}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold border ${workProofType === 'image' ? 'bg-navy text-white' : 'bg-slate-50'}`}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold border transition ${workProofType === 'image' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'}`}
                 >
                   📷 Photo
                 </button>
                 <button
                   type="button"
                   onClick={() => setWorkProofType('video')}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold border ${workProofType === 'video' ? 'bg-navy text-white' : 'bg-slate-50'}`}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold border transition ${workProofType === 'video' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'}`}
                 >
                   🎥 Video
                 </button>
@@ -601,19 +598,19 @@ export default function UserProfile() {
                     setWorkProofType(file.type.startsWith('video') ? 'video' : 'image');
                   }
                 }}
-                className="text-xs text-slate-500"
+                className="text-xs text-slate-300 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-white file:text-xs"
               />
               <textarea
                 rows={2}
                 value={workProofComment}
                 onChange={(e) => setWorkProofComment(e.target.value)}
                 placeholder="Describe resolution..."
-                className="w-full text-xs p-2.5 border border-slate-200 rounded-xl"
+                className="w-full text-xs p-2.5 bg-white/5 border border-white/15 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-purple-400"
               />
               <button
                 type="button"
                 onClick={handleWorkProofSubmit}
-                className="w-full py-2.5 bg-civic-blue hover:bg-civic-royal text-white text-xs font-bold rounded-xl shadow transition"
+                className="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow transition"
               >
                 Submit & Verify Resolution
               </button>

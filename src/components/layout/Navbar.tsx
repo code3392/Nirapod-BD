@@ -33,7 +33,9 @@ import {
   UserPlus,
   Sparkles,
   Layers,
-  HeartHandshake
+  HeartHandshake,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import EmergencyDirectoryModal from '@/components/common/EmergencyDirectoryModal';
 
@@ -62,12 +64,18 @@ export default function Navbar() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPhone, setRegPhone] = useState('');
   const [regLivingPlace, setRegLivingPlace] = useState('');
   const [regAge, setRegAge] = useState(27);
   const [regBlood, setRegBlood] = useState('B+');
+  const [regPassword, setRegPassword] = useState('');
+  const [regConfirmPassword, setRegConfirmPassword] = useState('');
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
   const [authFeedback, setAuthFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const notifRef = useRef<HTMLDivElement>(null);
@@ -97,13 +105,18 @@ export default function Navbar() {
       setAuthFeedback({ message: 'Please enter a valid email address.', type: 'error' });
       return;
     }
-    const res = login(loginEmail.trim());
+    if (!loginPassword) {
+      setAuthFeedback({ message: 'Please enter your password.', type: 'error' });
+      return;
+    }
+    const res = login(loginEmail.trim(), loginPassword);
     if (res.success) {
       setAuthFeedback({ message: res.message, type: 'success' });
       setTimeout(() => {
         setAuthModalOpen(false);
         setAuthFeedback(null);
         setLoginEmail('');
+        setLoginPassword('');
       }, 600);
     } else {
       setAuthFeedback({ message: res.message, type: 'error' });
@@ -116,9 +129,22 @@ export default function Navbar() {
       setAuthFeedback({ message: 'Please enter your full name and email.', type: 'error' });
       return;
     }
+    if (!regPassword) {
+      setAuthFeedback({ message: 'Please create a password for your account.', type: 'error' });
+      return;
+    }
+    if (regPassword.length < 6) {
+      setAuthFeedback({ message: 'Password must be at least 6 characters long.', type: 'error' });
+      return;
+    }
+    if (regPassword !== regConfirmPassword) {
+      setAuthFeedback({ message: 'Passwords do not match. Please re-check.', type: 'error' });
+      return;
+    }
     const res = register({
       name: regName,
       email: regEmail,
+      password: regPassword,
       phone: regPhone || '+880 1700-000000',
       livingPlace: regLivingPlace || 'Dhaka, Bangladesh',
       area: 'Dhaka',
@@ -135,6 +161,8 @@ export default function Navbar() {
         setRegEmail('');
         setRegPhone('');
         setRegLivingPlace('');
+        setRegPassword('');
+        setRegConfirmPassword('');
       }, 600);
     } else {
       setAuthFeedback({ message: res.message, type: 'error' });
@@ -811,7 +839,7 @@ export default function Navbar() {
             {/* TAB 1: SIGN IN */}
             {authMode === 'login' && (
               <div className="space-y-4">
-                {/* Email Sign In */}
+                {/* Email & Password Sign In */}
                 <form onSubmit={handleLoginSubmit} className="space-y-3">
                   <div>
                     <label className="text-xs font-bold text-slate-300 block mb-1">
@@ -826,6 +854,31 @@ export default function Navbar() {
                       className="w-full px-3.5 py-2.5 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
                     />
                   </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-300 block mb-1">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showLoginPassword ? 'text' : 'password'}
+                        required
+                        placeholder="Enter your password"
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        className="w-full px-3.5 py-2.5 pr-10 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
+                        title={showLoginPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
                   <button
                     type="submit"
                     className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white rounded-xl text-xs font-bold shadow-lg transition"
@@ -886,6 +939,53 @@ export default function Navbar() {
                       onChange={(e) => setRegPhone(e.target.value)}
                       className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
                     />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Password *</label>
+                    <div className="relative">
+                      <input
+                        type={showRegPassword ? 'text' : 'password'}
+                        required
+                        minLength={6}
+                        placeholder="At least 6 characters"
+                        value={regPassword}
+                        onChange={(e) => setRegPassword(e.target.value)}
+                        className="w-full px-3 py-2 pr-9 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowRegPassword(!showRegPassword)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
+                        title={showRegPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showRegPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-300 block mb-1">Confirm Password *</label>
+                    <div className="relative">
+                      <input
+                        type={showRegConfirmPassword ? 'text' : 'password'}
+                        required
+                        minLength={6}
+                        placeholder="Repeat your password"
+                        value={regConfirmPassword}
+                        onChange={(e) => setRegConfirmPassword(e.target.value)}
+                        className="w-full px-3 py-2 pr-9 text-xs bg-white/5 border border-white/10 rounded-xl focus:border-sky-400 focus:bg-white/10 text-white placeholder:text-slate-500 focus:outline-none transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
+                        title={showRegConfirmPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showRegConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
                   </div>
                 </div>
 

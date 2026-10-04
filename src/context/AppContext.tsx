@@ -43,10 +43,11 @@ interface AppContextType {
   offlineQueueCount: number;
   
   // Auth & Roles
-  login: (email: string) => { success: boolean; message: string };
+  login: (email: string, password?: string) => { success: boolean; message: string };
   register: (data: {
     name: string;
     email: string;
+    password?: string;
     phone: string;
     livingPlace: string;
     area: string;
@@ -261,7 +262,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Authentic Login Method
-  const login = (email: string): { success: boolean; message: string } => {
+  const login = (email: string, password?: string): { success: boolean; message: string } => {
     const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail) return { success: false, message: 'Please enter a valid email address.' };
 
@@ -278,6 +279,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const existing = allUsers.find(u => u.email.toLowerCase() === cleanEmail);
     if (existing) {
+      if (existing.password && password && existing.password !== password) {
+        return { success: false, message: 'Incorrect password. Please check your credentials.' };
+      }
+      if (!existing.password && password) {
+        existing.password = password;
+        const updated = allUsers.map(u => u.id === existing.id ? existing : u);
+        setAllUsers(updated);
+        if (typeof window !== 'undefined') localStorage.setItem('nirapod_users', JSON.stringify(updated));
+      }
       setUser(existing);
       if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(existing));
       return { success: true, message: `Welcome back, ${existing.name}!` };
@@ -290,12 +300,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       id: `usr-${Date.now()}`,
       name: formattedName,
       email: cleanEmail,
+      password: password || undefined,
       avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(formattedName)}&backgroundColor=0A2540&textColor=ffffff`,
       role: 'Citizen',
       isSuperAdmin: false,
       phone: '+880 1700-000000',
       livingPlace: 'Dhaka, Bangladesh',
-      area: 'Mirpur',
+      area: 'Dhaka',
       age: 26,
       bloodGroup: 'B+',
       occupation: 'Citizen Volunteer',
@@ -332,6 +343,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const register = (data: {
     name: string;
     email: string;
+    password?: string;
     phone: string;
     livingPlace: string;
     area: string;
@@ -351,6 +363,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       id: isSuper ? 'usr-super-admin' : `usr-${Date.now()}`,
       name: cleanName,
       email: cleanEmail,
+      password: data.password || undefined,
       avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(cleanName)}&backgroundColor=0A2540&textColor=ffffff`,
       role: isSuper ? 'Super Admin' : 'Community Guardian',
       isSuperAdmin: isSuper,

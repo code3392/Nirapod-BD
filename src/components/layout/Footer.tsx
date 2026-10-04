@@ -40,7 +40,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-[#040914] text-white pt-16 pb-12 border-t border-white/10 relative overflow-hidden">
+    <footer className="bg-[#06030E] text-white pt-16 pb-12 border-t border-white/10 relative overflow-hidden">
       {/* Subtle ambient glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -195,7 +195,7 @@ export default function Footer() {
             <h4 className="text-xs font-mono uppercase font-black tracking-wider text-slate-400">
               {language === 'en' ? 'National Emergency' : 'জরুরি হেল্পলাইন'}
             </h4>
-            <div className="p-4 rounded-2xl bg-[#0A182B] border border-white/10 space-y-2 shadow-glass">
+            <div className="p-4 rounded-2xl bg-[#130C24] border border-white/10 space-y-2 shadow-glass">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-white">Emergency Hotline</span>
                 <span className="text-xs font-mono font-black text-white bg-emergency px-2 py-0.5 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)]">

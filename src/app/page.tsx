@@ -32,12 +32,12 @@ export default function HomePage() {
       <PartnershipShowcase />
 
       {/* 6. Community Action Callout with Modern SVG Cyber Mesh */}
-      <section className="py-20 bg-[#060D1A] border-t border-white/10 relative overflow-hidden">
+      <section className="py-20 bg-[#090514] border-t border-white/10 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-8 sm:p-14 rounded-3xl bg-[#071320] text-white relative overflow-hidden shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/15 group">
+          <div className="p-8 sm:p-14 rounded-3xl bg-[#0E081B] text-white relative overflow-hidden shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/15 group">
             
             {/* Pure CSS/SVG Background Grid (Zero stock photos) */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(37,99,235,0.25),transparent_60%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.25),transparent_60%)] pointer-events-none" />
             <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:48px_48px] pointer-events-none" />
 
             <div className="space-y-3.5 max-w-xl text-center lg:text-left relative z-10">

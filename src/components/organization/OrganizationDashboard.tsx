@@ -68,13 +68,13 @@ export default function OrganizationDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060D1A] text-white py-10">
+    <div className="min-h-screen bg-[#090514] text-white py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Organization Header (Cyber Glass Banner) */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 text-white shadow-2xl ring-1 ring-sky-500/15">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 text-white shadow-2xl ring-1 ring-purple-500/15">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400 shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+            <div className="w-14 h-14 rounded-2xl bg-purple-500/15 border border-purple-400/30 flex items-center justify-center text-purple-400 shrink-0 shadow-[0_0_15px_rgba(168,85,247,0.25)]">
               <Building2 className="w-8 h-8" />
             </div>
             <div>
@@ -82,7 +82,7 @@ export default function OrganizationDashboard() {
                 <h1 className="text-xl sm:text-2xl font-black text-white">
                   Dhaka North City Corporation (DNCC)
                 </h1>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30">
                   Verified Civic Agency
                 </span>
               </div>
@@ -115,7 +115,7 @@ export default function OrganizationDashboard() {
             className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
               activeTab === 'open'
                 ? 'bg-sky-500/15 border-sky-400/50 shadow-[0_0_20px_rgba(56,189,248,0.25)] ring-1 ring-sky-400'
-                : 'bg-[#0A182B]/85 border-white/10 hover:border-white/20'
+                : 'bg-[#130C24]/85 border-white/10 hover:border-white/20'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -131,7 +131,7 @@ export default function OrganizationDashboard() {
             className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
               activeTab === 'high_priority'
                 ? 'bg-orange-500/15 border-orange-400/50 shadow-[0_0_20px_rgba(249,115,22,0.25)] ring-1 ring-orange-400'
-                : 'bg-[#0A182B]/85 border-white/10 hover:border-white/20'
+                : 'bg-[#130C24]/85 border-white/10 hover:border-white/20'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -147,7 +147,7 @@ export default function OrganizationDashboard() {
             className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
               activeTab === 'in_progress'
                 ? 'bg-blue-600/15 border-blue-400/50 shadow-[0_0_20px_rgba(37,99,235,0.25)] ring-1 ring-blue-400'
-                : 'bg-[#0A182B]/85 border-white/10 hover:border-white/20'
+                : 'bg-[#130C24]/85 border-white/10 hover:border-white/20'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -163,7 +163,7 @@ export default function OrganizationDashboard() {
             className={`p-6 rounded-3xl text-left border transition-all duration-200 ${
               activeTab === 'resolved'
                 ? 'bg-sky-400/15 border-sky-400/50 shadow-[0_0_20px_rgba(56,189,248,0.25)] ring-1 ring-sky-400'
-                : 'bg-[#0A182B]/85 border-white/10 hover:border-white/20'
+                : 'bg-[#130C24]/85 border-white/10 hover:border-white/20'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -176,7 +176,7 @@ export default function OrganizationDashboard() {
         </div>
 
         {/* Action Table Panel */}
-        <div className="bg-[#0A182B]/85 rounded-3xl border border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.5)] overflow-hidden">
+        <div className="bg-[#130C24]/85 rounded-3xl border border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.5)] overflow-hidden">
           <div className="p-5 border-b border-white/10 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-extrabold text-sm text-white">
@@ -236,7 +236,7 @@ export default function OrganizationDashboard() {
                       {report.status !== 'RESOLVED' ? (
                         <button
                           onClick={() => handleOpenResolveModal(report)}
-                          className="px-3 py-1 rounded-lg bg-sky-400 hover:bg-sky-300 text-[#071320] font-black text-[11px] shadow-sm transition"
+                          className="px-3 py-1 rounded-lg bg-sky-400 hover:bg-sky-300 text-[#0E081B] font-black text-[11px] shadow-sm transition"
                         >
                           {t.organization.btnResolve}
                         </button>
@@ -259,15 +259,15 @@ export default function OrganizationDashboard() {
         {/* RESOLUTION SUBMISSION MODAL */}
         {resolvingReport && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="relative w-full max-w-2xl bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-sky-500/20 text-white">
+            <div className="relative w-full max-w-2xl bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-purple-500/20 text-white">
               {/* Modal Header */}
               <div className="bg-white/5 p-5 text-white flex items-center justify-between border-b border-white/10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-400/30 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-400/30 flex items-center justify-center">
                     <CheckCircle2 className="w-6 h-6" />
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-mono font-bold text-sky-300">
+                    <span className="text-[10px] uppercase font-mono font-bold text-purple-300">
                       Official Maintenance Proof
                     </span>
                     <h3 className="text-base font-extrabold text-white">
@@ -345,7 +345,7 @@ export default function OrganizationDashboard() {
                         onClick={() => setAfterImage(item.url)}
                         className={`text-[11px] font-bold px-3 py-1.5 rounded-xl border transition ${
                           afterImage === item.url
-                            ? 'bg-sky-400 text-[#071320] font-black border-sky-400 shadow-sm'
+                            ? 'bg-sky-400 text-[#0E081B] font-black border-sky-400 shadow-sm'
                             : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
                         }`}
                       >

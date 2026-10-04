@@ -33,10 +33,10 @@ export default function MapPreviewSection() {
     : demoReports.filter(r => r.severity === filterSeverity || (filterSeverity === 'resolved' && r.status === 'RESOLVED'));
 
   const getMarkerColor = (report: Report) => {
-    if (report.status === 'RESOLVED') return 'bg-sky-400 border-white text-[#071320] shadow-[0_0_15px_rgba(56,189,248,0.8)]';
+    if (report.status === 'RESOLVED') return 'bg-sky-400 border-white text-[#0E081B] shadow-[0_0_15px_rgba(56,189,248,0.8)]';
     if (report.severity === 'emergency') return 'bg-emergency border-white text-white shadow-[0_0_15px_rgba(239,68,68,0.8)] animate-pulse';
     if (report.severity === 'high') return 'bg-orange-500 border-white text-white shadow-[0_0_12px_rgba(249,115,22,0.6)]';
-    if (report.severity === 'medium') return 'bg-amber-400 border-white text-[#071320]';
+    if (report.severity === 'medium') return 'bg-amber-400 border-white text-[#0E081B]';
     return 'bg-blue-500 border-white text-white';
   };
 
@@ -57,10 +57,10 @@ export default function MapPreviewSection() {
   };
 
   return (
-    <section className="py-20 bg-[#060D1A] border-t border-white/10 relative overflow-hidden text-white">
+    <section className="py-20 bg-[#090514] border-t border-white/10 relative overflow-hidden text-white">
       {/* Ambient background glow */}
-      <div className="absolute top-1/3 -right-32 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 -left-32 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-32 w-96 h-96 bg-purple-600/12 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 -left-32 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -89,16 +89,16 @@ export default function MapPreviewSection() {
         </div>
 
         {/* Map Canvas with Interactive Popover */}
-        <div className="relative rounded-3xl bg-[#071320] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden ring-1 ring-sky-500/15">
+        <div className="relative rounded-3xl bg-[#0E081B] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden ring-1 ring-sky-500/15">
           
           {/* Top Filter Bar inside Map */}
-          <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 bg-[#0A1628]/90 backdrop-blur-xl p-3 rounded-2xl border border-white/10 shadow-lg">
+          <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 bg-[#150D28]/90 backdrop-blur-xl p-3 rounded-2xl border border-white/10 shadow-lg">
             <div className="flex flex-wrap items-center gap-2 text-xs font-bold font-sans">
               <button
                 onClick={() => setFilterSeverity('all')}
                 className={`px-3 py-1.5 rounded-xl transition ${
                   filterSeverity === 'all'
-                    ? 'bg-sky-400 text-[#071320] font-black shadow-sm'
+                    ? 'bg-sky-400 text-[#0E081B] font-black shadow-sm'
                     : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10'
                 }`}
               >
@@ -130,7 +130,7 @@ export default function MapPreviewSection() {
                 onClick={() => setFilterSeverity('resolved')}
                 className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition ${
                   filterSeverity === 'resolved'
-                    ? 'bg-sky-400 text-[#071320] font-black'
+                    ? 'bg-sky-400 text-[#0E081B] font-black'
                     : 'bg-white/5 text-sky-300 hover:bg-white/10 border border-sky-400/30'
                 }`}
               >
@@ -161,7 +161,7 @@ export default function MapPreviewSection() {
           </div>
 
           {/* Interactive Map Visual Stage */}
-          <div className="relative h-[480px] sm:h-[560px] w-full bg-[#040A14] overflow-hidden select-none">
+          <div className="relative h-[480px] sm:h-[560px] w-full bg-[#05020B] overflow-hidden select-none">
             {/* Map Roads & Geographic Grid Simulation */}
             <svg className="absolute inset-0 w-full h-full opacity-40" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -225,7 +225,7 @@ export default function MapPreviewSection() {
             {/* Zero Fake Reports Active State */}
             {filteredReports.length === 0 && (
               <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none z-20">
-                <div className="bg-[#0A1628]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl max-w-md text-center space-y-4 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+                <div className="bg-[#150D28]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl max-w-md text-center space-y-4 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
                   <div className="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-400 mx-auto flex items-center justify-center border border-sky-400/30 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
                     <ShieldCheck className="w-6 h-6 animate-pulse" />
                   </div>
@@ -251,7 +251,7 @@ export default function MapPreviewSection() {
 
             {/* Floating Report Preview Card with Dark Obsidian Frosted Glass */}
             {selectedReport && (
-              <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl p-5 shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-white/15 z-30 animate-in fade-in slide-in-from-bottom-3 duration-300 ring-1 ring-sky-500/20">
+              <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl p-5 shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-white/15 z-30 animate-in fade-in slide-in-from-bottom-3 duration-300 ring-1 ring-sky-500/20">
                 {/* Photo Thumbnail */}
                 {selectedReport.imageUrl && (
                   <div className="relative h-32 w-full rounded-2xl overflow-hidden mb-3 bg-slate-900 border border-white/10 group">

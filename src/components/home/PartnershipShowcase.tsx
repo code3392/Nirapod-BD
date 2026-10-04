@@ -96,10 +96,10 @@ export default function PartnershipShowcase() {
   ];
 
   return (
-    <section className="py-24 bg-[#060D1A] border-t border-white/10 relative overflow-hidden text-white">
+    <section className="py-24 bg-[#090514] border-t border-white/10 relative overflow-hidden text-white">
       {/* Background Subtle Tech Matrix & Glowing Orbs */}
-      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-sky-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-96 h-96 bg-purple-600/12 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
         
@@ -130,7 +130,7 @@ export default function PartnershipShowcase() {
             return (
               <div
                 key={partner.nameEn}
-                className="p-6 sm:p-7 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 hover:border-sky-400/50 hover:bg-[#0C1F38] shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(56,189,248,0.15)] transition-all duration-300 flex flex-col justify-between group"
+                className="p-6 sm:p-7 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 hover:border-purple-400/50 hover:bg-[#1A1033] shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.15)] transition-all duration-300 flex flex-col justify-between group"
               >
                 <div className="space-y-4">
                   <div className="flex items-start justify-between gap-3">
@@ -175,7 +175,7 @@ export default function PartnershipShowcase() {
         </div>
 
         {/* Website Glaze Banner: Trust Metrics */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#071320]/95 backdrop-blur-2xl border border-white/15 text-white shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col md:flex-row items-center justify-between gap-6 ring-1 ring-sky-500/15">
+        <div className="p-6 sm:p-8 rounded-3xl bg-[#0E081B]/95 backdrop-blur-2xl border border-white/15 text-white shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col md:flex-row items-center justify-between gap-6 ring-1 ring-sky-500/15">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
               <Award className="w-7 h-7 text-sky-400" />

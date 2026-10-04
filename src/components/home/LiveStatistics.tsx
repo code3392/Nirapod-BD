@@ -67,10 +67,10 @@ export default function LiveStatistics() {
   const resolutionRate = counts.reports > 0 ? Math.round((counts.resolved / counts.reports) * 100) : 100;
 
   return (
-    <section className="py-14 bg-[#060D1A] relative z-20 overflow-hidden">
+    <section className="py-14 bg-[#090514] relative z-20 overflow-hidden">
       {/* Subtle ambient backlights */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-purple-600/12 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
         
@@ -78,14 +78,14 @@ export default function LiveStatistics() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           
           {/* Card 1: Total Verified Submissions */}
-          <div className="p-6 sm:p-7 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 hover:border-sky-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(56,189,248,0.15)] transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group relative overflow-hidden">
-            <div className="absolute -right-8 -top-8 w-28 h-28 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-all pointer-events-none" />
+          <div className="p-6 sm:p-7 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 hover:border-purple-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group relative overflow-hidden">
+            <div className="absolute -right-8 -top-8 w-28 h-28 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition-all pointer-events-none" />
             
             <div className="flex items-center justify-between mb-5">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-400/30 flex items-center justify-center text-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.2)] group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-400/30 flex items-center justify-center text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.2)] group-hover:scale-110 transition-transform">
                 <FileText className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-sans font-bold uppercase px-2.5 py-1 rounded-full bg-blue-500/10 text-sky-300 border border-blue-400/25">
+              <span className="text-[10px] font-sans font-bold uppercase px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-200 border border-purple-400/25">
                 {language === 'en' ? 'Submissions' : 'মোট অভিযোগ'}
               </span>
             </div>
@@ -101,20 +101,20 @@ export default function LiveStatistics() {
           </div>
 
           {/* Card 2: Resolution Velocity & Percentage */}
-          <div className="p-6 sm:p-7 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 hover:border-sky-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(56,189,248,0.15)] transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group relative overflow-hidden">
-            <div className="absolute -right-8 -top-8 w-28 h-28 bg-sky-500/10 rounded-full blur-xl group-hover:bg-sky-500/20 transition-all pointer-events-none" />
+          <div className="p-6 sm:p-7 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 hover:border-purple-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group relative overflow-hidden">
+            <div className="absolute -right-8 -top-8 w-28 h-28 bg-violet-500/10 rounded-full blur-xl group-hover:bg-violet-500/20 transition-all pointer-events-none" />
 
             <div className="flex items-center justify-between mb-5">
-              <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.2)] group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-violet-500/15 border border-violet-400/30 flex items-center justify-center text-violet-300 shadow-[0_0_15px_rgba(168,85,247,0.2)] group-hover:scale-110 transition-transform">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-display font-bold uppercase px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-300 border border-sky-400/25">
+              <span className="text-[10px] font-display font-bold uppercase px-2.5 py-1 rounded-full bg-violet-500/10 text-violet-200 border border-violet-400/25">
                 {resolutionRate}% {language === 'en' ? 'Resolved' : 'সমাধান'}
               </span>
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-sky-200 to-white font-display tabular-nums">
+              <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-violet-100 to-white font-display tabular-nums">
                 {counts.resolved.toLocaleString()}
               </h3>
               <p className="text-xs sm:text-sm font-bold text-slate-300">
@@ -124,14 +124,14 @@ export default function LiveStatistics() {
           </div>
 
           {/* Card 3: Civic Guardians & Patrols */}
-          <div className="p-6 sm:p-7 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 hover:border-sky-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(56,189,248,0.15)] transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group relative overflow-hidden">
-            <div className="absolute -right-8 -top-8 w-28 h-28 bg-blue-600/10 rounded-full blur-xl group-hover:bg-blue-600/20 transition-all pointer-events-none" />
+          <div className="p-6 sm:p-7 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 hover:border-purple-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group relative overflow-hidden">
+            <div className="absolute -right-8 -top-8 w-28 h-28 bg-indigo-600/10 rounded-full blur-xl group-hover:bg-indigo-600/20 transition-all pointer-events-none" />
 
             <div className="flex items-center justify-between mb-5">
-              <div className="w-12 h-12 rounded-2xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-300 shadow-[0_0_15px_rgba(37,99,235,0.2)] group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-600/15 border border-indigo-500/30 flex items-center justify-center text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.2)] group-hover:scale-110 transition-transform">
                 <Users className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-sans font-bold uppercase px-2.5 py-1 rounded-full bg-blue-600/10 text-blue-300 border border-blue-500/25">
+              <span className="text-[10px] font-sans font-bold uppercase px-2.5 py-1 rounded-full bg-indigo-600/10 text-indigo-200 border border-indigo-500/25">
                 {language === 'en' ? 'Guardians' : 'সচেতন প্রহরী'}
               </span>
             </div>
@@ -147,7 +147,7 @@ export default function LiveStatistics() {
           </div>
 
           {/* Card 4: Under Active Action */}
-          <div className="p-6 sm:p-7 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 hover:border-amber-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group relative overflow-hidden">
+          <div className="p-6 sm:p-7 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 hover:border-amber-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group relative overflow-hidden">
             <div className="absolute -right-8 -top-8 w-28 h-28 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-all pointer-events-none" />
 
             <div className="flex items-center justify-between mb-5">
@@ -168,9 +168,7 @@ export default function LiveStatistics() {
               </p>
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
   );

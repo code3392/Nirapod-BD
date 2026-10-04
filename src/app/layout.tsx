@@ -8,7 +8,7 @@ import BackgroundCyberCanvas from '@/components/common/BackgroundCyberCanvas';
 import NirapodAiAssistant from '@/components/common/NirapodAiAssistant';
 
 export const viewport: Viewport = {
-  themeColor: '#0B1F33',
+  themeColor: '#0E081B',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -69,7 +69,7 @@ export default function RootLayout({
           rel="stylesheet" 
         />
       </head>
-      <body className="min-h-screen flex flex-col font-sans bg-[#060D1A] text-slate-100 antialiased relative overflow-x-hidden selection:bg-sky-500/30 selection:text-white">
+      <body className="min-h-screen flex flex-col font-sans bg-[#090514] text-slate-100 antialiased relative overflow-x-hidden selection:bg-purple-500/30 selection:text-white">
         <AppProvider>
           <BackgroundCyberCanvas />
           <OfflineBanner />

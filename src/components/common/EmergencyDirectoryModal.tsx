@@ -61,7 +61,7 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 pointer-events-auto">
-      <div className="bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-sky-500/20 text-white">
+      <div className="bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-sky-500/20 text-white">
         
         {/* Header */}
         <div className="p-5 sm:p-6 bg-white/5 border-b border-white/10 flex items-center justify-between relative">
@@ -115,7 +115,7 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-all font-mono ${
                   selectedCategory === cat.id
-                    ? 'bg-sky-400 text-[#071320] font-black shadow-[0_0_12px_rgba(56,189,248,0.3)]'
+                    ? 'bg-sky-400 text-[#0E081B] font-black shadow-[0_0_12px_rgba(56,189,248,0.3)]'
                     : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10'
                 }`}
               >
@@ -126,7 +126,7 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
         </div>
 
         {/* Body Content - Scrollable */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 bg-[#060D1A]/60 custom-scrollbar">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 bg-[#090514]/60 custom-scrollbar">
           
           {/* Nearest Police & Hospital Quick Box by Area */}
           <div className="p-4 sm:p-5 rounded-3xl bg-white/5 border border-white/10 space-y-3">
@@ -140,10 +140,10 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
               <select
                 value={selectedArea}
                 onChange={(e) => setSelectedArea(e.target.value)}
-                className="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#0A1628] border border-white/15 text-white focus:outline-none"
+                className="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#150D28] border border-white/15 text-white focus:outline-none"
               >
                 {Object.keys(DHAKA_POLICE_STATIONS).map((area) => (
-                  <option key={area} value={area} className="bg-[#0A1628] text-white">
+                  <option key={area} value={area} className="bg-[#150D28] text-white">
                     {area} Zone
                   </option>
                 ))}

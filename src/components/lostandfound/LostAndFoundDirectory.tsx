@@ -72,14 +72,14 @@ export default function LostAndFoundDirectory() {
   const areas = ['Mirpur', 'Uttara', 'Dhanmondi', 'Gulshan', 'Mohammadpur', 'Motijheel', 'Old Dhaka', 'Banani', 'Badda'];
 
   return (
-    <div className="min-h-screen bg-[#060D1A] text-white py-10">
+    <div className="min-h-screen bg-[#090514] text-white py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-500/15 border border-sky-400/30 text-xs font-mono font-bold text-sky-300 uppercase tracking-wider">
-              <Tag className="w-3.5 h-3.5 text-sky-400" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-xs font-mono font-bold text-purple-300 uppercase tracking-wider">
+              <Tag className="w-3.5 h-3.5 text-purple-400" />
               <span>Community Lost & Found Hub</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
@@ -100,7 +100,7 @@ export default function LostAndFoundDirectory() {
         </div>
 
         {/* Search & Filter Bar (Rule 22) */}
-        <div className="p-5 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.5)] space-y-4">
+        <div className="p-5 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.5)] space-y-4">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {/* Item Name Search */}
             <div className="relative flex-1">
@@ -110,7 +110,7 @@ export default function LostAndFoundDirectory() {
                 placeholder={language === 'en' ? 'Search by item name (e.g. National ID, Wallet, Keys, Pet, Phone)...' : 'জিনিসের নাম লিখে খুঁজুন (যেমন: এনআইডি, ওয়ালেট, চাবি, কুকুর)...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm font-semibold text-white focus:border-sky-400 focus:bg-white/10 focus:outline-none placeholder:text-slate-500 transition"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm font-semibold text-white focus:border-purple-400 focus:bg-white/10 focus:outline-none placeholder:text-slate-500 transition"
               />
             </div>
 
@@ -119,7 +119,7 @@ export default function LostAndFoundDirectory() {
               <button
                 onClick={() => setSelectedType('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                  selectedType === 'all' ? 'bg-sky-400 text-[#071320] font-black shadow-sm' : 'text-slate-400 hover:text-white'
+                  selectedType === 'all' ? 'bg-sky-400 text-[#0E081B] font-black shadow-sm' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 All Items
@@ -148,7 +148,7 @@ export default function LostAndFoundDirectory() {
             <button
               onClick={() => setSelectedArea('all')}
               className={`px-3 py-1.5 rounded-xl transition whitespace-nowrap ${
-                selectedArea === 'all' ? 'bg-sky-400 text-[#071320] font-black' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                selectedArea === 'all' ? 'bg-sky-400 text-[#0E081B] font-black' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
               }`}
             >
               All Areas
@@ -158,7 +158,7 @@ export default function LostAndFoundDirectory() {
                 key={a}
                 onClick={() => setSelectedArea(a)}
                 className={`px-3 py-1.5 rounded-xl transition whitespace-nowrap ${
-                  selectedArea === a ? 'bg-sky-400 text-[#071320] font-black' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                  selectedArea === a ? 'bg-sky-400 text-[#0E081B] font-black' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
                 }`}
               >
                 {a}
@@ -170,14 +170,14 @@ export default function LostAndFoundDirectory() {
         {/* Grid of Lost & Found Items */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.length === 0 ? (
-            <div className="col-span-full p-12 text-center rounded-3xl bg-[#0A182B]/85 border border-white/10 text-xs text-slate-400 backdrop-blur-2xl">
+            <div className="col-span-full p-12 text-center rounded-3xl bg-[#130C24]/85 border border-white/10 text-xs text-slate-400 backdrop-blur-2xl">
               No lost or found items matched your search query. Try typing another keyword or change your area.
             </div>
           ) : (
             filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="bg-[#0A182B]/85 rounded-3xl border border-white/10 hover:border-sky-400/50 hover:bg-[#0C1F38] shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(56,189,248,0.15)] transition-all overflow-hidden flex flex-col justify-between group"
+                className="bg-[#130C24]/85 rounded-3xl border border-white/10 hover:border-purple-400/50 hover:bg-[#1A1033] shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.15)] transition-all overflow-hidden flex flex-col justify-between group"
               >
                 <div>
                   {/* Media Image / Video */}
@@ -262,7 +262,7 @@ export default function LostAndFoundDirectory() {
         {/* CREATE MODAL */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="relative w-full max-w-xl bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col ring-1 ring-sky-500/20 text-white">
+            <div className="relative w-full max-w-xl bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col ring-1 ring-purple-500/20 text-white">
               <div className="p-5 bg-white/5 border-b border-white/10 flex items-center justify-between">
                 <h3 className="font-extrabold text-base text-white">Post a Lost or Recovered Item</h3>
                 <button onClick={() => setIsModalOpen(false)} className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-white/10">
@@ -302,7 +302,7 @@ export default function LostAndFoundDirectory() {
                     placeholder="e.g. Black Leather Wallet with Driving License"
                     value={newItemName}
                     onChange={(e) => setNewItemName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 text-xs sm:text-sm focus:border-sky-400 focus:bg-white/10 focus:outline-none transition"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 text-xs sm:text-sm focus:border-purple-400 focus:bg-white/10 focus:outline-none transition"
                   />
                 </div>
 
@@ -313,10 +313,10 @@ export default function LostAndFoundDirectory() {
                     <select
                       value={newArea}
                       onChange={(e) => setNewArea(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-[#0A1628] border border-white/15 text-white text-xs sm:text-sm"
+                      className="w-full px-3 py-2.5 rounded-xl bg-[#150D28] border border-white/15 text-white text-xs sm:text-sm"
                     >
                       {areas.map((a) => (
-                        <option key={a} value={a} className="bg-[#0A1628] text-white">{a}</option>
+                        <option key={a} value={a} className="bg-[#150D28] text-white">{a}</option>
                       ))}
                     </select>
                   </div>
@@ -327,7 +327,7 @@ export default function LostAndFoundDirectory() {
                       placeholder="e.g. Near Mirpur-10 bus stop"
                       value={newSpecificLocation}
                       onChange={(e) => setNewSpecificLocation(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 text-xs sm:text-sm focus:border-sky-400 focus:outline-none transition"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 text-xs sm:text-sm focus:border-purple-400 focus:outline-none transition"
                     />
                   </div>
                 </div>

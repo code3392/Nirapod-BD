@@ -168,7 +168,7 @@ export default function CommunityHub() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060D1A] text-white py-10">
+    <div className="min-h-screen bg-[#090514] text-white py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Header Section */}
@@ -237,7 +237,7 @@ export default function CommunityHub() {
         </div>
 
         {/* Main Hub Split Layout: Left Navigation + Right Conversation Stage */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 bg-[#0A182B]/85 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden min-h-[640px]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 bg-[#130C24]/85 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden min-h-[640px]">
           
           {/* Left Navigation: 1 Main Community + Personal Groups */}
           <div className="lg:col-span-4 bg-white/[0.02] border-r border-white/10 p-5 space-y-6">
@@ -379,7 +379,7 @@ export default function CommunityHub() {
           </div>
 
           {/* Right Chat Conversation Stage */}
-          <div className="lg:col-span-8 flex flex-col justify-between h-[640px] bg-[#071320]/60">
+          <div className="lg:col-span-8 flex flex-col justify-between h-[640px] bg-[#0E081B]/60">
             
             {/* Conversation Header */}
             <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
@@ -561,7 +561,7 @@ export default function CommunityHub() {
 
                   <button
                     type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#071320] text-xs font-black shadow-md transition flex items-center gap-1.5 shrink-0"
+                    className="px-5 py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#0E081B] text-xs font-black shadow-md transition flex items-center gap-1.5 shrink-0"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Send</span>
@@ -584,7 +584,7 @@ export default function CommunityHub() {
       {/* MODAL 1: CREATE PERSONAL GROUP */}
       {createModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md rounded-3xl bg-[#0A182B] border border-white/20 p-6 sm:p-7 shadow-2xl space-y-6">
+          <div className="relative w-full max-w-md rounded-3xl bg-[#130C24] border border-white/20 p-6 sm:p-7 shadow-2xl space-y-6">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-10 h-10 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400">
@@ -630,7 +630,7 @@ export default function CommunityHub() {
                 <select
                   value={newGroupCategory}
                   onChange={(e) => setNewGroupCategory(e.target.value as PersonalGroup['category'])}
-                  className="w-full px-4 py-2.5 rounded-xl border border-white/15 bg-[#071320] text-white text-xs focus:border-sky-400 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-white/15 bg-[#0E081B] text-white text-xs focus:border-sky-400 focus:outline-none"
                 >
                   <option value="family">👨‍👩‍👧 Family & Relatives</option>
                   <option value="neighborhood">🏘️ Neighborhood Watch</option>
@@ -677,7 +677,7 @@ export default function CommunityHub() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#071320] text-xs font-black shadow-md transition"
+                  className="px-5 py-2 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#0E081B] text-xs font-black shadow-md transition"
                 >
                   {language === 'en' ? 'Create Group' : 'গ্রুপ নিশ্চিত করুন'}
                 </button>
@@ -690,7 +690,7 @@ export default function CommunityHub() {
       {/* MODAL 2: JOIN GROUP BY INVITE CODE */}
       {joinModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-sm rounded-3xl bg-[#0A182B] border border-white/20 p-6 sm:p-7 shadow-2xl space-y-5">
+          <div className="relative w-full max-w-sm rounded-3xl bg-[#130C24] border border-white/20 p-6 sm:p-7 shadow-2xl space-y-5">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-10 h-10 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400">
@@ -739,7 +739,7 @@ export default function CommunityHub() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#071320] text-xs font-black shadow-md transition"
+                  className="px-5 py-2 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#0E081B] text-xs font-black shadow-md transition"
                 >
                   {language === 'en' ? 'Join Group' : 'যোগ দিন'}
                 </button>
@@ -752,7 +752,7 @@ export default function CommunityHub() {
       {/* MODAL 3: VIEW GROUP MEMBERS */}
       {membersModalOpen && currentPersonalGroup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md rounded-3xl bg-[#0A182B] border border-white/20 p-6 sm:p-7 shadow-2xl space-y-5">
+          <div className="relative w-full max-w-md rounded-3xl bg-[#130C24] border border-white/20 p-6 sm:p-7 shadow-2xl space-y-5">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-10 h-10 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400">
@@ -784,7 +784,7 @@ export default function CommunityHub() {
               </div>
               <button
                 onClick={() => copyInviteCode(currentPersonalGroup.inviteCode)}
-                className="px-3 py-1.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#071320] text-xs font-bold transition flex items-center gap-1"
+                className="px-3 py-1.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#0E081B] text-xs font-bold transition flex items-center gap-1"
               >
                 {copiedCode === currentPersonalGroup.inviteCode ? (
                   <>

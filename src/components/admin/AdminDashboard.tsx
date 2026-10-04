@@ -116,8 +116,8 @@ export default function AdminDashboard() {
 
   // Chart Data: Hotspots
   const hotspotData = [
-    { name: 'Mirpur', count: 342, fill: '#0B1F33' },
-    { name: 'Mohammadpur', count: 268, fill: '#142C44' },
+    { name: 'Mirpur', count: 342, fill: '#2E1065' },
+    { name: 'Mohammadpur', count: 268, fill: '#3B1C78' },
     { name: 'Uttara', count: 245, fill: '#2563EB' },
     { name: 'Dhanmondi', count: 189, fill: '#F59E0B' },
     { name: 'Motijheel', count: 142, fill: '#0284C7' },
@@ -341,7 +341,7 @@ export default function AdminDashboard() {
                 <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#627D98' }} />
                 <YAxis tick={{ fontSize: 11, fill: '#627D98' }} />
                 <RechartsTooltip />
-                <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#0B1F33" />
+                <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#2E1065" />
               </BarChart>
             </ResponsiveContainer>
           </div>

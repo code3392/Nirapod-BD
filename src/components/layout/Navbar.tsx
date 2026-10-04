@@ -235,14 +235,14 @@ export default function Navbar() {
   return (
     <header className="sticky top-2 sm:top-4 z-50 w-full px-3 sm:px-6 pointer-events-none mb-4">
       {/* Floating Dynamic Island Container */}
-      <div className="max-w-7xl mx-auto pointer-events-auto bg-[#071320]/85 backdrop-blur-2xl border border-white/10 rounded-full h-16 px-3.5 sm:px-6 flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.65)] ring-1 ring-sky-500/15 transition-all">
+      <div className="max-w-7xl mx-auto pointer-events-auto bg-[#0E081B]/85 backdrop-blur-2xl border border-white/10 rounded-full h-16 px-3.5 sm:px-6 flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.65)] ring-1 ring-sky-500/15 transition-all">
         
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group shrink-0">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-sky-500 to-blue-700 flex items-center justify-center shadow-[0_0_18px_rgba(56,189,248,0.4)] text-white group-hover:scale-105 transition-transform duration-200 border border-sky-400/30">
             <div className="relative">
               <ShieldAlert className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-white" />
-              <span className="w-2 h-2 rounded-full bg-emergency absolute -bottom-0.5 -right-0.5 ring-2 ring-[#071320] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-emergency absolute -bottom-0.5 -right-0.5 ring-2 ring-[#0E081B] animate-pulse" />
             </div>
           </div>
           <div>
@@ -278,7 +278,7 @@ export default function Navbar() {
             </button>
 
             {optionsDropdownOpen && (
-              <div className="absolute left-0 mt-3 w-80 sm:w-96 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
+              <div className="absolute left-0 mt-3 w-80 sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
                 <div className="px-3.5 py-2.5 border-b border-white/10 mb-1.5 flex items-center justify-between">
                   <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-400">
                     {language === 'en' ? 'Civic Tools & Portals' : 'নাগরিক সেবা ও অপশন'}
@@ -396,7 +396,7 @@ export default function Navbar() {
 
             {/* Notification Dropdown Panel */}
             {notifDropdownOpen && (
-              <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
+              <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
                 <div className="p-3.5 bg-white/5 border-b border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-xs text-white">{t.nav.notifications}</span>
@@ -501,7 +501,7 @@ export default function Navbar() {
 
               {/* Profile Dropdown */}
               {profileDropdownOpen && (
-                <div className="absolute right-0 mt-3 w-64 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
+                <div className="absolute right-0 mt-3 w-64 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
                   <div className="p-3 border-b border-white/10 mb-1">
                     <p className="text-xs font-black text-white truncate">{user.name}</p>
                     <p className="text-[11px] font-mono text-slate-400 truncate">{user.email}</p>
@@ -575,7 +575,7 @@ export default function Navbar() {
                   setAuthMode('register');
                   setAuthModalOpen(true);
                 }}
-                className="hidden sm:inline-flex px-3.5 py-1.5 text-xs font-black bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-300 hover:to-blue-400 text-[#071320] rounded-full shadow-[0_0_15px_rgba(56,189,248,0.35)] transition"
+                className="hidden sm:inline-flex px-3.5 py-1.5 text-xs font-black bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-300 hover:to-blue-400 text-[#0E081B] rounded-full shadow-[0_0_15px_rgba(56,189,248,0.35)] transition"
               >
                 {language === 'en' ? 'Register' : 'নিবন্ধন'}
               </button>
@@ -604,7 +604,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer Navigation (Futuristic Dark Glass) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden mt-2 pointer-events-auto bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl border border-white/15 p-4 space-y-3 shadow-2xl animate-in slide-in-from-top-4 duration-200 ring-1 ring-sky-500/20">
+        <div className="lg:hidden mt-2 pointer-events-auto bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl border border-white/15 p-4 space-y-3 shadow-2xl animate-in slide-in-from-top-4 duration-200 ring-1 ring-sky-500/20">
           {user ? (
             <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
               <div className="flex items-center gap-3">
@@ -651,7 +651,7 @@ export default function Navbar() {
                     setAuthMode('register');
                     setAuthModalOpen(true);
                   }}
-                  className="px-3 py-1.5 text-xs font-black bg-sky-400 text-[#071320] rounded-full"
+                  className="px-3 py-1.5 text-xs font-black bg-sky-400 text-[#0E081B] rounded-full"
                 >
                   Register
                 </button>
@@ -724,7 +724,7 @@ export default function Navbar() {
               <button
                 onClick={() => setLanguage('en')}
                 className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  language === 'en' ? 'bg-sky-400 text-[#071320]' : 'bg-white/5 text-slate-300'
+                  language === 'en' ? 'bg-sky-400 text-[#0E081B]' : 'bg-white/5 text-slate-300'
                 }`}
               >
                 English
@@ -732,7 +732,7 @@ export default function Navbar() {
               <button
                 onClick={() => setLanguage('bn')}
                 className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  language === 'bn' ? 'bg-sky-400 text-[#071320]' : 'bg-white/5 text-slate-300'
+                  language === 'bn' ? 'bg-sky-400 text-[#0E081B]' : 'bg-white/5 text-slate-300'
                 }`}
               >
                 বাংলা
@@ -745,7 +745,7 @@ export default function Navbar() {
       {/* AUTHENTIC AUTHENTICATION MODAL (Dark Obsidian Glass Theme) */}
       {authModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150 pointer-events-auto">
-          <div className="bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 space-y-5 animate-in zoom-in-95 duration-150 ring-1 ring-sky-500/20 text-white">
+          <div className="bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-white/15 space-y-5 animate-in zoom-in-95 duration-150 ring-1 ring-sky-500/20 text-white">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
@@ -823,7 +823,7 @@ export default function Navbar() {
                     <span className="text-[10px] font-mono font-black uppercase tracking-wider text-amber-400">
                       Rule 13 Root Authority
                     </span>
-                    <span className="text-[10px] font-mono bg-amber-500 text-[#071320] font-black px-1.5 py-0.2 rounded">
+                    <span className="text-[10px] font-mono bg-amber-500 text-[#0E081B] font-black px-1.5 py-0.2 rounded">
                       SUPER ADMIN
                     </span>
                   </div>
@@ -839,7 +839,7 @@ export default function Navbar() {
                         setAuthFeedback(null);
                       }, 500);
                     }}
-                    className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#071320] text-xs font-black shadow transition flex items-center justify-center gap-2"
+                    className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0E081B] text-xs font-black shadow transition flex items-center justify-center gap-2"
                   >
                     <UserCheck className="w-4 h-4" />
                     <span>Sign In as Super Admin (smdsami59@gmail.com)</span>
@@ -948,10 +948,10 @@ export default function Navbar() {
                     <select
                       value={regArea}
                       onChange={(e) => setRegArea(e.target.value)}
-                      className="w-full px-2 py-2 text-xs bg-[#0A1628] border border-white/15 rounded-xl text-white focus:outline-none"
+                      className="w-full px-2 py-2 text-xs bg-[#150D28] border border-white/15 rounded-xl text-white focus:outline-none"
                     >
                       {DHAKA_AREAS.map((a) => (
-                        <option key={a} value={a} className="bg-[#0A1628] text-white">{a}</option>
+                        <option key={a} value={a} className="bg-[#150D28] text-white">{a}</option>
                       ))}
                     </select>
                   </div>
@@ -972,10 +972,10 @@ export default function Navbar() {
                     <select
                       value={regBlood}
                       onChange={(e) => setRegBlood(e.target.value)}
-                      className="w-full px-2 py-2 text-xs bg-[#0A1628] border border-white/15 rounded-xl text-white focus:outline-none"
+                      className="w-full px-2 py-2 text-xs bg-[#150D28] border border-white/15 rounded-xl text-white focus:outline-none"
                     >
                       {BLOOD_GROUPS.map((b) => (
-                        <option key={b} value={b} className="bg-[#0A1628] text-white">{b}</option>
+                        <option key={b} value={b} className="bg-[#150D28] text-white">{b}</option>
                       ))}
                     </select>
                   </div>
@@ -990,7 +990,7 @@ export default function Navbar() {
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-300 hover:to-blue-400 text-[#071320] rounded-xl text-xs font-black shadow-lg transition flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-300 hover:to-blue-400 text-[#0E081B] rounded-xl text-xs font-black shadow-lg transition flex items-center justify-center gap-1.5"
                 >
                   <UserPlus className="w-4 h-4" />
                   <span>Register & Verify Account</span>

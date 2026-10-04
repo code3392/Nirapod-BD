@@ -64,10 +64,10 @@ export default function AboutUsSection() {
   ];
 
   return (
-    <section id="about-us" className="py-24 bg-[#071320] text-white relative overflow-hidden border-t border-white/10">
+    <section id="about-us" className="py-24 bg-[#0E081B] text-white relative overflow-hidden border-t border-white/10">
       {/* Background Subtle Tech Matrix & Glowing Orbs */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/12 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-violet-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
         {/* Section Header */}
@@ -90,7 +90,7 @@ export default function AboutUsSection() {
 
         {/* 3 Core Ethical Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-7 sm:p-8 rounded-3xl bg-[#0A182B]/85 border border-white/10 backdrop-blur-xl hover:border-sky-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] transition-all duration-300 space-y-4 group">
+          <div className="p-7 sm:p-8 rounded-3xl bg-[#130C24]/85 border border-white/10 backdrop-blur-xl hover:border-purple-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] transition-all duration-300 space-y-4 group">
             <div className="w-12 h-12 rounded-2xl bg-sky-500/15 text-sky-300 flex items-center justify-center font-bold border border-sky-400/30 shadow-[0_0_15px_rgba(56,189,248,0.2)] group-hover:scale-110 transition-transform">
               <Users2 className="w-6 h-6" />
             </div>
@@ -100,7 +100,7 @@ export default function AboutUsSection() {
             </p>
           </div>
 
-          <div className="p-7 sm:p-8 rounded-3xl bg-[#0A182B]/85 border border-white/10 backdrop-blur-xl hover:border-sky-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] transition-all duration-300 space-y-4 group">
+          <div className="p-7 sm:p-8 rounded-3xl bg-[#130C24]/85 border border-white/10 backdrop-blur-xl hover:border-purple-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] transition-all duration-300 space-y-4 group">
             <div className="w-12 h-12 rounded-2xl bg-blue-600/15 text-blue-300 flex items-center justify-center font-bold border border-blue-500/30 shadow-[0_0_15px_rgba(37,99,235,0.2)] group-hover:scale-110 transition-transform">
               <Globe2 className="w-6 h-6" />
             </div>
@@ -110,7 +110,7 @@ export default function AboutUsSection() {
             </p>
           </div>
 
-          <div className="p-7 sm:p-8 rounded-3xl bg-[#0A182B]/85 border border-white/10 backdrop-blur-xl hover:border-sky-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] transition-all duration-300 space-y-4 group">
+          <div className="p-7 sm:p-8 rounded-3xl bg-[#130C24]/85 border border-white/10 backdrop-blur-xl hover:border-purple-400/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)] transition-all duration-300 space-y-4 group">
             <div className="w-12 h-12 rounded-2xl bg-sky-500/15 text-sky-400 flex items-center justify-center font-bold border border-sky-400/30 shadow-[0_0_15px_rgba(56,189,248,0.2)] group-hover:scale-110 transition-transform">
               <Eye className="w-6 h-6" />
             </div>
@@ -138,7 +138,7 @@ export default function AboutUsSection() {
             {civicActionPillars.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-[#0A182B]/85 rounded-3xl border border-white/10 overflow-hidden hover:border-sky-400/50 transition-all duration-300 transform hover:-translate-y-2 group shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(56,189,248,0.15)] flex flex-col justify-between"
+                className="bg-[#130C24]/85 rounded-3xl border border-white/10 overflow-hidden hover:border-purple-400/50 transition-all duration-300 transform hover:-translate-y-2 group shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.15)] flex flex-col justify-between"
               >
                 <div>
                   <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${item.gradient} flex items-center justify-center border-b border-white/10`}>
@@ -147,7 +147,7 @@ export default function AboutUsSection() {
                     </div>
                     
                     <div className="absolute top-3 left-3">
-                      <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#071320]/80 backdrop-blur-md text-sky-300 border border-white/20">
+                      <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#0E081B]/80 backdrop-blur-md text-sky-300 border border-white/20">
                         {item.tag}
                       </span>
                     </div>
@@ -181,7 +181,7 @@ export default function AboutUsSection() {
         </div>
 
         {/* Root Platform Authority Card */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#071320] via-[#0A182B] to-[#071320] border border-white/15 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl ring-1 ring-sky-500/15">
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#0E081B] via-[#130C24] to-[#0E081B] border border-white/15 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl ring-1 ring-sky-500/15">
           <div className="flex items-center gap-4 text-center md:text-left">
             <div className="w-14 h-14 rounded-2xl bg-sky-500/15 text-sky-400 border border-sky-400/30 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
               <ShieldCheck className="w-7 h-7" />

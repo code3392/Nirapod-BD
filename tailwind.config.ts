@@ -10,23 +10,23 @@ const config: Config = {
     extend: {
       colors: {
         navy: {
-          DEFAULT: '#0A2540',
-          dark: '#030812',
-          light: '#0E2A4D',
-          subtle: '#143660',
+          DEFAULT: '#140C26',
+          dark: '#080411',
+          light: '#1D1236',
+          subtle: '#27184A',
         },
         civic: {
           blue: '#2563EB',
-          deep: '#071320',
+          deep: '#0E081B',
           royal: '#1D4ED8',
           sky: '#38BDF8',
-          light: '#0E2847',
-          ice: '#071A30',
+          light: '#1B1033',
+          ice: '#130C24',
         },
         safety: {
           DEFAULT: '#2563EB',
           hover: '#1D4ED8',
-          light: '#0C223E',
+          light: '#1E103A',
         },
         emergency: {
           DEFAULT: '#EF4444',
@@ -39,11 +39,11 @@ const config: Config = {
           light: '#451A03',
         },
         surface: {
-          DEFAULT: '#060D1A',
-          card: '#0A182B',
+          DEFAULT: '#090514',
+          card: '#130C24',
           border: 'rgba(255, 255, 255, 0.08)',
-          blueBorder: 'rgba(56, 189, 248, 0.25)',
-          blueTint: '#0B1E36',
+          blueBorder: 'rgba(168, 85, 247, 0.25)',
+          blueTint: '#160E2A',
         },
         darktext: '#F8FAFC',
         muted: '#94A3B8',

@@ -32,15 +32,15 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[92svh] w-full border-b border-white/10 bg-[#071320] flex items-center overflow-hidden text-white py-14 lg:py-20">
+    <section className="relative min-h-[92svh] w-full border-b border-white/10 bg-[#0E081B] flex items-center overflow-hidden text-white py-14 lg:py-20">
       {/* Background Subtle Gradient & Pure CSS Civic Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.22),rgba(255,255,255,0))]" />
-      <div className="absolute inset-0 bg-[linear-gradient(120deg,#071320_0%,#091b2e_55%,#050e18_100%)] pointer-events-none opacity-90" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(147,51,234,0.22),rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(120deg,#0E081B_0%,#100922_55%,#06030E_100%)] pointer-events-none opacity-90" />
       <div className="absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:64px_64px] pointer-events-none" />
 
       {/* Floating subtle ambient glow orbs */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-blue-600/15 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 -right-32 w-96 h-96 rounded-full bg-sky-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-purple-600/15 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -right-32 w-96 h-96 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
@@ -121,7 +121,7 @@ export default function Hero() {
 
           {/* RIGHT COLUMN: Dhaka Metropolitan Safety Sentinel Terminal (Pure SVG + Real Telemetry) */}
           <div className="lg:col-span-5">
-            <div className="relative rounded-3xl border border-white/15 bg-gradient-to-b from-[#0B1F33]/90 via-[#071320]/95 to-[#050e18] p-5 sm:p-7 backdrop-blur-2xl shadow-2xl space-y-5">
+            <div className="relative rounded-3xl border border-white/15 bg-gradient-to-b from-[#120A24]/90 via-[#0E081B]/95 to-[#06030E] p-5 sm:p-7 backdrop-blur-2xl shadow-2xl space-y-5">
               
               {/* Terminal Header */}
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
@@ -144,7 +144,7 @@ export default function Hero() {
               </div>
 
               {/* Radar Graphical Display */}
-              <div className="relative aspect-[4/3] w-full rounded-2xl bg-[#040910] border border-white/10 overflow-hidden flex items-center justify-center">
+              <div className="relative aspect-[4/3] w-full rounded-2xl bg-[#05020B] border border-white/10 overflow-hidden flex items-center justify-center">
                 {/* Concentric Radar Rings */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-64 h-64 rounded-full border border-sky-500/10" />

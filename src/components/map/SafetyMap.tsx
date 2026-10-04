@@ -196,12 +196,12 @@ export default function SafetyMap() {
   };
 
   return (
-    <div className="relative w-full h-[calc(100vh-80px)] flex flex-col overflow-hidden bg-[#060D1A] text-white">
+    <div className="relative w-full h-[calc(100vh-80px)] flex flex-col overflow-hidden bg-[#090514] text-white">
       {/* Top Floating Control Bar */}
       <div className="absolute top-4 left-4 right-4 z-20 pointer-events-none flex flex-col gap-2.5">
         <div className="flex flex-wrap items-center justify-between gap-3 pointer-events-auto">
           {/* Search Box */}
-          <div className="relative flex-1 max-w-md bg-[#0A1628]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/15">
+          <div className="relative flex-1 max-w-md bg-[#150D28]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/15">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -226,7 +226,7 @@ export default function SafetyMap() {
             <button
               onClick={handleLocateMe}
               disabled={userLocating}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-[#0A1628]/95 backdrop-blur-2xl border border-white/15 text-xs font-bold text-white hover:bg-white/10 transition shadow-lg disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-[#150D28]/95 backdrop-blur-2xl border border-white/15 text-xs font-bold text-white hover:bg-white/10 transition shadow-lg disabled:opacity-50"
               title="Locate my position in Dhaka"
             >
               <Navigation className={`w-3.5 h-3.5 text-sky-400 ${userLocating ? 'animate-spin' : ''}`} />
@@ -238,7 +238,7 @@ export default function SafetyMap() {
             {/* List / Map Toggle (Mobile) */}
             <button
               onClick={() => setIsListView(!isListView)}
-              className="lg:hidden p-2.5 rounded-2xl bg-[#0A1628]/95 backdrop-blur-2xl border border-white/15 text-white transition shadow-lg"
+              className="lg:hidden p-2.5 rounded-2xl bg-[#150D28]/95 backdrop-blur-2xl border border-white/15 text-white transition shadow-lg"
               title="Toggle list view"
             >
               {isListView ? <MapIcon className="w-4 h-4 text-sky-400" /> : <List className="w-4 h-4 text-sky-400" />}
@@ -246,7 +246,7 @@ export default function SafetyMap() {
           </div>
 
           {/* Quick Stats Pill */}
-          <div className="hidden sm:flex items-center gap-2 bg-[#0A1628]/95 backdrop-blur-2xl px-4 py-2 rounded-2xl border border-white/15 text-xs text-white font-mono shadow-lg">
+          <div className="hidden sm:flex items-center gap-2 bg-[#150D28]/95 backdrop-blur-2xl px-4 py-2 rounded-2xl border border-white/15 text-xs text-white font-mono shadow-lg">
             <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
             <span>
               <strong>{filteredReports.length}</strong> Active Hazards
@@ -271,8 +271,8 @@ export default function SafetyMap() {
               onClick={() => setSelectedCategory(cat.id)}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition shadow-sm whitespace-nowrap ${
                 selectedCategory === cat.id
-                  ? 'bg-sky-400 text-[#071320] font-black shadow-[0_0_12px_rgba(56,189,248,0.4)]'
-                  : 'bg-[#0A1628]/90 text-slate-300 hover:text-white border border-white/10'
+                  ? 'bg-sky-400 text-[#0E081B] font-black shadow-[0_0_12px_rgba(56,189,248,0.4)]'
+                  : 'bg-[#150D28]/90 text-slate-300 hover:text-white border border-white/10'
               }`}
             >
               <span>{cat.icon}</span>
@@ -292,7 +292,7 @@ export default function SafetyMap() {
 
         {/* Floating Active Report Preview Card */}
         {activeReport && !isListView && (
-          <div className="absolute bottom-6 left-4 right-4 sm:left-6 sm:right-auto sm:w-96 bg-[#0A1628]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-5 z-20 animate-in fade-in slide-in-from-bottom-4 duration-200 ring-1 ring-sky-500/20 text-white">
+          <div className="absolute bottom-6 left-4 right-4 sm:left-6 sm:right-auto sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-5 z-20 animate-in fade-in slide-in-from-bottom-4 duration-200 ring-1 ring-purple-500/20 text-white">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] uppercase font-mono font-black tracking-wider text-sky-300">
                 {activeReport.publicId} • {activeReport.area}
@@ -369,14 +369,14 @@ export default function SafetyMap() {
 
         {/* Side Panel or Mobile Fullscreen List View */}
         {isListView && (
-          <div className="absolute inset-0 z-20 bg-[#060D1A] overflow-y-auto p-4 sm:p-6 lg:hidden">
+          <div className="absolute inset-0 z-20 bg-[#090514] overflow-y-auto p-4 sm:p-6 lg:hidden">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-black text-white">
                 Nearby Civic Hazards ({filteredReports.length})
               </h3>
               <button
                 onClick={() => setIsListView(false)}
-                className="px-3.5 py-1.5 rounded-full bg-sky-400 text-[#071320] text-xs font-black"
+                className="px-3.5 py-1.5 rounded-full bg-sky-400 text-[#0E081B] text-xs font-black"
               >
                 Back to Map
               </button>
@@ -393,7 +393,7 @@ export default function SafetyMap() {
                       leafletMapRef.current.setView([report.latitude, report.longitude], 15, { animate: true });
                     }
                   }}
-                  className="p-4 rounded-2xl bg-[#0A182B] border border-white/10 shadow-lg flex gap-4 cursor-pointer hover:border-sky-400/40"
+                  className="p-4 rounded-2xl bg-[#130C24] border border-white/10 shadow-lg flex gap-4 cursor-pointer hover:border-purple-400/40"
                 >
                   <img
                     src={report.mediaUrl || report.imageUrl}

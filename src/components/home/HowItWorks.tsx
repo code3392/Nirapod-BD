@@ -75,9 +75,9 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="py-24 bg-[#071320] border-t border-white/10 relative overflow-hidden text-white">
+    <section id="how-it-works" className="py-24 bg-[#0E081B] border-t border-white/10 relative overflow-hidden text-white">
       {/* Background Soft Glow Orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4/5 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4/5 h-96 bg-purple-600/12 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
         {/* Section Header */}
@@ -127,12 +127,12 @@ export default function HowItWorks() {
             <div
               key={idx}
               onMouseEnter={() => setActiveStepIndex(idx)}
-              className="p-6 sm:p-7 rounded-3xl bg-[#0A182B]/85 backdrop-blur-2xl border border-white/10 hover:border-sky-400/50 hover:bg-[#0C1F38] shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(56,189,248,0.18)] transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between group relative overflow-hidden text-white"
+              className="p-6 sm:p-7 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 hover:border-purple-400/50 hover:bg-[#1A1033] shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.18)] transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between group relative overflow-hidden text-white"
             >
               <div className="space-y-5">
                 {/* Header with Step Number & Tag */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-display font-black px-2.5 py-1 rounded-xl bg-white/5 text-sky-300 border border-white/10 group-hover:bg-sky-400 group-hover:text-[#071320] transition-colors tabular-nums">
+                  <span className="text-xs font-display font-black px-2.5 py-1 rounded-xl bg-white/5 text-sky-300 border border-white/10 group-hover:bg-sky-400 group-hover:text-[#0E081B] transition-colors tabular-nums">
                     {step.number}
                   </span>
                   <span className="text-[10px] font-sans font-bold px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30">

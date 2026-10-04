@@ -235,7 +235,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-2 sm:top-4 z-50 w-full px-3 sm:px-6 pointer-events-none mb-4">
       {/* Floating Dynamic Island Container */}
-      <div className="max-w-7xl mx-auto pointer-events-auto bg-[#0E081B]/85 backdrop-blur-2xl border border-white/10 rounded-full h-16 px-3.5 sm:px-6 flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.65)] ring-1 ring-sky-500/15 transition-all">
+      <div className="relative max-w-7xl mx-auto pointer-events-auto bg-[#0E081B]/85 backdrop-blur-2xl border border-white/10 rounded-full h-16 px-3.5 sm:px-6 flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.65)] ring-1 ring-purple-500/15 transition-all">
         
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group shrink-0">
@@ -260,25 +260,25 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation: Single Consolidated Menu Button */}
-        <nav className="hidden lg:flex items-center">
+        {/* Desktop Navigation: Single Consolidated Menu Button (Perfect Dead-Center Alignment) */}
+        <nav className="hidden md:flex items-center absolute left-1/2 -translate-x-1/2 pointer-events-auto z-20">
           <div className="relative" ref={optionsRef}>
             <button
               onClick={() => setOptionsDropdownOpen(!optionsDropdownOpen)}
-              className={`px-4 py-2 text-xs font-bold rounded-full transition-all flex items-center gap-2 border ${
+              className={`px-4 py-2 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-2 border ${
                 optionsDropdownOpen 
-                  ? 'bg-sky-500/20 text-sky-300 border-sky-400/40 shadow-[0_0_15px_rgba(56,189,248,0.25)]' 
-                  : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/15 shadow-sm'
+                  ? 'bg-purple-500/25 text-purple-200 border-purple-400/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]' 
+                  : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/15 hover:border-purple-400/40 shadow-sm'
               }`}
               aria-label="Toggle options menu"
             >
-              <Menu className="w-3.5 h-3.5 text-sky-400" />
+              <Menu className="w-3.5 h-3.5 text-purple-400" />
               <span>{language === 'en' ? 'Options' : 'অপশন'}</span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${optionsDropdownOpen ? 'rotate-180 text-sky-400' : 'text-slate-400'}`} />
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${optionsDropdownOpen ? 'rotate-180 text-purple-300' : 'text-slate-400'}`} />
             </button>
 
             {optionsDropdownOpen && (
-              <div className="absolute left-0 mt-3 w-80 sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-sky-500/20">
+              <div className="absolute left-1/2 -translate-x-1/2 mt-3 w-80 sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-purple-500/20">
                 <div className="px-3.5 py-2.5 border-b border-white/10 mb-1.5 flex items-center justify-between">
                   <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-400">
                     {language === 'en' ? 'Civic Tools & Portals' : 'নাগরিক সেবা ও অপশন'}
@@ -482,17 +482,17 @@ export default function Navbar() {
                 <img
                   src={user.avatar}
                   alt={user.name}
-                  className="w-7 h-7 rounded-full object-cover border border-sky-400"
+                  className="w-7 h-7 rounded-full object-cover border border-purple-400/60"
                 />
-                <span className="text-xs font-bold text-white max-w-[85px] truncate hidden sm:inline">
+                <span className="text-xs font-bold text-white max-w-[85px] truncate hidden lg:inline">
                   {user.name.split(' ')[0]}
                 </span>
                 {user.isSuperAdmin || user.email === 'smdsami59@gmail.com' ? (
-                  <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                  <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 hidden lg:inline">
                     SUPER
                   </span>
                 ) : (
-                  <span className="text-[9px] font-display font-extrabold px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 tabular-nums">
+                  <span className="text-[9px] font-display font-extrabold px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30 tabular-nums hidden lg:inline">
                     {user.points}p
                   </span>
                 )}

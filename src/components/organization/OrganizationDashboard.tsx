@@ -68,7 +68,7 @@ export default function OrganizationDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090514] text-white py-10">
+    <div className="min-h-screen bg-transparent text-white py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Organization Header (Cyber Glass Banner) */}

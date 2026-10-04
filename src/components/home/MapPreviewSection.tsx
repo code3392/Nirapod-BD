@@ -57,7 +57,7 @@ export default function MapPreviewSection() {
   };
 
   return (
-    <section className="py-20 bg-[#090514] border-t border-white/10 relative overflow-hidden text-white">
+    <section className="py-20 bg-transparent border-t border-white/10 relative overflow-hidden text-white">
       {/* Ambient background glow */}
       <div className="absolute top-1/3 -right-32 w-96 h-96 bg-purple-600/12 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 -left-32 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />

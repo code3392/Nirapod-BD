@@ -75,7 +75,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="py-24 bg-[#0E081B] border-t border-white/10 relative overflow-hidden text-white">
+    <section id="how-it-works" className="py-24 bg-transparent border-t border-white/10 relative overflow-hidden text-white">
       {/* Background Soft Glow Orbs */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4/5 h-96 bg-purple-600/12 rounded-full blur-[120px] pointer-events-none" />
 

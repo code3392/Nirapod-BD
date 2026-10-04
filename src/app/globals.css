@@ -172,3 +172,90 @@
 .audio-bar-3 { animation: audioWave3 0.9s ease-in-out infinite; }
 .audio-bar-4 { animation: audioWave1 0.7s ease-in-out infinite 0.2s; }
 .audio-bar-5 { animation: audioWave2 0.85s ease-in-out infinite 0.1s; }
+
+/* 2026 Atmospheric Background Animations */
+@keyframes auroraFloat1 {
+  0% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(60px, -45px) scale(1.12) rotate(15deg);
+  }
+  66% {
+    transform: translate(-35px, 50px) scale(0.92) rotate(-10deg);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes auroraFloat2 {
+  0% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(-70px, 60px) scale(1.18) rotate(-18deg);
+  }
+  66% {
+    transform: translate(45px, -35px) scale(0.95) rotate(12deg);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes auroraFloat3 {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(50px, -60px) scale(1.15);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes cyberGridDrift {
+  0% {
+    background-position: 0px 0px;
+  }
+  100% {
+    background-position: 64px 64px;
+  }
+}
+
+@keyframes starShimmer {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.25);
+  }
+}
+
+.animate-aurora-1 {
+  animation: auroraFloat1 22s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+.animate-aurora-2 {
+  animation: auroraFloat2 28s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+.animate-aurora-3 {
+  animation: auroraFloat3 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+.animate-cyber-grid {
+  animation: cyberGridDrift 30s linear infinite;
+}
+
+.animate-star-shimmer {
+  animation: starShimmer 4s ease-in-out infinite;
+}
+

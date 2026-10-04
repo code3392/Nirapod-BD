@@ -32,10 +32,10 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[92svh] w-full border-b border-white/10 bg-[#0E081B] flex items-center overflow-hidden text-white py-14 lg:py-20">
+    <section className="relative min-h-[92svh] w-full border-b border-white/10 bg-transparent flex items-center overflow-hidden text-white py-14 lg:py-20">
       {/* Background Subtle Gradient & Pure CSS Civic Grid */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(147,51,234,0.22),rgba(255,255,255,0))]" />
-      <div className="absolute inset-0 bg-[linear-gradient(120deg,#0E081B_0%,#100922_55%,#06030E_100%)] pointer-events-none opacity-90" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0E081B]/40 via-transparent to-transparent pointer-events-none" />
       <div className="absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:64px_64px] pointer-events-none" />
 
       {/* Floating subtle ambient glow orbs */}

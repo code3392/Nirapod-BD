@@ -255,9 +255,25 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-2 sm:top-4 z-50 w-full px-3 sm:px-6 pointer-events-none mb-4">
-      {/* Floating Dynamic Island Container */}
-      <div className="relative max-w-7xl mx-auto pointer-events-auto bg-[#0E081B]/85 backdrop-blur-2xl border border-white/10 rounded-full h-16 px-3.5 sm:px-6 flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.65)] ring-1 ring-purple-500/15 transition-all">
+    <header className="sticky top-0 z-50 w-full pointer-events-auto transition-all">
+      {/* Full-width Ambient Cyber Purple Atmospheric Background */}
+      <div className="absolute inset-0 bg-[#090418]/90 backdrop-blur-2xl border-b border-purple-500/25 shadow-[0_4px_30px_rgba(0,0,0,0.85),0_0_30px_rgba(168,85,247,0.2)] pointer-events-none overflow-hidden">
+        {/* Animated Cyber Coordinate Purple Grid */}
+        <div className="absolute inset-0 opacity-[0.09] [background-image:linear-gradient(rgba(168,85,247,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(168,85,247,0.8)_1px,transparent_1px)] [background-size:40px_40px]" />
+
+        {/* Radiant Ambient Purple & Violet Atmospheric Glows across Full Width */}
+        <div className="absolute -top-12 -left-12 w-[32rem] h-28 bg-purple-600/35 blur-[70px] rounded-full pointer-events-none" />
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[44rem] h-24 bg-violet-600/30 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-[32rem] h-28 bg-purple-700/35 blur-[70px] rounded-full pointer-events-none" />
+        <div className="absolute -top-8 right-1/4 w-80 h-20 bg-indigo-600/25 blur-[60px] rounded-full pointer-events-none" />
+
+        {/* Glowing Cyber Purple Bottom Accent Lines */}
+        <div className="absolute bottom-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-purple-500/60 to-transparent" />
+        <div className="absolute bottom-0 inset-x-0 h-[8px] bg-gradient-to-r from-transparent via-purple-500/25 to-transparent blur-[4px]" />
+      </div>
+
+      {/* Header Content Container (Aligned with Site Grid) */}
+      <div className="relative max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between z-10">
         
         {/* Left Section: More Button in Left Corner + Brand Logo */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -681,7 +697,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer Navigation (Futuristic Dark Glass) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden mt-2 pointer-events-auto bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl border border-white/15 p-4 space-y-3 shadow-2xl animate-in slide-in-from-top-4 duration-200 ring-1 ring-sky-500/20">
+        <div className="lg:hidden relative z-20 border-t border-purple-500/25 bg-[#0A0518]/98 backdrop-blur-2xl px-4 py-4 space-y-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
           {user ? (
             <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
               <div className="flex items-center gap-3">

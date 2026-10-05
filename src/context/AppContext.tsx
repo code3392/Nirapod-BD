@@ -1129,10 +1129,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') localStorage.setItem('nirapod_lost_and_found', JSON.stringify(updated));
   };
 
-  const searchLostAndFound = (query: string, area?: string, category?: string) => {
+  const searchLostAndFound = (query: string, locationOrArea?: string, category?: string) => {
     return lostAndFoundItems.filter(item => {
-      if (area && area !== 'all' && item.area.toLowerCase() !== area.toLowerCase()) return false;
       if (category && category !== 'all' && item.category !== category) return false;
+      if (locationOrArea && locationOrArea.trim() && locationOrArea !== 'all') {
+        const loc = locationOrArea.toLowerCase();
+        const matchArea = item.area.toLowerCase().includes(loc);
+        const matchLocation = item.specificLocation.toLowerCase().includes(loc);
+        if (!matchArea && !matchLocation) return false;
+      }
       if (query.trim()) {
         const q = query.toLowerCase();
         return (

@@ -34,6 +34,8 @@ export default function SafetyMap() {
   const [activeReport, setActiveReport] = useState<Report | null>(reports[0] || null);
   const [isListView, setIsListView] = useState<boolean>(false);
   const [userLocating, setUserLocating] = useState<boolean>(false);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy?: number } | null>(null);
+  const [locatedMessage, setLocatedMessage] = useState<string | null>(null);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 23.8103, lng: 90.4125 });
   const [mapStyle, setMapStyle] = useState<'dark' | 'streets' | 'satellite'>('dark');
   const [showCategoryFilter, setShowCategoryFilter] = useState<boolean>(false);
@@ -43,6 +45,8 @@ export default function SafetyMap() {
   const leafletMapRef = useRef<any>(null);
   const tileLayerRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const userMarkerRef = useRef<any>(null);
+  const userCircleRef = useRef<any>(null);
 
   // Filter reports
   const filteredReports = reports.filter((report) => {
@@ -94,6 +98,9 @@ export default function SafetyMap() {
     if (!leafletMapRef.current) return;
     const L = (await import('leaflet')).default;
     applyTileLayer(L, leafletMapRef.current, style);
+    if (userLocation) {
+      pinUserOnMap(L, leafletMapRef.current, userLocation.lat, userLocation.lng, userLocation.accuracy || 80);
+    }
   };
 
   // Client-side Leaflet Initialization
@@ -125,12 +132,23 @@ export default function SafetyMap() {
 
       leafletMapRef.current = map;
       updateMarkers(L, map);
+      if (userLocation) {
+        pinUserOnMap(L, map, userLocation.lat, userLocation.lng, userLocation.accuracy || 80);
+      }
     }
 
     initLeaflet();
 
     return () => {
       isMounted = false;
+      if (userMarkerRef.current) {
+        userMarkerRef.current.remove();
+        userMarkerRef.current = null;
+      }
+      if (userCircleRef.current) {
+        userCircleRef.current.remove();
+        userCircleRef.current = null;
+      }
       if (leafletMapRef.current) {
         leafletMapRef.current.remove();
         leafletMapRef.current = null;
@@ -206,27 +224,136 @@ export default function SafetyMap() {
     });
   };
 
-  const handleLocateMe = () => {
+  const pinUserOnMap = (L: any, map: any, lat: number, lng: number, accuracy: number = 80) => {
+    if (!map) return;
+
+    // Remove previous user marker and circle if already present
+    if (userMarkerRef.current) {
+      userMarkerRef.current.remove();
+      userMarkerRef.current = null;
+    }
+    if (userCircleRef.current) {
+      userCircleRef.current.remove();
+      userCircleRef.current = null;
+    }
+
+    // 1. Draw glowing accuracy radius circle
+    const circle = L.circle([lat, lng], {
+      radius: Math.min(Math.max(accuracy, 60), 400),
+      color: '#38BDF8',
+      fillColor: '#0EA5E9',
+      fillOpacity: 0.18,
+      weight: 1.5,
+      dashArray: '4, 4',
+    }).addTo(map);
+    userCircleRef.current = circle;
+
+    // 2. Create custom high-visibility animated user location marker
+    const userIcon = L.divIcon({
+      className: 'user-live-gps-marker',
+      html: `
+        <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+          <!-- Radar ripple pulse -->
+          <span style="position: absolute; width: 44px; height: 44px; border-radius: 9999px; background-color: rgba(56, 189, 248, 0.45); animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
+          <!-- Secondary halo -->
+          <span style="position: absolute; width: 30px; height: 30px; border-radius: 9999px; background-color: rgba(14, 165, 233, 0.35); border: 1px solid rgba(56, 189, 248, 0.8);"></span>
+          <!-- Core user beacon -->
+          <div style="position: relative; z-index: 10; width: 22px; height: 22px; border-radius: 9999px; background: linear-gradient(135deg, #0284C7, #38BDF8); border: 2.5px solid white; box-shadow: 0 0 18px rgba(56, 189, 248, 0.95); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 7px; height: 7px; border-radius: 9999px; background: white;"></div>
+          </div>
+          <!-- Label pill pinned above -->
+          <div style="position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); background: #0E081B; color: #38BDF8; font-family: monospace; font-weight: 800; font-size: 10px; padding: 2px 7px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.5); white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.5); pointer-events: none;">
+            ${language === 'en' ? '📍 YOU ARE HERE' : '📍 আপনার অবস্থান'}
+          </div>
+        </div>
+      `,
+      iconSize: [44, 44],
+      iconAnchor: [22, 22],
+      popupAnchor: [0, -26],
+    });
+
+    const popupHtml = `
+      <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 170px;">
+        <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 13px; color: #FFFFFF;">
+          <span>📍</span>
+          <span>${language === 'en' ? 'Your Current Location' : 'আপনার বর্তমান অবস্থান'}</span>
+        </div>
+        <p style="margin: 4px 0 6px 0; font-size: 10px; color: #94A3B8; font-family: monospace;">
+          ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E
+        </p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+          <span style="display: inline-block; font-size: 9px; font-weight: 800; color: #38BDF8; background: rgba(56, 189, 248, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.4);">
+            ● GPS Live Pin
+          </span>
+          <span style="display: inline-block; font-size: 9px; font-weight: 700; color: #34D399; background: rgba(52, 211, 153, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(52, 211, 153, 0.4);">
+            ±${Math.round(accuracy)}m
+          </span>
+        </div>
+      </div>
+    `;
+
+    const marker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 })
+      .addTo(map)
+      .bindPopup(popupHtml, { closeButton: true, autoClose: false })
+      .openPopup();
+
+    userMarkerRef.current = marker;
+  };
+
+  const handleLocateMe = async () => {
+    if (typeof window === 'undefined') return;
+
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
+      alert(language === 'en' ? 'Geolocation is not supported by your browser.' : 'আপনার ব্রাউজারে লোকেশন সুবিধা সমর্থিত নয়।');
       return;
     }
 
     setUserLocating(true);
+    const L = (await import('leaflet')).default;
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setUserLocating(false);
-        const { latitude, longitude } = pos.coords;
-        setMapCenter({ lat: latitude, lng: longitude });
+        const { latitude, longitude, accuracy } = pos.coords;
+        const lat = Number(latitude.toFixed(5));
+        const lng = Number(longitude.toFixed(5));
+
+        setUserLocation({ lat, lng, accuracy });
+        setMapCenter({ lat, lng });
+
         if (leafletMapRef.current) {
-          leafletMapRef.current.setView([latitude, longitude], 15, { animate: true });
+          pinUserOnMap(L, leafletMapRef.current, lat, lng, accuracy || 80);
+          leafletMapRef.current.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
         }
+
+        setLocatedMessage(
+          language === 'en'
+            ? `📍 Pinned your location at ${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E`
+            : `📍 ম্যাপে আপনার বর্তমান অবস্থান চিহ্নিত করা হয়েছে`
+        );
+        setTimeout(() => setLocatedMessage(null), 4500);
       },
       (err) => {
         setUserLocating(false);
-        alert('Could not retrieve your location. Showing default Dhaka map view.');
+        console.warn('Geolocation error:', err);
+        const fallbackLat = 23.8103;
+        const fallbackLng = 90.4125;
+        setUserLocation({ lat: fallbackLat, lng: fallbackLng, accuracy: 150 });
+        setMapCenter({ lat: fallbackLat, lng: fallbackLng });
+
+        if (leafletMapRef.current) {
+          pinUserOnMap(L, leafletMapRef.current, fallbackLat, fallbackLng, 150);
+          leafletMapRef.current.flyTo([fallbackLat, fallbackLng], 15, { animate: true, duration: 1.2 });
+        }
+
+        setLocatedMessage(
+          language === 'en'
+            ? '📍 GPS sensor restricted. Pinned center Dhaka view.'
+            : '📍 লোকেশন অনুমতি মেলেনি। ঢাকা কেন্দ্রস্থলে পিন করা হয়েছে।'
+        );
+        setTimeout(() => setLocatedMessage(null), 4500);
       },
-      { timeout: 10000, enableHighAccuracy: true }
+      { timeout: 10000, enableHighAccuracy: true, maximumAge: 0 }
     );
   };
 
@@ -377,6 +504,20 @@ export default function SafetyMap() {
                 <span>{cat.label}</span>
               </button>
             ))}
+          </div>
+        )}
+
+        {/* Floating User Location Confirmation Toast */}
+        {locatedMessage && (
+          <div className="pointer-events-auto self-center px-4 py-2 rounded-2xl bg-[#150D28]/95 backdrop-blur-2xl border border-sky-400/50 shadow-[0_10px_35px_rgba(56,189,248,0.4)] text-white text-xs font-bold flex items-center gap-2.5 animate-in fade-in slide-in-from-top-2 ring-1 ring-sky-400/30">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping shrink-0" />
+            <span>{locatedMessage}</span>
+            <button
+              onClick={() => setLocatedMessage(null)}
+              className="ml-1 p-0.5 rounded-full text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
           </div>
         )}
       </div>

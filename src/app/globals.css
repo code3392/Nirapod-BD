@@ -61,9 +61,33 @@
   background: #05020B;
 }
 
-.custom-map-marker {
-  background: transparent;
-  border: none;
+.custom-map-marker,
+.custom-hazard-pin,
+.user-live-gps-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #150D28 !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(16px);
+}
+
+.leaflet-popup-tip {
+  background: #150D28 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.leaflet-popup-close-button {
+  color: #94A3B8 !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: #FFFFFF !important;
 }
 
 /* Custom Dark Purplish-Obsidian Map Tiles Filter for OpenStreetMap */

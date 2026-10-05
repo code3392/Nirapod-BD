@@ -268,14 +268,9 @@ export default function Navbar() {
             </div>
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-black text-lg sm:text-xl tracking-tight text-white group-hover:text-sky-300 transition-colors">
-                Nirapod<span className="text-sky-400">BD</span>
-              </span>
-              <span className="text-[9px] uppercase font-mono font-extrabold tracking-wider px-1.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30">
-                Civic
-              </span>
-            </div>
+            <span className="font-black text-lg sm:text-xl tracking-tight text-white group-hover:text-sky-300 transition-colors">
+              Nirapod<span className="text-sky-400">BD</span>
+            </span>
             <p className="text-[9px] text-slate-400 font-medium font-bengali leading-none -mt-0.5 hidden sm:block">
               নিরাপদ বাংলাদেশ প্ল্যাটফর্ম
             </p>

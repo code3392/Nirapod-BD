@@ -176,7 +176,7 @@ export default function NirapodAiAssistant() {
           </div>
           <div className="text-left hidden sm:block">
             <p className="font-black text-xs leading-none">Nirapod AI</p>
-            <p className="text-[10px] text-slate-300 font-medium leading-none mt-0.5">24/7 Civic Assistant</p>
+            <p className="text-[10px] text-slate-300 font-medium leading-none mt-0.5">24/7 Safety Assistant</p>
           </div>
         </button>
       )}
@@ -197,7 +197,7 @@ export default function NirapodAiAssistant() {
                   <span className="text-[10px] font-mono text-blue-300 font-bold">Online</span>
                 </div>
                 <p className="text-[11px] text-slate-300">
-                  {language === 'en' ? 'Community Civic Assistant' : 'নাগরিক সেবা এআই'}
+                  {language === 'en' ? 'Community Safety Assistant' : 'নাগরিক সেবা এআই'}
                 </p>
               </div>
             </div>

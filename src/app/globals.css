@@ -66,6 +66,50 @@
   border: none;
 }
 
+/* Custom Dark Purplish-Obsidian Map Tiles Filter for OpenStreetMap */
+.map-tiles-dark {
+  filter: brightness(0.65) invert(1) contrast(2.6) hue-rotate(200deg) saturate(0.35);
+}
+
+.map-tiles-streets {
+  filter: none;
+}
+
+.map-tiles-satellite {
+  filter: contrast(1.1) brightness(0.95);
+}
+
+/* Leaflet Zoom and Control Overrides for Dark Theme */
+.leaflet-bar {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+.leaflet-bar a {
+  background-color: #150D28 !important;
+  color: #F8FAFC !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.2s ease;
+}
+.leaflet-bar a:hover {
+  background-color: #24153E !important;
+  color: #38BDF8 !important;
+}
+.leaflet-control-attribution {
+  background: rgba(14, 8, 27, 0.75) !important;
+  color: #94A3B8 !important;
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  margin: 6px !important;
+  font-size: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.leaflet-control-attribution a {
+  color: #38BDF8 !important;
+}
+
 /* Modern Dark Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

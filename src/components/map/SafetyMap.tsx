@@ -35,10 +35,12 @@ export default function SafetyMap() {
   const [isListView, setIsListView] = useState<boolean>(false);
   const [userLocating, setUserLocating] = useState<boolean>(false);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 23.8103, lng: 90.4125 });
+  const [mapStyle, setMapStyle] = useState<'dark' | 'streets' | 'satellite'>('dark');
 
   // Map DOM container ref for Leaflet
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any>(null);
+  const tileLayerRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
 
   // Filter reports
@@ -56,6 +58,42 @@ export default function SafetyMap() {
     }
     return true;
   });
+
+  // Switcher for tile layers
+  const applyTileLayer = (L: any, map: any, style: 'dark' | 'streets' | 'satellite') => {
+    if (tileLayerRef.current) {
+      tileLayerRef.current.remove();
+      tileLayerRef.current = null;
+    }
+
+    let url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    let options: any = {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors',
+      subdomains: ['a', 'b', 'c'],
+    };
+
+    if (style === 'dark') {
+      options.className = 'map-tiles-dark';
+    } else if (style === 'streets') {
+      options.className = 'map-tiles-streets';
+    } else if (style === 'satellite') {
+      url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+      options.className = 'map-tiles-satellite';
+      options.subdomains = [];
+      options.attribution = 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics';
+    }
+
+    const layer = L.tileLayer(url, options).addTo(map);
+    tileLayerRef.current = layer;
+  };
+
+  const handleStyleChange = async (style: 'dark' | 'streets' | 'satellite') => {
+    setMapStyle(style);
+    if (!leafletMapRef.current) return;
+    const L = (await import('leaflet')).default;
+    applyTileLayer(L, leafletMapRef.current, style);
+  };
 
   // Client-side Leaflet Initialization
   useEffect(() => {
@@ -81,12 +119,8 @@ export default function SafetyMap() {
       // Add Zoom control to top-right
       L.control.zoom({ position: 'topright' }).addTo(map);
 
-      // Dark Matter Map Tile Layer (Cyber Mission Control Aesthetic)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        subdomains: 'abcd',
-        maxZoom: 19,
-      }).addTo(map);
+      // Dark Matter Map Tile Layer via Free OSM + Obsidian GPU filter
+      applyTileLayer(L, map, 'dark');
 
       leafletMapRef.current = map;
       updateMarkers(L, map);
@@ -222,6 +256,49 @@ export default function SafetyMap() {
 
           {/* Map Controls */}
           <div className="flex items-center gap-2">
+            {/* Map Theme / Style Switcher */}
+            <div className="flex items-center bg-[#150D28]/95 backdrop-blur-2xl rounded-2xl border border-white/15 p-1 shadow-lg">
+              <button
+                type="button"
+                onClick={() => handleStyleChange('dark')}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                  mapStyle === 'dark'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+                title="Obsidian Dark Map"
+              >
+                <span>🌙</span>
+                <span className="hidden sm:inline">Dark</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleStyleChange('streets')}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                  mapStyle === 'streets'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+                title="Streets Map"
+              >
+                <span>🗺️</span>
+                <span className="hidden sm:inline">Streets</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleStyleChange('satellite')}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                  mapStyle === 'satellite'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+                title="High-Res Satellite Imagery"
+              >
+                <span>🛰️</span>
+                <span className="hidden sm:inline">Satellite</span>
+              </button>
+            </div>
+
             {/* Auto Locate Button */}
             <button
               onClick={handleLocateMe}
@@ -372,7 +449,7 @@ export default function SafetyMap() {
           <div className="absolute inset-0 z-20 bg-[#090514] overflow-y-auto p-4 sm:p-6 lg:hidden">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-black text-white">
-                Nearby Civic Hazards ({filteredReports.length})
+                Nearby Safety Hazards ({filteredReports.length})
               </h3>
               <button
                 onClick={() => setIsListView(false)}

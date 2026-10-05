@@ -14,7 +14,8 @@ import {
   ArrowRight,
   ShieldCheck,
   LocateFixed,
-  Navigation
+  Navigation,
+  X
 } from 'lucide-react';
 
 export default function MapPreviewSection() {
@@ -23,6 +24,7 @@ export default function MapPreviewSection() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(reports[0] || null);
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
   const [isLocating, setIsLocating] = useState<boolean>(false);
+  const [isMeshPopupDismissed, setIsMeshPopupDismissed] = useState<boolean>(false);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any>(null);
@@ -390,6 +392,18 @@ export default function MapPreviewSection() {
                 <LocateFixed className="w-3.5 h-3.5 text-sky-400" />
                 <span className="hidden sm:inline">Center Dhaka</span>
               </button>
+
+              {/* Status pill to reopen mesh popup if dismissed */}
+              {filteredReports.length === 0 && isMeshPopupDismissed && (
+                <button
+                  onClick={() => setIsMeshPopupDismissed(false)}
+                  className="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 hover:text-white border border-sky-400/30 text-xs flex items-center gap-1.5 transition font-bold"
+                  title="View Dhaka Safety Mesh info"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Mesh Active</span>
+                </button>
+              )}
             </div>
 
             {/* Legend Indicators */}
@@ -420,9 +434,20 @@ export default function MapPreviewSection() {
           />
 
           {/* Zero Reports Active Overlay */}
-          {filteredReports.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none z-[1001]">
-              <div className="bg-[#150D28]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl max-w-md text-center space-y-4 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+          {filteredReports.length === 0 && !isMeshPopupDismissed && (
+            <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none z-[1001] animate-in fade-in duration-200">
+              <div className="relative bg-[#150D28]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl max-w-md text-center space-y-4 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.85)] ring-1 ring-sky-500/20">
+                {/* Close 'X' Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsMeshPopupDismissed(true)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/15 text-slate-400 hover:text-white border border-white/10 transition shadow-sm hover:scale-110 active:scale-95"
+                  aria-label="Close popup"
+                  title="Close popup"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
                 <div className="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-400 mx-auto flex items-center justify-center border border-sky-400/30 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
                   <ShieldCheck className="w-6 h-6 animate-pulse" />
                 </div>
@@ -435,13 +460,22 @@ export default function MapPreviewSection() {
                     Zero unverified hazards currently logged under this filter. Real reports submitted by verified citizens appear directly on this live map.
                   </p>
                 </div>
-                <Link
-                  href="/report/new"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs transition shadow-[0_0_20px_rgba(239,68,68,0.4)] transform hover:scale-105 active:scale-95"
-                >
-                  <span>🚨 Log First Community Hazard</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+                  <Link
+                    href="/report/new"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs transition shadow-[0_0_20px_rgba(239,68,68,0.4)] transform hover:scale-105 active:scale-95"
+                  >
+                    <span>🚨 Log First Community Hazard</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setIsMeshPopupDismissed(true)}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-bold text-xs transition hover:scale-105 active:scale-95"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           )}

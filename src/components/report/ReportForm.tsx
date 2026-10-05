@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
@@ -164,6 +164,96 @@ export default function ReportForm() {
     }
   };
 
+  // Step 4 Leaflet Map Refs
+  const step4MapContainerRef = useRef<HTMLDivElement>(null);
+  const step4LeafletMapRef = useRef<any>(null);
+  const step4MarkerRef = useRef<any>(null);
+
+  // Step 4 Leaflet Map Initialization
+  useEffect(() => {
+    if (currentStep !== 4) return;
+    let isMounted = true;
+
+    async function initStep4Map() {
+      if (typeof window === 'undefined' || !step4MapContainerRef.current) return;
+      const L = (await import('leaflet')).default;
+
+      if (step4LeafletMapRef.current) {
+        step4LeafletMapRef.current.remove();
+        step4LeafletMapRef.current = null;
+      }
+
+      const map = L.map(step4MapContainerRef.current, {
+        center: [latitude, longitude],
+        zoom: 15,
+        zoomControl: false,
+      });
+
+      L.control.zoom({ position: 'topright' }).addTo(map);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        className: 'map-tiles-dark',
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(map);
+
+      // Custom pulsing red pin icon
+      const customPinIcon = L.divIcon({
+        className: 'custom-map-marker',
+        html: `
+          <div style="position: relative; width: 36px; height: 36px; background-color: #EF4444; border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 0 20px rgba(239,68,68,0.7); border: 2.5px solid white; cursor: pointer;">
+            <span style="position: absolute; inset: -4px; border-radius: 9999px; background-color: #EF4444; opacity: 0.5; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
+            <svg style="width: 18px; height: 18px; position: relative; z-index: 10;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </div>
+        `,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+      });
+
+      const marker = L.marker([latitude, longitude], { icon: customPinIcon, draggable: true }).addTo(map);
+
+      // On marker drag end, update coords
+      marker.on('dragend', () => {
+        const pos = marker.getLatLng();
+        const lat = Number(pos.lat.toFixed(4));
+        const lng = Number(pos.lng.toFixed(4));
+        setLatitude(lat);
+        setLongitude(lng);
+        setLocationName(`Selected Pin (${lat}, ${lng}), ${area}, Dhaka`);
+      });
+
+      // On map click, move marker and update coords
+      map.on('click', (e: any) => {
+        const lat = Number(e.latlng.lat.toFixed(4));
+        const lng = Number(e.latlng.lng.toFixed(4));
+        marker.setLatLng([lat, lng]);
+        setLatitude(lat);
+        setLongitude(lng);
+        setLocationName(`Selected Pin (${lat}, ${lng}), ${area}, Dhaka`);
+      });
+
+      step4LeafletMapRef.current = map;
+      step4MarkerRef.current = marker;
+
+      setTimeout(() => {
+        if (map) map.invalidateSize();
+      }, 200);
+    }
+
+    initStep4Map();
+
+    return () => {
+      isMounted = false;
+      if (step4LeafletMapRef.current) {
+        step4LeafletMapRef.current.remove();
+        step4LeafletMapRef.current = null;
+      }
+    };
+  }, [currentStep]);
+
   // GPS Auto-Locate Button with Radar Simulation
   const handleUseMyLocation = () => {
     setIsLocating(true);
@@ -178,6 +268,10 @@ export default function ReportForm() {
           setArea('Mirpur');
           setLocationPill('Mirpur');
           setIsLocating(false);
+          if (step4LeafletMapRef.current && step4MarkerRef.current) {
+            step4LeafletMapRef.current.setView([lat, lng], 15, { animate: true });
+            step4MarkerRef.current.setLatLng([lat, lng]);
+          }
         },
         () => {
           // Fallback to Dhaka central
@@ -187,6 +281,10 @@ export default function ReportForm() {
           setArea('Mirpur');
           setLocationPill('Mirpur');
           setIsLocating(false);
+          if (step4LeafletMapRef.current && step4MarkerRef.current) {
+            step4LeafletMapRef.current.setView([23.8041, 90.3667], 15, { animate: true });
+            step4MarkerRef.current.setLatLng([23.8041, 90.3667]);
+          }
         },
         { timeout: 7000 }
       );
@@ -552,32 +650,32 @@ export default function ReportForm() {
           </div>
 
           {/* REQUIREMENT 5 & 6: VOLUNTEER EMAIL DISPATCH & WHATSAPP SHARING */}
-          <div className="max-w-xl mx-auto p-4 rounded-2xl bg-blue-50 border border-blue-200 text-left space-y-3">
+          <div className="max-w-xl mx-auto p-5 rounded-2xl bg-[#160E2A]/90 border border-white/15 text-left space-y-3 shadow-xl backdrop-blur-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Radio className="w-4 h-4 text-civic-blue animate-pulse" />
-                <span className="text-xs font-black text-navy uppercase">
+                <Radio className="w-4 h-4 text-sky-400 animate-pulse" />
+                <span className="text-xs font-black text-white uppercase tracking-wider">
                   Community Volunteer Dispatch
                 </span>
               </div>
-              <span className="text-[10px] bg-civic-blue text-white font-bold px-2 py-0.5 rounded-full">
+              <span className="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 font-bold px-2 py-0.5 rounded-full">
                 Auto-Sent
               </span>
             </div>
 
-            <p className="text-xs text-slate-600">
-              Email alert automatically dispatched to verified local helpers in <strong>{submittedReport.area}</strong>.
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Email alert automatically dispatched to verified local helpers in <strong className="text-white font-bold">{submittedReport.area}</strong>.
             </p>
 
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="flex flex-wrap gap-2.5 pt-1">
               {/* WhatsApp Share Button */}
               <a
                 href={`https://wa.me/?text=${encodeURIComponent(`[Nirapod BD Hazard Alert] ${submittedReport.title} at ${submittedReport.locationName}. Public ID: ${submittedReport.publicId}. View report: https://nirapodbd.gov.bd/report/${submittedReport.id}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-navy hover:bg-navy-dark text-white font-bold text-xs shadow-sm transition"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-bold text-xs shadow-sm transition"
               >
-                <MessageCircle className="w-4 h-4 text-sky-400" />
+                <MessageCircle className="w-4 h-4 text-emerald-400" />
                 <span>Share Alert on WhatsApp</span>
               </a>
 
@@ -586,9 +684,9 @@ export default function ReportForm() {
                   navigator.clipboard.writeText(`https://nirapodbd.gov.bd/report/${submittedReport.id}`);
                   alert('Report URL copied to clipboard!');
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50 transition"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-xs transition"
               >
-                <Copy className="w-3.5 h-3.5" />
+                <Copy className="w-3.5 h-3.5 text-slate-300" />
                 <span>Copy Link</span>
               </button>
             </div>
@@ -598,13 +696,13 @@ export default function ReportForm() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link
               href={`/report/${submittedReport.id}`}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-navy hover:bg-navy-dark text-white font-bold text-sm shadow-md transition"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white font-black text-sm shadow-[0_0_25px_rgba(168,85,247,0.45)] border border-purple-400/50 transition transform hover:-translate-y-0.5 text-center"
             >
-              {t.report.viewReportBtn}
+              {t.report.viewReportBtn} →
             </Link>
             <Link
               href="/map"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-civic-blue hover:bg-blue-700 text-white font-bold text-sm shadow-md transition"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-sky-200 font-extrabold text-sm shadow-md transition text-center"
             >
               {t.report.backToMapBtn}
             </Link>
@@ -615,7 +713,7 @@ export default function ReportForm() {
                 setDescription('');
                 setSubmittedReport(null);
               }}
-              className="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition"
+              className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/15 text-slate-200 border border-white/15 font-bold text-sm transition"
             >
               {t.report.submitAnotherBtn}
             </button>
@@ -684,10 +782,10 @@ export default function ReportForm() {
             {currentStep === 1 && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-xl font-extrabold text-navy">
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                     {t.report.selectCategory}
                   </h3>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
                     {t.report.selectCategorySub}
                   </p>
                 </div>
@@ -702,33 +800,33 @@ export default function ReportForm() {
                         type="button"
                         key={cat.id}
                         onClick={() => handleCategorySelect(cat.id)}
-                        className={`p-4 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between group ${
+                        className={`p-4 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between group relative overflow-hidden backdrop-blur-xl ${
                           isSelected
-                            ? 'border-civic-blue bg-blue-50 shadow-md ring-2 ring-civic-blue'
-                            : 'border-surface-border bg-white hover:border-slate-300 hover:bg-slate-50'
+                            ? 'border-sky-400 bg-gradient-to-br from-purple-900/50 via-[#1A1133] to-sky-950/50 shadow-[0_0_25px_rgba(56,189,248,0.35)] ring-2 ring-sky-400/60'
+                            : 'border-white/10 bg-[#160E2A]/80 hover:border-purple-400/40 hover:bg-[#1E133A] shadow-lg'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-2xl group-hover:scale-110 transition-transform">
+                          <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">
                             {cat.icon}
                           </span>
                           {isEmergencyCategory && (
-                            <span className="text-[9px] uppercase font-black px-1.5 py-0.5 rounded bg-emergency text-white">
+                            <span className="text-[9px] uppercase font-mono font-black px-1.5 py-0.5 rounded-full bg-emergency text-white shadow-sm">
                               999
                             </span>
                           )}
                           {isSelected && (
-                            <div className="w-5 h-5 rounded-full bg-civic-blue text-white flex items-center justify-center">
-                              <Check className="w-3 h-3" />
+                            <div className="w-5 h-5 rounded-full bg-sky-400 text-[#0E081B] font-black flex items-center justify-center shadow-md">
+                              <Check className="w-3 h-3 stroke-[3]" />
                             </div>
                           )}
                         </div>
 
                         <div>
-                          <p className="font-extrabold text-xs sm:text-sm text-navy">
+                          <p className={`font-black text-xs sm:text-sm tracking-tight transition-colors ${isSelected ? 'text-sky-300' : 'text-white'}`}>
                             {language === 'en' ? cat.nameEn : cat.nameBn}
                           </p>
-                          <p className="text-[10px] text-slate-500 line-clamp-2 mt-1 leading-snug">
+                          <p className="text-[11px] text-slate-300 line-clamp-2 mt-1 leading-relaxed font-normal">
                             {language === 'en' ? cat.descriptionEn : cat.descriptionBn}
                           </p>
                         </div>
@@ -739,26 +837,28 @@ export default function ReportForm() {
               </div>
             )}
 
-            {/* STEP 2: PHOTO OR VIDEO UPLOAD (Requirement 1) */}
+            {/* STEP 2: PHOTO OR VIDEO EVIDENCE UPLOAD */}
             {currentStep === 2 && (
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-xl font-extrabold text-navy">
+                    <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                       Upload Photo or Video Evidence
                     </h3>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
                       Snap or upload visual evidence of the civic problem.
                     </p>
                   </div>
                   
                   {/* Media Type Switcher */}
-                  <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+                  <div className="inline-flex rounded-xl bg-[#160E2A] p-1 border border-white/10 shrink-0">
                     <button
                       type="button"
                       onClick={() => setMediaType('image')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                        mediaType === 'image' ? 'bg-navy text-white shadow-sm' : 'text-slate-600 hover:text-navy'
+                        mediaType === 'image'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-white'
                       }`}
                     >
                       <Camera className="w-3.5 h-3.5" />
@@ -768,7 +868,9 @@ export default function ReportForm() {
                       type="button"
                       onClick={() => setMediaType('video')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                        mediaType === 'video' ? 'bg-navy text-white shadow-sm' : 'text-slate-600 hover:text-navy'
+                        mediaType === 'video'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-white'
                       }`}
                     >
                       <Video className="w-3.5 h-3.5" />
@@ -777,25 +879,57 @@ export default function ReportForm() {
                   </div>
                 </div>
 
-                {/* Upload & Drag Drop Area */}
-                <div className="border-2 border-dashed border-slate-300 rounded-3xl p-6 sm:p-8 text-center bg-slate-50/50 hover:bg-slate-50 transition space-y-4">
-                  <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-slate-200 mx-auto flex items-center justify-center text-navy">
-                    {mediaType === 'video' ? <Video className="w-8 h-8 text-navy" /> : <Camera className="w-8 h-8 text-navy" />}
+                {/* EVIDENCE PREVIEW ON TOP (When Media Uploaded) */}
+                {mediaUrl && (
+                  <div className="p-3.5 rounded-2xl bg-[#160E2A]/90 border border-sky-400/40 backdrop-blur-xl shadow-xl space-y-2.5 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between text-xs font-bold px-1">
+                      <span className="flex items-center gap-2 text-white">
+                        <Eye className="w-4 h-4 text-sky-400" />
+                        <span>Evidence Preview ({mediaType.toUpperCase()})</span>
+                      </span>
+                      <span className="text-sky-300 bg-sky-500/20 border border-sky-400/30 px-2.5 py-0.5 rounded-full flex items-center gap-1 font-mono text-[10px]">
+                        <Check className="w-3 h-3 text-sky-400" /> Evidence Ready
+                      </span>
+                    </div>
+                    <div className="relative h-56 sm:h-64 w-full rounded-xl overflow-hidden bg-black border border-white/10 shadow-inner flex items-center justify-center">
+                      {mediaType === 'video' ? (
+                        <video
+                          src={mediaUrl}
+                          controls
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={mediaUrl}
+                          alt="Hazard preview"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Compact Upload & Dropzone Area */}
+                <div className="border border-dashed border-white/20 rounded-2xl p-4 sm:p-5 text-center bg-[#160E2A]/60 hover:bg-[#1E133A]/80 transition space-y-3">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-300 border border-purple-500/30 mx-auto flex items-center justify-center">
+                    {mediaType === 'video' ? <Video className="w-5 h-5 text-purple-300" /> : <Camera className="w-5 h-5 text-purple-300" />}
                   </div>
 
-                  <div className="space-y-1">
-                    <p className="text-sm font-bold text-navy">
-                      {mediaType === 'video' ? 'Drag & drop hazard video clip' : t.report.dragDropText}
+                  <div className="space-y-0.5">
+                    <p className="text-xs sm:text-sm font-bold text-white">
+                      {mediaUrl
+                        ? (mediaType === 'video' ? 'Upload different video clip' : 'Upload different photo')
+                        : (mediaType === 'video' ? 'Drag & drop hazard video clip' : t.report.dragDropText)}
                     </p>
-                    <p className="text-xs text-muted">
+                    <p className="text-[11px] text-slate-400">
                       Supports MP4, MOV, WEBM, JPG, PNG up to 25MB.
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-bold shadow-sm transition">
-                      {mediaType === 'video' ? <Video className="w-4 h-4" /> : <Camera className="w-4 h-4" />}
-                      <span>{mediaType === 'video' ? 'Upload Video Clip' : t.report.takePhoto}</span>
+                  <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
+                    <label className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md transition">
+                      {mediaType === 'video' ? <Video className="w-3.5 h-3.5" /> : <Camera className="w-3.5 h-3.5" />}
+                      <span>{mediaType === 'video' ? 'Select Video' : t.report.takePhoto}</span>
                       <input
                         type="file"
                         accept="image/*,video/*"
@@ -811,8 +945,8 @@ export default function ReportForm() {
                       />
                     </label>
 
-                    <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition">
-                      <Upload className="w-4 h-4" />
+                    <label className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition">
+                      <Upload className="w-3.5 h-3.5" />
                       <span>{t.report.uploadImage}</span>
                       <input
                         type="file"
@@ -831,11 +965,11 @@ export default function ReportForm() {
                   </div>
 
                   {/* Instant Test Presets */}
-                  <div className="pt-3 border-t border-slate-200">
-                    <span className="text-[11px] font-bold text-slate-400 block mb-2">
+                  <div className="pt-2.5 border-t border-white/10">
+                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1.5">
                       Or select sample test evidence:
                     </span>
-                    <div className="flex flex-wrap justify-center gap-2">
+                    <div className="flex flex-wrap justify-center gap-1.5">
                       {sampleMediaItems.map((item, idx) => (
                         <button
                           key={idx}
@@ -845,10 +979,10 @@ export default function ReportForm() {
                             setMediaUrl(item.url);
                             setSelectedCategory(item.category);
                           }}
-                          className={`text-xs px-3 py-1.5 rounded-xl border font-bold transition ${
+                          className={`text-[11px] px-2.5 py-1 rounded-lg border font-semibold transition ${
                             mediaUrl === item.url
-                              ? 'bg-navy text-white border-navy shadow-sm'
-                              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                              ? 'bg-sky-500/25 text-sky-200 border-sky-400/50 shadow-sm'
+                              : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
                           }`}
                         >
                           {item.label}
@@ -857,33 +991,6 @@ export default function ReportForm() {
                     </div>
                   </div>
                 </div>
-
-                {/* Evidence Preview Box */}
-                {mediaUrl && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs font-bold text-navy">
-                      <span>Evidence Preview ({mediaType.toUpperCase()})</span>
-                      <span className="text-civic-blue flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5" /> Media Ready
-                      </span>
-                    </div>
-                    <div className="relative h-64 sm:h-72 w-full rounded-2xl overflow-hidden bg-black border border-slate-200 shadow-md">
-                      {mediaType === 'video' ? (
-                        <video
-                          src={mediaUrl}
-                          controls
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <img
-                          src={mediaUrl}
-                          alt="Hazard preview"
-                          className="w-full h-full object-cover"
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
@@ -891,28 +998,28 @@ export default function ReportForm() {
             {currentStep === 3 && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-xl font-extrabold text-navy">
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                     {t.report.aiAnalysisTitle}
                   </h3>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
                     Neural vision scanning for civic risk categorization and severity rating.
                   </p>
                 </div>
 
                 {/* Loading / Scanning Simulation */}
                 {isAiAnalyzing && (
-                  <div className="p-8 sm:p-12 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4">
+                  <div className="p-8 sm:p-12 rounded-3xl bg-[#160E2A]/80 border border-white/10 text-center space-y-4">
                     <div className="relative w-16 h-16 mx-auto">
-                      <div className="absolute inset-0 rounded-full border-4 border-civic-blue/20 animate-ping" />
-                      <div className="w-16 h-16 rounded-full border-4 border-civic-blue border-t-transparent animate-spin flex items-center justify-center">
-                        <Sparkles className="w-6 h-6 text-civic-blue" />
+                      <div className="absolute inset-0 rounded-full border-4 border-sky-400/20 animate-ping" />
+                      <div className="w-16 h-16 rounded-full border-4 border-sky-400 border-t-transparent animate-spin flex items-center justify-center">
+                        <Sparkles className="w-6 h-6 text-sky-400" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="text-base font-extrabold text-navy">
+                      <h4 className="text-base font-extrabold text-white">
                         {t.report.aiAnalyzing}
                       </h4>
-                      <p className="text-xs text-muted mt-1">
+                      <p className="text-xs text-slate-400 mt-1">
                         Scanning Dhaka urban taxonomy, hazard boundaries, and depth...
                       </p>
                     </div>
@@ -921,20 +1028,20 @@ export default function ReportForm() {
 
                 {/* Completed AI Analysis Card */}
                 {aiAnalysisComplete && !isAiAnalyzing && (
-                  <div className="bg-slate-50/70 border border-slate-200 rounded-3xl overflow-hidden space-y-0">
+                  <div className="bg-[#160E2A]/90 border border-white/15 rounded-3xl overflow-hidden shadow-xl backdrop-blur-xl space-y-0">
                     <div className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                       {/* Left: Media Thumbnail */}
-                      <div className="md:col-span-5 relative h-48 rounded-2xl overflow-hidden bg-black border border-slate-200">
+                      <div className="md:col-span-5 relative h-48 rounded-2xl overflow-hidden bg-black border border-white/10">
                         {mediaType === 'video' ? (
                           <video src={mediaUrl} className="w-full h-full object-cover" />
                         ) : (
                           <img src={mediaUrl} alt="Analyzed" className="w-full h-full object-cover" />
                         )}
-                        <div className="absolute top-2 left-2 bg-navy/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                        <div className="absolute top-2 left-2 bg-[#0E081B]/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded border border-white/10">
                           AI SCANNED
                         </div>
                         <div className="absolute bottom-2 right-2">
-                          <span className="bg-civic-blue text-white text-[10px] font-black px-1.5 py-0.5 rounded shadow">
+                          <span className="bg-sky-500 text-[#0E081B] text-[10px] font-black px-2 py-0.5 rounded shadow">
                             {aiConfidence}% CONFIDENCE
                           </span>
                         </div>
@@ -942,20 +1049,20 @@ export default function ReportForm() {
 
                       {/* Right: Detected Attributes */}
                       <div className="md:col-span-7 space-y-4">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <div className="flex items-center justify-between pb-3 border-b border-white/10">
                           <div>
-                            <span className="text-[10px] uppercase font-bold text-muted">
+                            <span className="text-[10px] uppercase font-bold text-slate-400">
                               Identified Hazard
                             </span>
-                            <h4 className="text-lg font-black text-navy">
+                            <h4 className="text-lg font-black text-white">
                               {selectedCategory.replace('_', ' ').toUpperCase()} HAZARD
                             </h4>
                           </div>
                           <div className="text-right">
-                            <span className="text-[10px] uppercase font-bold text-muted">
+                            <span className="text-[10px] uppercase font-bold text-slate-400">
                               Confidence
                             </span>
-                            <p className="text-lg font-black text-civic-blue font-mono">
+                            <p className="text-lg font-black text-sky-400 font-mono">
                               {aiConfidence}%
                             </p>
                           </div>
@@ -963,14 +1070,14 @@ export default function ReportForm() {
 
                         {/* Identified Risks */}
                         <div>
-                          <span className="text-xs font-bold text-navy block mb-1.5">
+                          <span className="text-xs font-bold text-white block mb-1.5">
                             {t.report.aiRisks}
                           </span>
                           <div className="flex flex-wrap gap-1.5">
                             {aiRisks.map((risk, idx) => (
                               <span
                                 key={idx}
-                                className="text-xs bg-white border border-slate-200 px-2.5 py-1 rounded-lg text-slate-700 font-medium shadow-2xs"
+                                className="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg text-slate-200 font-medium"
                               >
                                 ⚠️ {risk}
                               </span>
@@ -980,19 +1087,19 @@ export default function ReportForm() {
 
                         {/* Suggested Severity & Category */}
                         <div className="grid grid-cols-2 gap-3 pt-1">
-                          <div className="p-3 rounded-xl bg-white border border-slate-200">
-                            <span className="text-[10px] text-muted font-bold block">
+                          <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                            <span className="text-[10px] text-slate-400 font-bold block">
                               {t.report.aiSuggestedSeverity}
                             </span>
                             <div className="mt-1">
                               <SeverityBadge severity={aiSuggestedSeverity} size="sm" />
                             </div>
                           </div>
-                          <div className="p-3 rounded-xl bg-white border border-slate-200">
-                            <span className="text-[10px] text-muted font-bold block">
+                          <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                            <span className="text-[10px] text-slate-400 font-bold block">
                               {t.report.aiSuggestedCategory}
                             </span>
-                            <p className="text-xs font-bold text-navy mt-1 truncate">
+                            <p className="text-xs font-bold text-white mt-1 truncate">
                               {selectedCategory.replace('_', ' ')}
                             </p>
                           </div>
@@ -1003,7 +1110,7 @@ export default function ReportForm() {
                           <button
                             type="button"
                             onClick={() => setCurrentStep(4)}
-                            className="flex-1 py-2.5 px-4 rounded-xl bg-civic-blue hover:bg-blue-700 text-white text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5"
+                            className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5"
                           >
                             <Check className="w-4 h-4" />
                             <span>{t.report.aiLooksCorrect}</span>
@@ -1011,7 +1118,7 @@ export default function ReportForm() {
                           <button
                             type="button"
                             onClick={() => setCurrentStep(1)}
-                            className="py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300 transition"
+                            className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-bold border border-white/15 transition"
                           >
                             {t.report.aiChangeCategory}
                           </button>
@@ -1020,8 +1127,8 @@ export default function ReportForm() {
                     </div>
 
                     {/* Disclaimer Banner */}
-                    <div className="p-3 bg-amber-50/70 border-t border-amber-200/80 text-[11px] text-amber-900 flex items-center gap-2">
-                      <Info className="w-4 h-4 text-amber-700 shrink-0" />
+                    <div className="p-3 bg-purple-950/40 border-t border-purple-500/20 text-[11px] text-purple-200 flex items-center gap-2">
+                      <Info className="w-4 h-4 text-purple-400 shrink-0" />
                       <span>{t.report.aiAssistantNotice}</span>
                     </div>
                   </div>
@@ -1034,54 +1141,41 @@ export default function ReportForm() {
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-xl font-extrabold text-navy">
+                    <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                       {t.report.locationTitle}
                     </h3>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
                       Auto-detect GPS or select your neighborhood ward.
                     </p>
                   </div>
 
-                  {/* REQUIREMENT 2: AUTO LOCATE LOCATION BUTTON */}
+                  {/* Auto Locate GPS Button */}
                   <button
                     type="button"
                     onClick={handleUseMyLocation}
                     disabled={isLocating}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-civic-blue hover:bg-blue-700 text-white text-xs font-black shadow-md transition disabled:opacity-50 relative overflow-hidden group"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white text-xs font-black shadow-md transition disabled:opacity-50 relative overflow-hidden group shrink-0"
                   >
                     <Radio className={`w-4 h-4 ${isLocating ? 'animate-spin' : 'animate-pulse'}`} />
                     <span>{isLocating ? 'Scanning GPS Radar...' : 'Auto-Locate GPS Position'}</span>
                   </button>
                 </div>
 
-                {/* Interactive Map Visual Pin Canvas */}
-                <div className="relative h-72 sm:h-80 w-full rounded-3xl bg-slate-900 overflow-hidden border border-slate-700 shadow-md">
-                  {/* Subtle Grid Simulation */}
-                  <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <pattern id="loc-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#38BDF8" strokeWidth="0.5" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#loc-grid)" />
-                  </svg>
+                {/* Real Interactive Leaflet Pinpoint Map */}
+                <div className="relative h-80 sm:h-96 w-full rounded-3xl overflow-hidden border border-white/15 shadow-2xl bg-[#090514]">
+                  {/* Leaflet Mount Node */}
+                  <div ref={step4MapContainerRef} className="w-full h-full z-0" />
 
-                  {/* Centered Draggable-style Pin */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center pointer-events-none">
-                    <div className="px-3 py-1 rounded-full bg-navy text-white text-[11px] font-black shadow-lg border border-white/20 whitespace-nowrap mb-1">
-                      📍 {locationName.split(',')[0]}
-                    </div>
-                    <div className="relative">
-                      <span className="absolute -inset-2 rounded-full bg-emergency/40 animate-ping" />
-                      <div className="w-8 h-8 rounded-full bg-emergency text-white flex items-center justify-center shadow-emergency border-2 border-white">
-                        <MapPin className="w-5 h-5 fill-white text-emergency" />
-                      </div>
-                    </div>
-                    <div className="w-3 h-1.5 rounded-full bg-black/50 blur-[2px] mt-0.5" />
+                  {/* Top Floating Hint Pill */}
+                  <div className="absolute top-3 left-3 z-10 pointer-events-none">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#150D28]/90 backdrop-blur-xl border border-white/15 text-[11px] font-bold text-white shadow-lg">
+                      <MapPin className="w-3.5 h-3.5 text-emergency animate-pulse" />
+                      <span>Tap map or drag pin to position</span>
+                    </span>
                   </div>
 
-                  {/* Dhaka Neighborhood Selector Pills */}
-                  <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap gap-2">
+                  {/* Dhaka Neighborhood Quick Selector Pills */}
+                  <div className="absolute bottom-3 left-3 right-3 z-10 flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar pointer-events-auto">
                     {[
                       { name: 'Mirpur Road', lat: 23.8041, lng: 90.3667, area: 'Mirpur' },
                       { name: 'Dhanmondi 27', lat: 23.7538, lng: 90.3752, area: 'Dhanmondi' },
@@ -1100,11 +1194,15 @@ export default function ReportForm() {
                           setLongitude(loc.lng);
                           setArea(loc.area);
                           setLocationPill(loc.area);
+                          if (step4LeafletMapRef.current && step4MarkerRef.current) {
+                            step4LeafletMapRef.current.setView([loc.lat, loc.lng], 15, { animate: true });
+                            step4MarkerRef.current.setLatLng([loc.lat, loc.lng]);
+                          }
                         }}
-                        className={`text-[11px] font-bold px-3 py-1 rounded-full transition shadow-sm ${
+                        className={`text-xs font-bold px-3 py-1.5 rounded-full transition shadow-md whitespace-nowrap backdrop-blur-xl border ${
                           area === loc.area
-                            ? 'bg-civic-blue text-white ring-2 ring-white/40'
-                            : 'bg-navy-dark/80 text-slate-200 hover:bg-navy-dark border border-white/10'
+                            ? 'bg-sky-500 text-[#0E081B] border-sky-400 font-black shadow-[0_0_15px_rgba(56,189,248,0.4)]'
+                            : 'bg-[#150D28]/90 text-slate-200 hover:text-white border-white/15 hover:bg-white/10'
                         }`}
                       >
                         {loc.name}
@@ -1115,36 +1213,36 @@ export default function ReportForm() {
 
                 {/* Location Display & Privacy Protection Note */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                    <span className="text-xs text-muted font-bold block mb-1">
+                  <div className="p-4 rounded-2xl bg-[#160E2A]/90 border border-white/15 shadow-lg">
+                    <span className="text-xs text-slate-400 font-bold block mb-1">
                       {t.report.addressDetected}
                     </span>
                     <input
                       type="text"
                       value={locationName}
                       onChange={(e) => setLocationName(e.target.value)}
-                      className="w-full text-sm font-bold text-navy bg-white border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                      className="w-full text-sm font-bold text-white bg-[#10091F] border border-white/15 rounded-xl p-2.5 focus:ring-2 focus:ring-sky-400/40 focus:border-sky-400 focus:outline-none"
                     />
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div className="p-4 rounded-2xl bg-[#160E2A]/90 border border-white/15 flex items-center justify-between shadow-lg">
                     <div>
-                      <span className="text-xs text-muted font-bold block mb-1">
+                      <span className="text-xs text-slate-400 font-bold block mb-1">
                         {t.report.coordinates}
                       </span>
-                      <p className="text-sm font-mono font-bold text-navy">
+                      <p className="text-sm font-mono font-bold text-sky-300">
                         {latitude}° N, {longitude}° E
                       </p>
                     </div>
-                    <span className="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-1 rounded-md">
+                    <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold px-2.5 py-1 rounded-lg font-mono">
                       Dhaka Zone ({area})
                     </span>
                   </div>
                 </div>
 
                 {/* Privacy Safeguard Message */}
-                <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200 text-xs text-blue-900 flex items-start gap-3">
-                  <Info className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
+                <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-400/20 text-xs text-sky-200 flex items-start gap-3 backdrop-blur-md">
+                  <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
                   <p>{t.report.privacyMessage}</p>
                 </div>
               </div>
@@ -1154,36 +1252,36 @@ export default function ReportForm() {
             {currentStep === 5 && (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <h3 className="text-xl font-extrabold text-navy">
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                     {t.report.detailsTitle}
                   </h3>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
                     Provide accurate details to help community and authorities take quick action.
                   </p>
                 </div>
 
                 {/* DUPLICATE WARNING CALLOUT */}
                 {duplicateMatch?.isDuplicate && duplicateMatch.matchedReport && (
-                  <div className="p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 space-y-3 animate-in fade-in duration-200">
-                    <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm">
-                      <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+                  <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-white space-y-3 animate-in fade-in duration-200">
+                    <div className="flex items-center gap-2 text-amber-300 font-extrabold text-sm">
+                      <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
                       <span>{t.duplicate.title}</span>
                     </div>
-                    <p className="text-xs text-amber-900">
-                      {t.duplicate.subtitle} (<strong>{duplicateMatch.matchedReport.title}</strong>, approx {duplicateMatch.distanceMeters}m away).
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      {t.duplicate.subtitle} (<strong className="text-white font-bold">{duplicateMatch.matchedReport.title}</strong>, approx {duplicateMatch.distanceMeters}m away).
                     </p>
 
-                    <div className="grid grid-cols-3 gap-2 py-2 text-center text-xs font-bold text-amber-900">
-                      <div className="bg-white/80 p-2 rounded-lg border border-amber-200">
-                        <span className="text-[10px] text-muted block">{t.duplicate.distance}</span>
+                    <div className="grid grid-cols-3 gap-2 py-2 text-center text-xs font-bold text-white">
+                      <div className="bg-[#160E2A] p-2 rounded-xl border border-white/10">
+                        <span className="text-[10px] text-slate-400 block">{t.duplicate.distance}</span>
                         {duplicateMatch.distanceMeters}m
                       </div>
-                      <div className="bg-white/80 p-2 rounded-lg border border-amber-200">
-                        <span className="text-[10px] text-muted block">{t.duplicate.similarity}</span>
+                      <div className="bg-[#160E2A] p-2 rounded-xl border border-white/10">
+                        <span className="text-[10px] text-slate-400 block">{t.duplicate.similarity}</span>
                         94%
                       </div>
-                      <div className="bg-white/80 p-2 rounded-lg border border-amber-200">
-                        <span className="text-[10px] text-muted block">{t.duplicate.existingConfirmations}</span>
+                      <div className="bg-[#160E2A] p-2 rounded-xl border border-white/10">
+                        <span className="text-[10px] text-slate-400 block">{t.duplicate.existingConfirmations}</span>
                         {duplicateMatch.matchedReport.confirmationsCount} people
                       </div>
                     </div>
@@ -1195,14 +1293,14 @@ export default function ReportForm() {
                           verifyReport(duplicateMatch.matchedReport!.id, 'confirm');
                           router.push(`/report/${duplicateMatch.matchedReport!.id}`);
                         }}
-                        className="flex-1 py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition"
+                        className="flex-1 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition"
                       >
                         {t.duplicate.confirmExisting}
                       </button>
                       <button
                         type="button"
                         onClick={() => setDuplicateMatch(null)}
-                        className="py-2 px-3 rounded-xl bg-white text-slate-700 border border-slate-300 text-xs font-semibold hover:bg-slate-50 transition"
+                        className="py-2 px-3 rounded-xl bg-white/10 text-white border border-white/15 text-xs font-semibold hover:bg-white/15 transition"
                       >
                         {t.duplicate.createSeparate}
                       </button>
@@ -1212,7 +1310,7 @@ export default function ReportForm() {
 
                 {/* Title Input */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-extrabold text-navy uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                     {t.report.titleInputLabel} <span className="text-emergency">*</span>
                   </label>
                   <input
@@ -1221,13 +1319,13 @@ export default function ReportForm() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder={t.report.titlePlaceholder}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-[#160E2A] text-white placeholder:text-slate-500 font-semibold text-sm focus:border-sky-400 focus:ring-2 focus:ring-sky-400/30 focus:outline-none transition"
                   />
                 </div>
 
                 {/* Description Input */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-extrabold text-navy uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                     {t.report.descriptionLabel} <span className="text-emergency">*</span>
                   </label>
                   <textarea
@@ -1236,13 +1334,13 @@ export default function ReportForm() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder={t.report.descriptionPlaceholder}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-[#160E2A] text-white placeholder:text-slate-500 font-medium text-sm focus:border-sky-400 focus:ring-2 focus:ring-sky-400/30 focus:outline-none transition"
                   />
                 </div>
 
                 {/* When noticed */}
                 <div className="space-y-2">
-                  <label className="text-xs font-extrabold text-navy uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                     {t.report.whenNoticed}
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -1258,8 +1356,8 @@ export default function ReportForm() {
                         onClick={() => setTimeNoticed(item.id as any)}
                         className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
                           timeNoticed === item.id
-                            ? 'bg-navy text-white border-navy'
-                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                            ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-sky-400 shadow-md'
+                            : 'bg-[#160E2A] text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
                         }`}
                       >
                         {item.label}
@@ -1270,15 +1368,15 @@ export default function ReportForm() {
 
                 {/* Severity Selection */}
                 <div className="space-y-2">
-                  <label className="text-xs font-extrabold text-navy uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                     {t.report.severityLabel}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
-                      { id: 'low' as SeverityLevel, label: t.report.severityLow, color: 'border-slate-300' },
-                      { id: 'medium' as SeverityLevel, label: t.report.severityMedium, color: 'border-amber-300' },
-                      { id: 'high' as SeverityLevel, label: t.report.severityHigh, color: 'border-orange-400' },
-                      { id: 'emergency' as SeverityLevel, label: t.report.severityEmergency, color: 'border-emergency bg-emergency/5' },
+                      { id: 'low' as SeverityLevel, label: t.report.severityLow, color: 'border-slate-500/40' },
+                      { id: 'medium' as SeverityLevel, label: t.report.severityMedium, color: 'border-amber-500/40' },
+                      { id: 'high' as SeverityLevel, label: t.report.severityHigh, color: 'border-orange-500/40' },
+                      { id: 'emergency' as SeverityLevel, label: t.report.severityEmergency, color: 'border-red-500/40 bg-red-500/10' },
                     ].map((sev) => (
                       <button
                         type="button"
@@ -1291,11 +1389,11 @@ export default function ReportForm() {
                         }}
                         className={`p-3.5 rounded-2xl border text-left flex items-center justify-between transition ${
                           severity === sev.id
-                            ? 'ring-2 ring-navy border-navy shadow-sm bg-slate-50'
-                            : `${sev.color} hover:bg-slate-50`
+                            ? 'ring-2 ring-sky-400/60 bg-[#201442] shadow-[0_0_20px_rgba(56,189,248,0.25)] border-sky-400'
+                            : `bg-[#160E2A]/80 ${sev.color} hover:bg-[#1E133A] text-white`
                         }`}
                       >
-                        <span className="text-xs font-bold text-navy">{sev.label}</span>
+                        <span className="text-xs font-bold text-white">{sev.label}</span>
                         <SeverityBadge severity={sev.id} size="sm" showIcon={false} />
                       </button>
                     ))}
@@ -1304,23 +1402,23 @@ export default function ReportForm() {
 
                 {/* Emergency Warning Card if Emergency is active */}
                 {(severity === 'emergency' || selectedCategory === 'fire' || selectedCategory === 'medical') && (
-                  <div className="p-4 rounded-2xl bg-emergency-light border border-emergency/40 flex items-center justify-between gap-4">
+                  <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-emergency text-white flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-emergency text-white flex items-center justify-center shrink-0 shadow-lg">
                         <PhoneCall className="w-5 h-5 animate-pulse" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-extrabold text-emergency uppercase">
+                        <h4 className="text-xs font-black text-red-400 uppercase tracking-wider">
                           Immediate Danger?
                         </h4>
-                        <p className="text-xs text-darktext">
+                        <p className="text-xs text-slate-300">
                           Nirapod BD is for community problem solving. For life rescue, call 999 immediately.
                         </p>
                       </div>
                     </div>
                     <a
                       href="tel:999"
-                      className="shrink-0 px-4 py-2 rounded-xl bg-emergency text-white text-xs font-extrabold shadow hover:bg-emergency-hover transition"
+                      className="shrink-0 px-4 py-2 rounded-xl bg-emergency text-white text-xs font-black shadow hover:bg-emergency-hover transition"
                     >
                       Call 999
                     </a>
@@ -1328,7 +1426,7 @@ export default function ReportForm() {
                 )}
 
                 {/* Final Submit Button */}
-                <div className="pt-4 border-t border-slate-200">
+                <div className="pt-4 border-t border-white/10">
                   <button
                     type="submit"
                     className="w-full py-4 px-6 rounded-2xl bg-emergency hover:bg-emergency-hover text-white text-base font-black shadow-emergency transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
@@ -1342,12 +1440,12 @@ export default function ReportForm() {
 
             {/* Stepper Navigation Buttons (Steps 1 to 4) */}
             {currentStep < 5 && (
-              <div className="mt-8 pt-6 border-t border-slate-200 flex items-center justify-between">
+              <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
                 <button
                   type="button"
                   onClick={() => setCurrentStep(prev => Math.max(prev - 1, 1))}
                   disabled={currentStep === 1}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none transition flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-xl border border-white/15 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/10 disabled:opacity-25 disabled:pointer-events-none transition flex items-center gap-1.5"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   <span>Previous</span>
@@ -1356,7 +1454,7 @@ export default function ReportForm() {
                 <button
                   type="button"
                   onClick={handleNextStep}
-                  className="px-6 py-2.5 rounded-xl bg-navy hover:bg-navy-dark text-white text-xs font-black shadow-md transition flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black shadow-md transition flex items-center gap-2"
                 >
                   <span>Continue</span>
                   <ChevronRight className="w-4 h-4" />

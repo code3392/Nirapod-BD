@@ -7,6 +7,7 @@ import HowItWorks from '@/components/home/HowItWorks';
 import MapPreviewSection from '@/components/home/MapPreviewSection';
 import PartnershipShowcase from '@/components/home/PartnershipShowcase';
 import AboutUsSection from '@/components/home/AboutUsSection';
+import MovingTickerSection from '@/components/home/MovingTickerSection';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { ArrowRight, PhoneCall, ShieldCheck } from 'lucide-react';
@@ -78,6 +79,9 @@ export default function HomePage() {
 
       {/* 7. Authentic About Us Section */}
       <AboutUsSection />
+
+      {/* 8. Moving Text Blocks (Continuous Sentinel Stream) */}
+      <MovingTickerSection />
     </div>
   );
 }

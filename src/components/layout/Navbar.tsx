@@ -277,8 +277,20 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation: Single Consolidated Menu Button (Perfect Dead-Center Alignment) */}
-        <nav className="hidden md:flex items-center absolute left-1/2 -translate-x-1/2 pointer-events-auto z-20">
+        {/* Desktop Navigation: Home Tab + Options Menu Button */}
+        <nav className="hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 pointer-events-auto z-20">
+          <Link
+            href="/"
+            className={`px-3.5 py-2 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
+              pathname === '/'
+                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/15 hover:border-purple-400/40 shadow-sm'
+            }`}
+          >
+            <Home className="w-3.5 h-3.5 text-sky-400" />
+            <span>{language === 'en' ? 'Home' : 'হোম'}</span>
+          </Link>
+
           <div className="relative" ref={optionsRef}>
             <button
               onClick={() => setOptionsDropdownOpen(!optionsDropdownOpen)}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { Report } from '@/types';
@@ -11,49 +11,165 @@ import {
   Users, 
   Clock, 
   ExternalLink, 
-  Layers, 
   ArrowRight,
-  ShieldAlert,
   ShieldCheck,
-  CheckCircle2,
-  AlertTriangle,
-  Radio
+  LocateFixed
 } from 'lucide-react';
 
 export default function MapPreviewSection() {
   const { language, t, reports } = useApp();
   
-  // Select up to 8 demo reports from Dhaka
-  const demoReports = reports.slice(0, 8);
-  const [selectedReport, setSelectedReport] = useState<Report>(demoReports[0]);
+  const [selectedReport, setSelectedReport] = useState<Report | null>(reports[0] || null);
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
 
-  const filteredReports = filterSeverity === 'all' 
-    ? demoReports 
-    : demoReports.filter(r => r.severity === filterSeverity || (filterSeverity === 'resolved' && r.status === 'RESOLVED'));
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const leafletMapRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
 
-  const getMarkerColor = (report: Report) => {
-    if (report.status === 'RESOLVED') return 'bg-sky-400 border-white text-[#0E081B] shadow-[0_0_15px_rgba(56,189,248,0.8)]';
-    if (report.severity === 'emergency') return 'bg-emergency border-white text-white shadow-[0_0_15px_rgba(239,68,68,0.8)] animate-pulse';
-    if (report.severity === 'high') return 'bg-orange-500 border-white text-white shadow-[0_0_12px_rgba(249,115,22,0.6)]';
-    if (report.severity === 'medium') return 'bg-amber-400 border-white text-[#0E081B]';
-    return 'bg-blue-500 border-white text-white';
+  const filteredReports = reports.filter((r) => {
+    if (filterSeverity === 'all') return true;
+    if (filterSeverity === 'emergency') return r.severity === 'emergency';
+    if (filterSeverity === 'high') return r.severity === 'high';
+    if (filterSeverity === 'resolved') return r.status === 'RESOLVED';
+    return true;
+  });
+
+  // Keep selected report updated if it's no longer in filteredReports
+  useEffect(() => {
+    if (filteredReports.length > 0) {
+      if (!selectedReport || !filteredReports.some((r) => r.id === selectedReport.id)) {
+        setSelectedReport(filteredReports[0]);
+      }
+    } else {
+      setSelectedReport(null);
+    }
+  }, [filterSeverity, reports]);
+
+  // Client-side Leaflet Initialization
+  useEffect(() => {
+    let isMounted = true;
+
+    async function initMap() {
+      if (typeof window === 'undefined' || !mapContainerRef.current) return;
+      const L = (await import('leaflet')).default;
+
+      if (!isMounted) return;
+
+      // Clean up previous instance
+      if (leafletMapRef.current) {
+        leafletMapRef.current.remove();
+        leafletMapRef.current = null;
+      }
+
+      // Default center: Dhaka
+      const centerLat = selectedReport?.latitude || 23.8103;
+      const centerLng = selectedReport?.longitude || 90.4125;
+
+      const map = L.map(mapContainerRef.current, {
+        center: [centerLat, centerLng],
+        zoom: 12,
+        zoomControl: false,
+        scrollWheelZoom: false,
+      });
+
+      L.control.zoom({ position: 'topright' }).addTo(map);
+
+      // Dark theme tiles matching the website obsidian/purple aesthetic
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        className: 'map-tiles-dark',
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(map);
+
+      leafletMapRef.current = map;
+
+      // Refresh size after DOM stabilization
+      setTimeout(() => {
+        if (leafletMapRef.current) {
+          leafletMapRef.current.invalidateSize();
+        }
+      }, 150);
+
+      // Render initial markers
+      renderMarkers(L, map, filteredReports);
+    }
+
+    initMap();
+
+    return () => {
+      isMounted = false;
+      if (leafletMapRef.current) {
+        leafletMapRef.current.remove();
+        leafletMapRef.current = null;
+      }
+    };
+  }, []); // Run on mount
+
+  // Update markers when filteredReports changes
+  useEffect(() => {
+    async function updateMarkers() {
+      if (!leafletMapRef.current || typeof window === 'undefined') return;
+      const L = (await import('leaflet')).default;
+      renderMarkers(L, leafletMapRef.current, filteredReports);
+    }
+    updateMarkers();
+  }, [filteredReports, selectedReport?.id]);
+
+  const renderMarkers = (L: any, map: any, reportList: Report[]) => {
+    // Clear old markers
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
+    reportList.forEach((report) => {
+      let bgColor = '#3B82F6';
+      let glowColor = 'rgba(59,130,246,0.6)';
+      const isEmergency = report.severity === 'emergency';
+
+      if (report.status === 'RESOLVED') {
+        bgColor = '#38BDF8';
+        glowColor = 'rgba(56,189,248,0.7)';
+      } else if (report.severity === 'emergency') {
+        bgColor = '#EF4444';
+        glowColor = 'rgba(239,68,68,0.8)';
+      } else if (report.severity === 'high') {
+        bgColor = '#F97316';
+        glowColor = 'rgba(249,115,22,0.7)';
+      } else if (report.severity === 'medium') {
+        bgColor = '#F59E0B';
+        glowColor = 'rgba(245,158,11,0.6)';
+      }
+
+      const isSelected = selectedReport?.id === report.id;
+
+      const customIcon = L.divIcon({
+        className: 'custom-hazard-pin',
+        html: `
+          <div style="position: relative; width: ${isSelected ? '38px' : '32px'}; height: ${isSelected ? '38px' : '32px'}; background-color: ${bgColor}; border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 0 16px ${glowColor}; border: 2.5px solid white; cursor: pointer; transform: ${isSelected ? 'scale(1.15)' : 'scale(1)'}; transition: transform 0.2s;">
+            ${isEmergency ? '<span style="position: absolute; inset: -5px; border-radius: 9999px; background-color: #EF4444; opacity: 0.6; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>' : ''}
+            <svg style="width: 16px; height: 16px; position: relative; z-index: 10;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </div>
+        `,
+        iconSize: [isSelected ? 38 : 32, isSelected ? 38 : 32],
+        iconAnchor: [isSelected ? 19 : 16, isSelected ? 19 : 16],
+      });
+
+      const marker = L.marker([report.latitude, report.longitude], { icon: customIcon }).addTo(map);
+      marker.on('click', () => {
+        setSelectedReport(report);
+        map.panTo([report.latitude, report.longitude], { animate: true });
+      });
+
+      markersRef.current.push(marker);
+    });
   };
 
-  // Convert lat/long to approximate container percentage (Dhaka coordinates: lat 23.70 to 23.89, lng 90.34 to 90.44)
-  const getCoordinatesPercent = (lat: number, lng: number) => {
-    const minLat = 23.70;
-    const maxLat = 23.89;
-    const minLng = 90.34;
-    const maxLng = 90.44;
-
-    const y = 100 - ((lat - minLat) / (maxLat - minLat)) * 100;
-    const x = ((lng - minLng) / (maxLng - minLng)) * 100;
-
-    return {
-      top: `${Math.max(12, Math.min(86, y))}%`,
-      left: `${Math.max(10, Math.min(88, x))}%`,
-    };
+  const handleCenterDhaka = () => {
+    if (leafletMapRef.current) {
+      leafletMapRef.current.setView([23.8103, 90.4125], 12, { animate: true });
+    }
   };
 
   return (
@@ -88,11 +204,11 @@ export default function MapPreviewSection() {
           </Link>
         </div>
 
-        {/* Map Canvas with Interactive Popover */}
+        {/* Map Canvas with Real Leaflet Map */}
         <div className="relative rounded-3xl bg-[#0E081B] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden ring-1 ring-sky-500/15">
           
           {/* Top Filter Bar inside Map */}
-          <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 bg-[#150D28]/90 backdrop-blur-xl p-3 rounded-2xl border border-white/10 shadow-lg">
+          <div className="absolute top-4 left-4 right-4 z-[1001] flex flex-wrap items-center justify-between gap-3 bg-[#150D28]/92 backdrop-blur-xl p-3 rounded-2xl border border-white/10 shadow-lg">
             <div className="flex flex-wrap items-center gap-2 text-xs font-bold font-sans">
               <button
                 onClick={() => setFilterSeverity('all')}
@@ -137,6 +253,15 @@ export default function MapPreviewSection() {
                 <span className="w-2 h-2 rounded-full bg-sky-400" />
                 Resolved
               </button>
+
+              <button
+                onClick={handleCenterDhaka}
+                className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs flex items-center gap-1 transition"
+                title="Recenter Map on Dhaka"
+              >
+                <LocateFixed className="w-3.5 h-3.5 text-sky-400" />
+                <span className="hidden sm:inline">Center Dhaka</span>
+              </button>
             </div>
 
             {/* Legend Indicators */}
@@ -160,161 +285,104 @@ export default function MapPreviewSection() {
             </div>
           </div>
 
-          {/* Interactive Map Visual Stage */}
-          <div className="relative h-[480px] sm:h-[560px] w-full bg-[#05020B] overflow-hidden select-none">
-            {/* Map Roads & Geographic Grid Simulation */}
-            <svg className="absolute inset-0 w-full h-full opacity-40" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="street-grid-preview" width="80" height="80" patternUnits="userSpaceOnUse">
-                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#2563EB" strokeWidth="0.8" opacity="0.35" />
-                  <path d="M 0 40 L 80 40" fill="none" stroke="#38BDF8" strokeWidth="0.4" opacity="0.2" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#street-grid-preview)" />
-              {/* Buriganga & Turag River Path Curves */}
-              <path
-                d="M 50 480 Q 200 420 350 490 T 700 460 T 1100 490"
-                fill="none"
-                stroke="#0284C7"
-                strokeWidth="28"
-                opacity="0.3"
-              />
-              {/* Major Highway Arteries */}
-              <line x1="380" y1="20" x2="380" y2="520" stroke="#38BDF8" strokeWidth="4" opacity="0.4" strokeDasharray="8 6" />
-              <line x1="120" y1="260" x2="900" y2="260" stroke="#38BDF8" strokeWidth="3" opacity="0.35" />
-            </svg>
+          {/* Real Leaflet Map DOM Container */}
+          <div 
+            ref={mapContainerRef} 
+            className="w-full h-[500px] sm:h-[580px] bg-[#05020B] z-0" 
+          />
 
-            {/* Neighborhood Labels */}
-            <div className="absolute top-[22%] left-[45%] text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pointer-events-none">
-              Uttara
-            </div>
-            <div className="absolute top-[38%] left-[28%] text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pointer-events-none">
-              Mirpur
-            </div>
-            <div className="absolute top-[48%] left-[58%] text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pointer-events-none">
-              Gulshan
-            </div>
-            <div className="absolute top-[60%] left-[36%] text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pointer-events-none">
-              Dhanmondi
-            </div>
-            <div className="absolute top-[75%] left-[52%] text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pointer-events-none">
-              Motijheel
-            </div>
-
-            {/* Clickable Report Pin Markers */}
-            {filteredReports.map((report) => {
-              const pos = getCoordinatesPercent(report.latitude, report.longitude);
-              const isSelected = selectedReport?.id === report.id;
-              const markerColor = getMarkerColor(report);
-
-              return (
-                <button
-                  key={report.id}
-                  onClick={() => setSelectedReport(report)}
-                  style={{ top: pos.top, left: pos.left }}
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 p-2 rounded-full border-2 transition-all transform duration-200 z-10 ${markerColor} ${
-                    isSelected ? 'scale-125 ring-4 ring-sky-400/50 z-30' : 'hover:scale-115'
-                  }`}
-                  title={`${report.title} (${report.area})`}
+          {/* Zero Reports Active Overlay */}
+          {filteredReports.length === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none z-[1001]">
+              <div className="bg-[#150D28]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl max-w-md text-center space-y-4 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+                <div className="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-400 mx-auto flex items-center justify-center border border-sky-400/30 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                  <ShieldCheck className="w-6 h-6 animate-pulse" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-display font-bold uppercase tracking-widest text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-400/30 inline-block mb-1.5 tabular-nums">
+                    Live Telemetry • 0 Active Threats
+                  </span>
+                  <h4 className="text-base font-black text-white">Dhaka Safety Mesh Active</h4>
+                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                    Zero unverified hazards currently logged under this filter. Real reports submitted by verified citizens appear directly on this live map.
+                  </p>
+                </div>
+                <Link
+                  href="/report/new"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs transition shadow-[0_0_20px_rgba(239,68,68,0.4)] transform hover:scale-105 active:scale-95"
                 >
-                  <MapPin className="w-4 h-4" />
-                </button>
-              );
-            })}
-
-            {/* Zero Fake Reports Active State */}
-            {filteredReports.length === 0 && (
-              <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none z-20">
-                <div className="bg-[#150D28]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl max-w-md text-center space-y-4 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
-                  <div className="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-400 mx-auto flex items-center justify-center border border-sky-400/30 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
-                    <ShieldCheck className="w-6 h-6 animate-pulse" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-display font-bold uppercase tracking-widest text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-400/30 inline-block mb-1.5 tabular-nums">
-                      Live Telemetry • 0 Active Threats
-                    </span>
-                    <h4 className="text-base font-black text-white">Dhaka Safety Mesh Active</h4>
-                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                      Zero unverified hazards currently logged. Real reports submitted by verified citizens will appear directly on this live map.
-                    </p>
-                  </div>
-                  <Link
-                    href="/report/new"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs transition shadow-[0_0_20px_rgba(239,68,68,0.4)] transform hover:scale-105 active:scale-95"
-                  >
-                    <span>🚨 Log First Community Hazard</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
+                  <span>🚨 Log First Community Hazard</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Floating Report Preview Card with Dark Obsidian Frosted Glass */}
-            {selectedReport && (
-              <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl p-5 shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-white/15 z-30 animate-in fade-in slide-in-from-bottom-3 duration-300 ring-1 ring-sky-500/20">
-                {/* Photo Thumbnail */}
-                {selectedReport.imageUrl && (
-                  <div className="relative h-32 w-full rounded-2xl overflow-hidden mb-3 bg-slate-900 border border-white/10 group">
-                    <img 
-                      src={selectedReport.imageUrl} 
-                      alt={selectedReport.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10px] font-mono font-bold text-white flex items-center gap-1 border border-white/20">
-                      <Clock className="w-3 h-3 text-sky-400" />
-                      <span>{selectedReport.area} • Dhaka</span>
-                    </div>
+          {/* Floating Report Preview Card with Dark Obsidian Frosted Glass */}
+          {selectedReport && (
+            <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl p-5 shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-white/15 z-[1001] animate-in fade-in slide-in-from-bottom-3 duration-300 ring-1 ring-sky-500/20">
+              {/* Photo Thumbnail */}
+              {selectedReport.imageUrl && (
+                <div className="relative h-32 w-full rounded-2xl overflow-hidden mb-3 bg-slate-900 border border-white/10 group">
+                  <img 
+                    src={selectedReport.imageUrl} 
+                    alt={selectedReport.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                  <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10px] font-mono font-bold text-white flex items-center gap-1 border border-white/20">
+                    <Clock className="w-3 h-3 text-sky-400" />
+                    <span>{selectedReport.area} • Dhaka</span>
                   </div>
-                )}
-
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono font-black text-sky-300 uppercase tracking-wider bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-400/20">
-                      {selectedReport.categoryId.replace('_', ' ')}
-                    </span>
-                    <span className="text-xs text-slate-400 font-mono font-bold">
-                      {selectedReport.publicId}
-                    </span>
-                  </div>
-                  <StatusBadge status={selectedReport.status} size="sm" />
                 </div>
+              )}
 
-                <h3 className="font-extrabold text-white text-sm leading-snug line-clamp-2">
-                  {selectedReport.title}
-                </h3>
-
-                <p className="text-xs text-slate-300 flex items-center gap-1.5 mt-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-emergency shrink-0" />
-                  <span className="truncate">{selectedReport.locationName}</span>
-                </p>
-
-                <div className="flex items-center justify-between text-xs text-slate-300 mt-3 pt-3 border-t border-white/10">
-                  <div className="flex items-center gap-1.5 font-bold text-white">
-                    <Users className="w-3.5 h-3.5 text-sky-400" />
-                    <span>{selectedReport.confirmationsCount} verified</span>
-                  </div>
-                  <SeverityBadge severity={selectedReport.severity} size="sm" showIcon={false} />
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono font-black text-sky-300 uppercase tracking-wider bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-400/20">
+                    {selectedReport.categoryId.replace('_', ' ')}
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono font-bold">
+                    {selectedReport.publicId}
+                  </span>
                 </div>
-
-                <div className="mt-4 flex items-center gap-2">
-                  <Link
-                    href={`/report/${selectedReport.id}`}
-                    className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-extrabold text-xs text-center shadow-md transition"
-                  >
-                    View Full Report →
-                  </Link>
-                  <Link
-                    href="/map"
-                    className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition border border-white/10"
-                    title="Open on Interactive Map"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </Link>
-                </div>
+                <StatusBadge status={selectedReport.status} size="sm" />
               </div>
-            )}
-          </div>
+
+              <h3 className="font-extrabold text-white text-sm leading-snug line-clamp-2">
+                {selectedReport.title}
+              </h3>
+
+              <p className="text-xs text-slate-300 flex items-center gap-1.5 mt-1.5">
+                <MapPin className="w-3.5 h-3.5 text-emergency shrink-0" />
+                <span className="truncate">{selectedReport.locationName}</span>
+              </p>
+
+              <div className="flex items-center justify-between text-xs text-slate-300 mt-3 pt-3 border-t border-white/10">
+                <div className="flex items-center gap-1.5 font-bold text-white">
+                  <Users className="w-3.5 h-3.5 text-sky-400" />
+                  <span>{selectedReport.confirmationsCount} verified</span>
+                </div>
+                <SeverityBadge severity={selectedReport.severity} size="sm" showIcon={false} />
+              </div>
+
+              <div className="mt-4 flex items-center gap-2">
+                <Link
+                  href={`/report/${selectedReport.id}`}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-extrabold text-xs text-center shadow-md transition"
+                >
+                  View Full Report →
+                </Link>
+                <Link
+                  href="/map"
+                  className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition border border-white/10"
+                  title="Open on Interactive Map"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

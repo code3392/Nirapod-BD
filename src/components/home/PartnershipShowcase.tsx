@@ -123,18 +123,30 @@ export default function PartnershipShowcase() {
           </p>
         </div>
 
-        {/* Partnership Grid */}
+        {/* Partnership Grid with Dynamic Floating Animations */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {partners.map((partner) => {
+          {partners.map((partner, index) => {
             const Icon = partner.icon;
+            const floatClass = [
+              'animate-card-float-1',
+              'animate-card-float-2',
+              'animate-card-float-3',
+              'animate-card-float-4',
+              'animate-card-float-5',
+              'animate-card-float-6',
+            ][index % 6];
+
             return (
               <div
                 key={partner.nameEn}
-                className="p-6 sm:p-7 rounded-3xl bg-[#130C24]/85 backdrop-blur-2xl border border-white/10 hover:border-purple-400/50 hover:bg-[#1A1033] shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.15)] transition-all duration-300 flex flex-col justify-between group"
+                className={`p-6 sm:p-7 rounded-3xl bg-[#130C24]/90 backdrop-blur-2xl border border-white/10 hover:border-purple-400/60 hover:bg-[#1A1033] shadow-[0_12px_35px_rgba(0,0,0,0.55)] hover:shadow-[0_20px_45px_rgba(168,85,247,0.22)] transition-all duration-300 flex flex-col justify-between group relative overflow-hidden ${floatClass} hover:!translate-y-[-8px] hover:!rotate-0`}
               >
-                <div className="space-y-4">
+                {/* Subtle top corner gradient glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors pointer-events-none" />
+
+                <div className="space-y-4 relative z-10">
                   <div className="flex items-start justify-between gap-3">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm group-hover:scale-105 transition-transform ${partner.color}`}>
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm group-hover:scale-110 transition-transform duration-300 ${partner.color}`}>
                       <Icon className="w-6 h-6" />
                     </div>
 
@@ -162,9 +174,9 @@ export default function PartnershipShowcase() {
                   </div>
                 </div>
 
-                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono relative z-10">
                   <span className="text-slate-400">Standardized Dispatch</span>
-                  <span className="text-sky-400 font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-sky-400 font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                     <span>Protocol Live</span>
                     <CheckCircle2 className="w-3.5 h-3.5 text-sky-400" />
                   </span>

@@ -75,6 +75,7 @@ interface AppContextType {
   submitCitizenProofOfWork: (reportId: string, mediaUrl: string, mediaType: 'image' | 'video', comments: string) => void;
   flagDuplicate: (reportId: string, originalId: string) => void;
   addComment: (reportId: string, content: string, isOfficial?: boolean) => { success: boolean; message?: string };
+  deleteReport: (reportId: string) => { success: boolean; message: string };
   getReportById: (id: string) => Report | undefined;
   checkDuplicateReport: (lat: number, lng: number, categoryId: string) => { isDuplicate: boolean; matchedReport?: Report; distanceMeters?: number };
   
@@ -126,7 +127,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedReports) {
           try {
             const parsed: Report[] = JSON.parse(savedReports);
-            const realReports = parsed.filter(r => !['rep-1', 'rep-2', 'rep-3', 'rep-4', 'rep-5', 'rep-6'].includes(r.id));
+            const realReports = parsed.filter(r => 
+              !['rep-1', 'rep-2', 'rep-3', 'rep-4', 'rep-5', 'rep-6'].includes(r.id) &&
+              !r.title?.toLowerCase().includes('overflowiedefefeng') &&
+              !r.title?.toLowerCase().includes('munfwfwe')
+            );
             setReports(realReports);
             localStorage.setItem('nirapod_reports', JSON.stringify(realReports));
           } catch {
@@ -141,8 +146,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedUser) {
           try {
             const parsed = JSON.parse(savedUser);
-            // Purge legacy fake demo accounts like Rahim Ahmed (usr-1)
-            if (parsed.id === 'usr-1' || parsed.email === 'rahim.ahmed@nirapodbd.gov.bd') {
+            // Require root password ggbrowser3392 for Super Admin (smdsami59@gmail.com)
+            if (parsed.email?.toLowerCase() === 'smdsami59@gmail.com' && parsed.password !== 'ggbrowser3392') {
+              localStorage.removeItem('nirapod_user');
+              setUser(null);
+            } else if (parsed.id === 'usr-1' || parsed.email === 'rahim.ahmed@nirapodbd.gov.bd') {
               localStorage.removeItem('nirapod_user');
               setUser(null);
             } else {
@@ -267,10 +275,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!cleanEmail) return { success: false, message: 'Please enter a valid email address.' };
 
     if (cleanEmail === 'smdsami59@gmail.com') {
-      setUser(SUPER_ADMIN_USER);
-      if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(SUPER_ADMIN_USER));
+      if (password !== 'ggbrowser3392') {
+        return { 
+          success: false, 
+          message: 'Access Denied: Invalid Super Admin password.' 
+        };
+      }
+      const superUser: UserProfile = { ...SUPER_ADMIN_USER, password: 'ggbrowser3392' };
+      setUser(superUser);
+      if (typeof window !== 'undefined') localStorage.setItem('nirapod_user', JSON.stringify(superUser));
       if (!allUsers.some(u => u.email.toLowerCase() === 'smdsami59@gmail.com')) {
-        const updated = [SUPER_ADMIN_USER, ...allUsers];
+        const updated = [superUser, ...allUsers];
         setAllUsers(updated);
         if (typeof window !== 'undefined') localStorage.setItem('nirapod_users', JSON.stringify(updated));
       }
@@ -359,6 +374,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
 
     const isSuper = cleanEmail === 'smdsami59@gmail.com';
+    if (isSuper && data.password !== 'ggbrowser3392') {
+      return { 
+        success: false, 
+        message: 'Registration Denied: Super Admin account creation requires the master root key.' 
+      };
+    }
     const newAccount: UserProfile = {
       id: isSuper ? 'usr-super-admin' : `usr-${Date.now()}`,
       name: cleanName,
@@ -411,6 +432,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const switchUser = (email: string) => {
     if (!email || email === 'guest') {
       logout();
+    } else if (email.toLowerCase() === 'smdsami59@gmail.com') {
+      // Super Admin requires password authentication; cannot bypass via switchUser
+      return;
     } else {
       login(email);
     }
@@ -935,6 +959,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return { success: true };
   };
 
+  const deleteReport = (reportId: string): { success: boolean; message: string } => {
+    const target = reports.find(r => r.id === reportId);
+    if (!target) {
+      return { success: false, message: 'Report not found' };
+    }
+    const isSuper = user && (user.email.toLowerCase() === 'smdsami59@gmail.com' || user.isSuperAdmin);
+    const isAuthor = user && user.id === target.userId;
+    if (!isSuper && !isAuthor) {
+      return { success: false, message: 'Permission Denied: Only Super Admin or the report author can delete this report.' };
+    }
+    const updated = reports.filter(r => r.id !== reportId);
+    persistReports(updated);
+    return { success: true, message: `Report ${target.publicId} has been successfully deleted.` };
+  };
+
   // 1 Main Community & Personal Groups Messaging with File Support & Moderation
   const sendCommunityMessage = (groupIdOrArea: string, content: string, fileAttachment?: CommunityMessage['fileAttachment']): { success: boolean; violationReason?: string } => {
     if (user?.bannedFromCommunities) {
@@ -1159,6 +1198,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         submitCitizenProofOfWork,
         flagDuplicate,
         addComment,
+        deleteReport,
         getReportById,
         checkDuplicateReport,
         personalGroups,

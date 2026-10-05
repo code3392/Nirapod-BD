@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import { Report } from '@/types';
 import StatusBadge from '@/components/common/StatusBadge';
@@ -32,7 +33,8 @@ import {
   Hospital,
   Building,
   Video,
-  FileCheck
+  FileCheck,
+  Trash2
 } from 'lucide-react';
 
 interface ReportDetailProps {
@@ -40,10 +42,24 @@ interface ReportDetailProps {
 }
 
 export default function ReportDetail({ report }: ReportDetailProps) {
-  const { language, t, verifyReport, addComment, confirmResolution, user } = useApp();
+  const router = useRouter();
+  const { language, t, verifyReport, addComment, confirmResolution, user, deleteReport } = useApp();
   const [commentText, setCommentText] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
   const [userVoted, setUserVoted] = useState<string | null>(null);
+
+  const isSuperAdmin = user ? (user.email.toLowerCase() === 'smdsami59@gmail.com' || user.isSuperAdmin) : false;
+  const isAuthor = user ? user.id === report.userId : false;
+  const canDelete = isSuperAdmin || isAuthor;
+
+  const handleDelete = () => {
+    if (confirm(language === 'en' ? `Are you sure you want to permanently delete report ${report.publicId}?` : `আপনি কি নিশ্চিত যে রিপোর্ট ${report.publicId} মুছে ফেলতে চান?`)) {
+      const res = deleteReport(report.id);
+      if (res.success) {
+        router.push('/reports');
+      }
+    }
+  };
 
   const handleVote = (voteType: 'confirm' | 'not_sure' | 'incorrect') => {
     verifyReport(report.id, voteType);
@@ -113,6 +129,17 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             <MapPin className="w-3.5 h-3.5 text-sky-400" />
             <span>{language === 'en' ? 'Locate on Map' : 'মানচিত্রে দেখুন'}</span>
           </Link>
+
+          {canDelete && (
+            <button
+              onClick={handleDelete}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600/40 border border-red-500/40 text-red-300 hover:text-white text-xs font-bold shadow-sm transition"
+              title="Delete Report"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-red-400" />
+              <span>{language === 'en' ? 'Delete Report' : 'রিপোর্ট মুছুন'}</span>
+            </button>
+          )}
         </div>
       </div>
 

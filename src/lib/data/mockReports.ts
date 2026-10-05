@@ -14,6 +14,7 @@ export const SUPER_ADMIN_USER: UserProfile = {
   id: 'usr-super-admin',
   name: 'Samiul Haque (Super Admin)',
   email: 'smdsami59@gmail.com',
+  password: 'ggbrowser3392',
   avatar: '',
   role: 'Super Admin',
   isSuperAdmin: true,

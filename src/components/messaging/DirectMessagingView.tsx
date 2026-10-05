@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { 
   MessageSquare, 
@@ -39,12 +40,12 @@ export default function DirectMessagingView() {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button
-            onClick={() => login('smdsami59@gmail.com')}
+          <Link
+            href="/"
             className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-civic-blue hover:bg-blue-700 text-white font-bold text-xs shadow-md transition"
           >
-            Sign In with Super Admin (smdsami59@gmail.com)
-          </button>
+            Please Sign In via the Top Navigation Bar
+          </Link>
         </div>
       </div>
     );

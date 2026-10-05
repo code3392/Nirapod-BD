@@ -31,7 +31,10 @@ import {
   RefreshCcw,
   MessageSquare,
   Ban,
-  Send
+  Send,
+  Eye,
+  EyeOff,
+  Lock
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -59,7 +62,8 @@ export default function AdminDashboard() {
     revokeSuspension,
     banUserFromCommunity,
     suspensionLogs,
-    login
+    login,
+    deleteReport
   } = useApp();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,32 +75,118 @@ export default function AdminDashboard() {
   const [suspensionReason, setSuspensionReason] = useState('Repeated violation of Nirapod BD community safety rules.');
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
-  if (!user) {
+  // Super Admin login gate state
+  const [adminEmailInput, setAdminEmailInput] = useState('smdsami59@gmail.com');
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const isSuperAdminUser = user ? (user.email.toLowerCase() === 'smdsami59@gmail.com' || user.isSuperAdmin) : false;
+  const isAuthorizedAdmin = !!user && (isSuperAdminUser || user.role === 'Admin' || user.role === 'Moderator');
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+    if (!adminEmailInput.trim()) {
+      setAuthError('Please enter administrator email address.');
+      return;
+    }
+    if (!adminPasswordInput) {
+      setAuthError('Please enter your Super Admin password.');
+      return;
+    }
+    const res = login(adminEmailInput.trim(), adminPasswordInput);
+    if (!res.success) {
+      setAuthError(res.message);
+    } else {
+      setAdminPasswordInput('');
+    }
+  };
+
+  if (!user || !isAuthorizedAdmin) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-6">
-        <div className="w-16 h-16 rounded-3xl bg-amber-50 border border-amber-200 text-amber-600 mx-auto flex items-center justify-center shadow-subtle">
-          <Crown className="w-8 h-8" />
-        </div>
-        <div className="space-y-2 max-w-md mx-auto">
-          <h2 className="text-2xl font-black text-navy">Restricted Administration Console</h2>
-          <p className="text-xs sm:text-sm text-slate-600">
-            Sign in as Super Admin (smdsami59@gmail.com) or an authorized Ward Administrator to access civic moderation controls.
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button
-            onClick={() => login('smdsami59@gmail.com')}
-            className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs shadow-md transition flex items-center justify-center gap-2"
-          >
-            <span>👑</span>
-            <span>Sign In as Super Admin (smdsami59@gmail.com)</span>
-          </button>
+      <div className="max-w-xl mx-auto px-4 sm:px-6 py-20">
+        <div className="bg-[#130C24]/90 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] text-center space-y-6 text-white ring-1 ring-amber-500/20">
+          <div className="w-16 h-16 rounded-3xl bg-amber-500/15 border border-amber-400/30 text-amber-400 mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.25)]">
+            <Crown className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-300 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-400/20 inline-block">
+              Root Authority Verification
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-white">Restricted Administration Console</h2>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md mx-auto">
+              Only the verified platform Super Admin (<strong className="text-amber-300">smdsami59@gmail.com</strong>) with the authorized master password can access civic moderation controls.
+            </p>
+          </div>
+
+          {authError && (
+            <div className="p-3.5 rounded-2xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs text-left flex items-start gap-2.5">
+              <ShieldAlert className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <span>{authError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleAdminLogin} className="space-y-4 text-left">
+            <div>
+              <label className="block text-xs font-mono font-bold text-slate-300 mb-1.5">
+                Super Admin Email
+              </label>
+              <input
+                type="email"
+                value={adminEmailInput}
+                onChange={(e) => setAdminEmailInput(e.target.value)}
+                placeholder="smdsami59@gmail.com"
+                className="w-full px-4 py-3 rounded-2xl bg-[#0E081B] border border-white/15 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/30"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono font-bold text-slate-300 mb-1.5">
+                Master Security Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showAdminPassword ? 'text' : 'password'}
+                  value={adminPasswordInput}
+                  onChange={(e) => setAdminPasswordInput(e.target.value)}
+                  placeholder="Enter Super Admin password"
+                  className="w-full px-4 py-3 pr-11 rounded-2xl bg-[#0E081B] border border-white/15 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/30 font-mono"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowAdminPassword(!showAdminPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
+                >
+                  {showAdminPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-[#0E081B] font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.4)] transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
+            >
+              <Crown className="w-4 h-4" />
+              <span>Authenticate as Super Admin</span>
+            </button>
+          </form>
+
+          <div className="pt-2">
+            <Link
+              href="/"
+              className="text-xs text-slate-400 hover:text-white transition font-mono"
+            >
+              ← Return to Citizen Homepage
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
-
-  const isSuperAdminUser = user ? (user.email.toLowerCase() === 'smdsami59@gmail.com' || user.isSuperAdmin) : false;
 
   // KPI Metrics
   const totalReportsCount = 1284;
@@ -218,7 +308,7 @@ export default function AdminDashboard() {
                   {isSuperAdminUser ? 'Super Admin Mode Active' : 'Restricted Admin View'}
                 </span>
                 <span className="text-xs font-mono text-slate-300">
-                  {user.email}
+                  {user?.email}
                 </span>
               </div>
               <h3 className="text-base font-black text-white mt-1">
@@ -235,13 +325,9 @@ export default function AdminDashboard() {
           </div>
 
           {!isSuperAdminUser && (
-            <button
-              onClick={() => login('smdsami59@gmail.com')}
-              className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow transition shrink-0 flex items-center gap-2"
-            >
-              <Crown className="w-4 h-4" />
-              <span>Switch to smdsami59@gmail.com</span>
-            </button>
+            <div className="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[11px] font-mono text-slate-400">
+              Ordinary Ward Moderator
+            </div>
           )}
         </div>
       </div>
@@ -685,6 +771,20 @@ export default function AdminDashboard() {
                         title="Reject Report"
                       >
                         Reject
+                      </button>
+                    )}
+
+                    {isSuperAdminUser && (
+                      <button
+                        onClick={() => {
+                          if (confirm(`Permanently delete report ${report.publicId}?`)) {
+                            deleteReport(report.id);
+                          }
+                        }}
+                        className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 font-bold text-[11px] border border-red-200 transition"
+                        title="Permanently Delete Report"
+                      >
+                        Delete
                       </button>
                     )}
                   </td>

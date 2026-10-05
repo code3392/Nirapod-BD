@@ -339,3 +339,61 @@
   animation-play-state: paused;
 }
 
+/* Floating Partner Cards Continuous Motion Animations */
+@keyframes cardFloatA {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(0.4deg);
+  }
+}
+
+@keyframes cardFloatB {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-11px) rotate(-0.5deg);
+  }
+}
+
+@keyframes cardFloatC {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.3deg);
+  }
+}
+
+.animate-card-float-1 {
+  animation: cardFloatA 5.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-card-float-2 {
+  animation: cardFloatB 6.6s ease-in-out infinite 0.5s;
+  will-change: transform;
+}
+
+.animate-card-float-3 {
+  animation: cardFloatC 5.9s ease-in-out infinite 1.2s;
+  will-change: transform;
+}
+
+.animate-card-float-4 {
+  animation: cardFloatB 6.2s ease-in-out infinite 1.8s;
+  will-change: transform;
+}
+
+.animate-card-float-5 {
+  animation: cardFloatA 5.6s ease-in-out infinite 0.9s;
+  will-change: transform;
+}
+
+.animate-card-float-6 {
+  animation: cardFloatC 6.4s ease-in-out infinite 2.3s;
+  will-change: transform;
+}
+

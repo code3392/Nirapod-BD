@@ -278,11 +278,11 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation: Primary Important Tabs + More Options Dropdown */}
-        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2 absolute left-1/2 -translate-x-1/2 pointer-events-auto z-20">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 shrink mx-auto pointer-events-auto z-20">
           {/* 1. Home */}
           <Link
             href="/"
-            className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
+            className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
               pathname === '/'
                 ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                 : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -295,7 +295,7 @@ export default function Navbar() {
           {/* 2. Safety Map */}
           <Link
             href="/map"
-            className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
+            className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
               pathname === '/map'
                 ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                 : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -309,7 +309,7 @@ export default function Navbar() {
           {/* 3. Reports */}
           <Link
             href="/reports"
-            className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
+            className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
               pathname === '/reports'
                 ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                 : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -322,7 +322,7 @@ export default function Navbar() {
           {/* 4. Community */}
           <Link
             href="/community"
-            className={`hidden lg:flex px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 items-center gap-1.5 border ${
+            className={`hidden xl:flex px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 items-center gap-1.5 border shrink-0 ${
               pathname === '/community'
                 ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                 : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -333,10 +333,10 @@ export default function Navbar() {
           </Link>
 
           {/* 5. More Options Dropdown */}
-          <div className="relative" ref={optionsRef}>
+          <div className="relative shrink-0" ref={optionsRef}>
             <button
               onClick={() => setOptionsDropdownOpen(!optionsDropdownOpen)}
-              className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
+              className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
                 optionsDropdownOpen 
                   ? 'bg-purple-500/25 text-purple-200 border-purple-400/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]' 
                   : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -428,32 +428,22 @@ export default function Navbar() {
         </nav>
 
         {/* Right Action Island (999 Hotline, Lang, Notifs, Profile, Report CTA) */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           
           {/* Integrated 999 Hotline Pill */}
           <a 
             href="tel:999" 
-            className="hidden sm:inline-flex items-center gap-1.5 bg-emergency/15 hover:bg-emergency/25 text-red-300 hover:text-red-200 border border-emergency/40 text-xs font-extrabold px-3 py-1.5 rounded-full transition shadow-[0_0_15px_rgba(239,68,68,0.25)]"
+            className="hidden sm:inline-flex items-center gap-1.5 bg-emergency/15 hover:bg-emergency/25 text-red-300 hover:text-red-200 border border-emergency/40 text-xs font-extrabold px-2.5 py-1.5 rounded-full transition shadow-[0_0_15px_rgba(239,68,68,0.25)] shrink-0"
             title="Direct call to Bangladesh Emergency Hotline 999"
           >
             <PhoneCall className="w-3.5 h-3.5 text-emergency animate-pulse" />
             <span>999</span>
           </a>
 
-          {/* Emergency Hotlines Directory Button */}
-          <button
-            onClick={() => setHotlinesModalOpen(true)}
-            className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-full border border-red-500/30 text-red-300 hover:text-white hover:bg-red-500/20 transition shadow-[0_0_10px_rgba(239,68,68,0.15)]"
-            title="24/7 Bangladesh Emergency Hotlines Directory"
-          >
-            <ShieldAlert className="w-3.5 h-3.5 text-red-400" />
-            <span>{language === 'en' ? 'Hotlines' : 'হটলাইন'}</span>
-          </button>
-
           {/* Language Toggle */}
           <button
             onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')}
-            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-full border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-full border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-colors shrink-0"
             title="Switch Language / ভাষা পরিবর্তন"
           >
             <Globe className="w-3.5 h-3.5 text-sky-400" />
@@ -557,7 +547,7 @@ export default function Navbar() {
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-sky-400/30 bg-white/5 hover:bg-white/10 transition-all"
+                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-sky-400/30 bg-white/5 hover:bg-white/10 transition-all shrink-0"
                 title="Account Menu"
               >
                 <img
@@ -565,15 +555,15 @@ export default function Navbar() {
                   alt={user.name}
                   className="w-7 h-7 rounded-full object-cover border border-purple-400/60"
                 />
-                <span className="text-xs font-bold text-white max-w-[85px] truncate hidden lg:inline">
+                <span className="text-xs font-bold text-white max-w-[85px] truncate hidden xl:inline">
                   {user.name.split(' ')[0]}
                 </span>
                 {user.isSuperAdmin || user.email === 'smdsami59@gmail.com' ? (
-                  <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 hidden lg:inline">
+                  <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 hidden xl:inline">
                     SUPER
                   </span>
                 ) : (
-                  <span className="text-[9px] font-display font-extrabold px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30 tabular-nums hidden lg:inline">
+                  <span className="text-[9px] font-display font-extrabold px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30 tabular-nums hidden xl:inline">
                     {user.points}p
                   </span>
                 )}

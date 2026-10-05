@@ -158,23 +158,29 @@ export default function SafetyCirclesView() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 space-y-10">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-transparent text-white py-10 px-4 sm:px-6 lg:px-8 space-y-10 relative">
+      {/* Atmospheric Ambient Glows */}
+      <div className="absolute top-10 left-1/4 w-96 h-96 bg-purple-600/15 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/3 right-10 w-96 h-96 bg-sky-500/15 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-red-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto space-y-8 relative z-10">
         
-        {/* Top Banner (Life360 style clean typography) */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-blue-100 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-civic-blue">
-              <ShieldCheck className="w-4 h-4 text-civic-blue" />
-              <span>{language === 'en' ? 'Personal Security Circles' : 'ব্যক্তিগত নিরাপত্তা সার্কেল'}</span>
-              <span className="w-2 h-2 rounded-full bg-civic-blue animate-pulse" />
+        {/* Top Banner (Cyberpunk obsidian card with cyan & purple accents) */}
+        <div className="bg-[#130C24]/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.7)] flex flex-col md:flex-row md:items-center justify-between gap-6 ring-1 ring-purple-500/15 relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="space-y-2 relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-400/30 text-xs font-mono font-bold text-sky-300">
+              <ShieldCheck className="w-4 h-4 text-sky-400" />
+              <span>{language === 'en' ? 'Personal & Family Security Circles' : 'ব্যক্তিগত নিরাপত্তা ও পরিবার সার্কেল'}</span>
+              <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-black text-navy tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
               {language === 'en' ? 'Keep Your Loved Ones Safe Across Bangladesh' : 'আপনার পরিবার ও আপনজনদের নিরাপত্তা নিশ্চিত রাখুন'}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
               {language === 'en'
                 ? 'Create private security circles for family and trusted friends. Monitor battery and safe arrivals, and broadcast 1-tap SOS alerts with live GPS coordinates.'
                 : 'পরিবার ও বন্ধুদের নিয়ে প্রাইভেট নিরাপত্তা সার্কেল গড়ে তুলুন। নিরাপদ আগমন ও ব্যাটারি স্ট্যাটাস ট্র্যাক করুন এবং জরুরি মুহূর্তে ১-ট্যাপে এসওএস পাঠান।'}
@@ -182,18 +188,18 @@ export default function SafetyCirclesView() {
           </div>
 
           {/* Quick SOS Trigger Button */}
-          <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10 shrink-0">
             <button
               onClick={() => setSosActive(true)}
-              className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-emergency hover:bg-emergency-hover text-white font-extrabold text-sm shadow-emergency transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-emergency hover:bg-emergency-hover text-white font-black text-sm shadow-[0_0_25px_rgba(239,68,68,0.5)] transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-red-500/40"
             >
-              <AlertTriangle className="w-5 h-5 fill-white text-emergency" />
+              <AlertTriangle className="w-5 h-5 fill-white text-emergency animate-pulse" />
               <span>{language === 'en' ? '🚨 1-Tap SOS Dispatch' : '🚨 ১-ট্যাপ এসওএস অ্যালার্ট'}</span>
             </button>
 
             <button
               onClick={() => setAddMemberModalOpen(true)}
-              className="w-full sm:w-auto px-5 py-4 rounded-2xl bg-civic-blue hover:bg-civic-royal text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-5 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-extrabold text-sm shadow-[0_0_20px_rgba(56,189,248,0.3)] transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-sky-400/40"
             >
               <Plus className="w-4 h-4" />
               <span>{language === 'en' ? 'Add Member' : 'সদস্য যোগ করুন'}</span>
@@ -204,24 +210,24 @@ export default function SafetyCirclesView() {
         {/* SOS Countdown Overlay */}
         {sosActive && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-red-950/85 backdrop-blur-md animate-in fade-in duration-150">
-            <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border-2 border-emergency text-center space-y-6 animate-in zoom-in-95 duration-150">
-              <div className="w-20 h-20 rounded-full bg-red-100 text-emergency flex items-center justify-center mx-auto animate-bounce">
-                <AlertTriangle className="w-10 h-10 fill-emergency text-white" />
+            <div className="bg-[#1A0A17]/95 rounded-3xl max-w-md w-full p-8 shadow-[0_0_60px_rgba(239,68,68,0.4)] border-2 border-red-500/70 text-center space-y-6 animate-in zoom-in-95 duration-150 ring-1 ring-red-500/30">
+              <div className="w-20 h-20 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40 animate-bounce">
+                <AlertTriangle className="w-10 h-10 fill-red-500 text-white" />
               </div>
 
               <div>
-                <h3 className="text-2xl font-black text-navy">
+                <h3 className="text-2xl font-black text-white">
                   {language === 'en' ? 'Triggering Emergency SOS' : 'জরুরি এসওএস বার্তা পাঠানো হচ্ছে'}
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
                   {language === 'en'
-                    ? 'Broadcasting your live GPS location to all 4 circle members and generating WhatsApp alert.'
+                    ? 'Broadcasting your live GPS location to all circle members and generating WhatsApp alert.'
                     : 'আপনার সার্কেলের সকল সদস্যের কাছে লাইভ লোকেশন সহ জরুরি বার্তা পাঠানো হচ্ছে।'}
                 </p>
               </div>
 
               {sosCountdown !== null && (
-                <div className="text-6xl font-black text-emergency font-display tabular-nums tracking-tight animate-pulse">
+                <div className="text-6xl font-black text-red-400 font-display tabular-nums tracking-tight animate-pulse">
                   0{sosCountdown}
                 </div>
               )}
@@ -230,14 +236,14 @@ export default function SafetyCirclesView() {
                 {sosCountdown === null ? (
                   <button
                     onClick={handleStartSos}
-                    className="w-full py-4 rounded-2xl bg-emergency hover:bg-emergency-hover text-white font-black text-sm uppercase tracking-wider shadow-lg transition"
+                    className="w-full py-4 rounded-2xl bg-emergency hover:bg-emergency-hover text-white font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(239,68,68,0.5)] transition"
                   >
                     Confirm & Send SOS Now
                   </button>
                 ) : (
                   <button
                     onClick={cancelSos}
-                    className="w-full py-3.5 rounded-2xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs uppercase tracking-wider transition"
+                    className="w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/20 font-bold text-xs uppercase tracking-wider transition"
                   >
                     Cancel Alert
                   </button>
@@ -245,9 +251,9 @@ export default function SafetyCirclesView() {
                 
                 <a
                   href="tel:999"
-                  className="w-full py-3 rounded-2xl bg-navy hover:bg-navy-dark text-white font-bold text-xs flex items-center justify-center gap-1.5 transition"
+                  className="w-full py-3 rounded-2xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-200 font-bold text-xs flex items-center justify-center gap-1.5 transition"
                 >
-                  <PhoneCall className="w-4 h-4 text-blue-300" />
+                  <PhoneCall className="w-4 h-4 text-red-400" />
                   <span>Direct Call 999 Police / Ambulance</span>
                 </a>
               </div>
@@ -257,14 +263,14 @@ export default function SafetyCirclesView() {
 
         {/* SOS Sent Banner */}
         {sosDispatched && (
-          <div className="p-4 sm:p-5 rounded-2xl bg-blue-50 border border-blue-300 flex items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-200">
+          <div className="p-4 sm:p-5 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-200 shadow-glass">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-6 h-6 text-civic-blue shrink-0" />
+              <CheckCircle2 className="w-6 h-6 text-sky-400 shrink-0" />
               <div>
-                <h4 className="text-sm font-bold text-blue-900">
+                <h4 className="text-sm font-bold text-white">
                   {language === 'en' ? 'Emergency SOS Broadcasted' : 'এসওএস বার্তা সফলভাবে সম্প্রচারিত হয়েছে'}
                 </h4>
-                <p className="text-xs text-blue-700">
+                <p className="text-xs text-sky-200">
                   {language === 'en'
                     ? 'WhatsApp and SMS dispatch initiated with your coordinates: 23.8041° N, 90.3667° E.'
                     : 'আপনার বর্তমান লোকেশন সহ সার্কেল সদস্যদের হোয়াটসঅ্যাপ ও এসএমএস লিঙ্ক সক্রিয় করা হয়েছে।'}
@@ -273,24 +279,24 @@ export default function SafetyCirclesView() {
             </div>
             <button
               onClick={() => setSosDispatched(false)}
-              className="text-xs text-blue-700 hover:text-blue-900 font-bold px-3 py-1.5 rounded-lg bg-blue-100/60"
+              className="text-xs text-sky-300 hover:text-white font-bold px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 transition"
             >
               Dismiss
             </button>
           </div>
         )}
 
-        {/* Circle Members Grid (Life360 style cards) */}
+        {/* Circle Members Grid (Dark glass cards with vibrant status) */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-civic-blue" />
-              <h3 className="text-lg font-black text-navy">
+              <Users className="w-5 h-5 text-sky-400" />
+              <h3 className="text-lg font-black text-white">
                 {language === 'en' ? 'Active Circle Members' : 'সার্কেলের সক্রিয় সদস্য'} ({members.length})
               </h3>
             </div>
-            <span className="text-xs font-bold text-slate-500">
-              Auto-refreshed via GPS
+            <span className="text-xs font-mono font-bold text-slate-400 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+              Auto GPS Sync
             </span>
           </div>
 
@@ -298,20 +304,20 @@ export default function SafetyCirclesView() {
             {members.map((member) => (
               <div
                 key={member.id}
-                className="bg-white rounded-3xl p-5 border border-slate-200 hover:border-civic-blue/50 shadow-subtle hover:shadow-card transition-all flex flex-col justify-between space-y-4"
+                className="bg-[#130C24]/90 backdrop-blur-2xl rounded-3xl p-5 border border-white/10 hover:border-purple-400/40 hover:bg-[#1A1033] shadow-[0_15px_40px_rgba(0,0,0,0.6)] transition-all flex flex-col justify-between space-y-4 ring-1 ring-purple-500/10 group"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <img
-                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${member.avatarSeed}&backgroundColor=0A2540&textColor=ffffff`}
+                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${member.avatarSeed}&backgroundColor=2563EB&textColor=ffffff`}
                       alt={member.name}
-                      className="w-12 h-12 rounded-2xl border-2 border-blue-100 object-cover shadow-xs"
+                      className="w-12 h-12 rounded-2xl border-2 border-sky-400/40 object-cover shadow-sm"
                     />
                     <div>
-                      <h4 className="text-sm font-extrabold text-navy truncate max-w-[130px]">
+                      <h4 className="text-sm font-extrabold text-white truncate max-w-[130px] group-hover:text-sky-300 transition-colors">
                         {member.name}
                       </h4>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-civic-blue border border-blue-200 inline-block mt-0.5">
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30 inline-block mt-0.5">
                         {member.relationship}
                       </span>
                     </div>
@@ -319,46 +325,55 @@ export default function SafetyCirclesView() {
 
                   {/* Battery & Online Status */}
                   <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
-                      <Battery className={`w-3.5 h-3.5 ${member.batteryLevel < 20 ? 'text-emergency' : 'text-civic-blue'}`} />
+                    <div className="flex items-center gap-1 text-[11px] font-mono font-bold text-slate-200 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">
+                      <Battery className={`w-3.5 h-3.5 ${member.batteryLevel < 20 ? 'text-emergency animate-pulse' : 'text-emerald-400'}`} />
                       <span>{member.batteryLevel}%</span>
                     </div>
-                    <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
-                      member.isOnline ? 'bg-blue-50 text-civic-blue' : 'bg-slate-100 text-slate-500'
+                    <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${
+                      member.isOnline 
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-400/30 flex items-center gap-1' 
+                        : 'bg-white/5 text-slate-400 border-white/10'
                     }`}>
-                      {member.isOnline ? '● Live' : 'Offline'}
+                      {member.isOnline ? (
+                        <>
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+                          <span>Live</span>
+                        </>
+                      ) : (
+                        'Offline'
+                      )}
                     </span>
                   </div>
                 </div>
 
                 {/* Location and Status */}
-                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-navy">
+                <div className="p-3.5 bg-[#0E081B] rounded-2xl border border-white/10 space-y-1">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-white">
                     <MapPin className="w-3.5 h-3.5 text-emergency shrink-0" />
                     <span className="truncate">{member.locationName}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
+                  <div className="flex items-center justify-between text-[11px] text-slate-400">
                     <span className="truncate">{member.statusText}</span>
-                    <span className="shrink-0">{member.lastUpdated}</span>
+                    <span className="shrink-0 font-mono text-[10px]">{member.lastUpdated}</span>
                   </div>
                 </div>
 
                 {/* Quick Actions */}
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
                   <a
                     href={`tel:${member.phone}`}
-                    className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1 transition"
+                    className="flex-1 py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 text-xs font-bold flex items-center justify-center gap-1.5 transition"
                   >
-                    <PhoneCall className="w-3.5 h-3.5 text-civic-blue" />
+                    <PhoneCall className="w-3.5 h-3.5 text-sky-400" />
                     <span>Call</span>
                   </a>
                   <a
                     href={`https://wa.me/${member.phone.replace(/[^0-9]/g, '')}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 py-2 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 text-xs font-bold flex items-center justify-center gap-1 transition"
+                    className="flex-1 py-2 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/30 text-emerald-300 text-xs font-bold flex items-center justify-center gap-1.5 transition"
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-sky-600" />
+                    <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
                     <span>WhatsApp</span>
                   </a>
                 </div>
@@ -368,19 +383,19 @@ export default function SafetyCirclesView() {
         </div>
 
         {/* Essential Bangladesh Service Providers & Emergency Hotlines Banner */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-blue-100 shadow-card space-y-6">
+        <div className="bg-[#0E081B]/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.7)] space-y-6 ring-1 ring-sky-500/15">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">
+              <span className="text-xs uppercase font-mono font-extrabold text-sky-400 tracking-wider">
                 Bangladesh National Hotlines
               </span>
-              <h3 className="text-lg sm:text-xl font-black text-navy mt-0.5">
+              <h3 className="text-lg sm:text-xl font-black text-white mt-0.5">
                 {language === 'en' ? '1-Tap Service Provider Quick Dial' : '১-ট্যাপ জরুরি সরকারি হটলাইন'}
               </h3>
             </div>
             <button
               onClick={() => setHotlinesModalOpen(true)}
-              className="px-4 py-2 rounded-xl bg-navy text-white text-xs font-bold hover:bg-navy-light transition"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white text-xs font-extrabold shadow-sm transition"
             >
               {language === 'en' ? 'Open Full Directory (10+ Numbers)' : 'সম্পূর্ণ ডিরেক্টরি দেখুন'}
             </button>
@@ -398,15 +413,15 @@ export default function SafetyCirclesView() {
               <a
                 key={p.num}
                 href={`tel:${p.num}`}
-                className="p-3.5 rounded-2xl bg-blue-50/60 hover:bg-blue-100/70 border border-blue-100 transition-all text-center flex flex-col justify-between group"
+                className="p-3.5 rounded-2xl bg-[#150D28] hover:bg-[#1C1236] border border-white/10 hover:border-sky-400/40 transition-all text-center flex flex-col justify-between group shadow-glass"
               >
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block">{p.tag}</span>
-                  <span className="text-lg font-mono font-black text-navy group-hover:text-civic-blue transition-colors block mt-1">
+                  <span className="text-[10px] uppercase font-mono font-bold text-slate-400 block">{p.tag}</span>
+                  <span className="text-lg font-mono font-black text-white group-hover:text-sky-300 transition-colors block mt-1">
                     {p.num}
                   </span>
                 </div>
-                <span className="text-[11px] font-bold text-civic-blue mt-2 inline-flex items-center justify-center gap-1">
+                <span className="text-[11px] font-bold text-sky-400 mt-2 inline-flex items-center justify-center gap-1">
                   <PhoneCall className="w-3 h-3" />
                   <span>Call</span>
                 </span>
@@ -417,21 +432,21 @@ export default function SafetyCirclesView() {
 
         {/* Add Member Modal */}
         {addMemberModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/70 backdrop-blur-sm animate-in fade-in duration-150">
-            <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-blue-100 space-y-5 animate-in zoom-in-95 duration-150">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
+            <div className="bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl max-w-md w-full p-6 shadow-2xl border border-white/15 space-y-5 animate-in zoom-in-95 duration-150 ring-1 ring-sky-500/20 text-white">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-civic-blue text-white flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-sm">
                     <Plus className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-navy text-base">Add Circle Member</h3>
-                    <p className="text-[11px] text-slate-500">Connect family or trusted emergency guardian</p>
+                    <h3 className="font-extrabold text-white text-base">Add Circle Member</h3>
+                    <p className="text-[11px] text-slate-400">Connect family or trusted emergency guardian</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setAddMemberModalOpen(false)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -439,7 +454,7 @@ export default function SafetyCirclesView() {
 
               <form onSubmit={handleAddMember} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
                     Full Name
                   </label>
                   <input
@@ -448,30 +463,30 @@ export default function SafetyCirclesView() {
                     value={newMemberName}
                     onChange={(e) => setNewMemberName(e.target.value)}
                     placeholder="e.g. Salma Begum"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-sky-400/60 focus:ring-1 focus:ring-sky-400/60"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
                     Relationship
                   </label>
                   <select
                     value={newMemberRelation}
                     onChange={(e) => setNewMemberRelation(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-civic-blue focus:outline-none bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0E081B] border border-white/10 text-xs font-medium text-white focus:outline-none focus:border-sky-400/60 focus:ring-1 focus:ring-sky-400/60"
                   >
-                    <option value="Parent">Parent (পিতা/মাতা)</option>
-                    <option value="Spouse">Spouse (জীবনসঙ্গী)</option>
-                    <option value="Sibling">Sibling (ভাই/বোন)</option>
-                    <option value="Child">Child (সন্তান)</option>
-                    <option value="Neighbor">Neighbor (প্রতিবেশী)</option>
-                    <option value="Colleague">Colleague / Friend</option>
+                    <option value="Parent" className="bg-[#0E081B] text-white">Parent (পিতা/মাতা)</option>
+                    <option value="Spouse" className="bg-[#0E081B] text-white">Spouse (জীবনসঙ্গী)</option>
+                    <option value="Sibling" className="bg-[#0E081B] text-white">Sibling (ভাই/বোন)</option>
+                    <option value="Child" className="bg-[#0E081B] text-white">Child (সন্তান)</option>
+                    <option value="Neighbor" className="bg-[#0E081B] text-white">Neighbor (প্রতিবেশী)</option>
+                    <option value="Colleague" className="bg-[#0E081B] text-white">Colleague / Friend</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
                     Bangladeshi Mobile Number
                   </label>
                   <input
@@ -480,7 +495,7 @@ export default function SafetyCirclesView() {
                     value={newMemberPhone}
                     onChange={(e) => setNewMemberPhone(e.target.value)}
                     placeholder="+880 1712-345678"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-civic-blue focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-sky-400/60 focus:ring-1 focus:ring-sky-400/60"
                   />
                 </div>
 
@@ -488,13 +503,13 @@ export default function SafetyCirclesView() {
                   <button
                     type="button"
                     onClick={() => setAddMemberModalOpen(false)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/10 transition"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-civic-blue hover:bg-civic-royal text-white text-xs font-bold shadow-sm transition"
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white text-xs font-extrabold shadow-sm transition"
                   >
                     Add to Circle
                   </button>

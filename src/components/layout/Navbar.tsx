@@ -277,33 +277,75 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation: Home Tab + Options Menu Button */}
-        <nav className="hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 pointer-events-auto z-20">
+        {/* Desktop Navigation: Primary Important Tabs + More Options Dropdown */}
+        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2 absolute left-1/2 -translate-x-1/2 pointer-events-auto z-20">
+          {/* 1. Home */}
           <Link
             href="/"
-            className={`px-3.5 py-2 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
               pathname === '/'
                 ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
-                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/15 hover:border-purple-400/40 shadow-sm'
+                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
             }`}
           >
             <Home className="w-3.5 h-3.5 text-sky-400" />
             <span>{language === 'en' ? 'Home' : 'হোম'}</span>
           </Link>
 
+          {/* 2. Safety Map */}
+          <Link
+            href="/map"
+            className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
+              pathname === '/map'
+                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+            }`}
+          >
+            <MapPin className="w-3.5 h-3.5 text-sky-400" />
+            <span>{t.nav.safetyMap}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emergency animate-ping shrink-0" />
+          </Link>
+
+          {/* 3. Reports */}
+          <Link
+            href="/reports"
+            className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
+              pathname === '/reports'
+                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5 text-sky-400" />
+            <span>{t.nav.reports}</span>
+          </Link>
+
+          {/* 4. Community */}
+          <Link
+            href="/community"
+            className={`hidden lg:flex px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 items-center gap-1.5 border ${
+              pathname === '/community'
+                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5 text-sky-400" />
+            <span>{language === 'en' ? 'Community' : 'কমিউনিটি'}</span>
+          </Link>
+
+          {/* 5. More Options Dropdown */}
           <div className="relative" ref={optionsRef}>
             <button
               onClick={() => setOptionsDropdownOpen(!optionsDropdownOpen)}
-              className={`px-4 py-2 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-2 border ${
+              className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border ${
                 optionsDropdownOpen 
                   ? 'bg-purple-500/25 text-purple-200 border-purple-400/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]' 
-                  : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/15 hover:border-purple-400/40 shadow-sm'
+                  : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
               }`}
               aria-label="Toggle options menu"
             >
               <Menu className="w-3.5 h-3.5 text-purple-400" />
-              <span>{language === 'en' ? 'Options' : 'অপশন'}</span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${optionsDropdownOpen ? 'rotate-180 text-purple-300' : 'text-slate-400'}`} />
+              <span>{language === 'en' ? 'More' : 'আরও'}</span>
+              <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${optionsDropdownOpen ? 'rotate-180 text-purple-300' : 'text-slate-400'}`} />
             </button>
 
             {optionsDropdownOpen && (
@@ -397,6 +439,16 @@ export default function Navbar() {
             <PhoneCall className="w-3.5 h-3.5 text-emergency animate-pulse" />
             <span>999</span>
           </a>
+
+          {/* Emergency Hotlines Directory Button */}
+          <button
+            onClick={() => setHotlinesModalOpen(true)}
+            className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-full border border-red-500/30 text-red-300 hover:text-white hover:bg-red-500/20 transition shadow-[0_0_10px_rgba(239,68,68,0.15)]"
+            title="24/7 Bangladesh Emergency Hotlines Directory"
+          >
+            <ShieldAlert className="w-3.5 h-3.5 text-red-400" />
+            <span>{language === 'en' ? 'Hotlines' : 'হটলাইন'}</span>
+          </button>
 
           {/* Language Toggle */}
           <button
@@ -688,10 +740,62 @@ export default function Navbar() {
             </div>
           )}
 
+          {/* Mobile Quick Action Navigation Buttons */}
+          <div className="grid grid-cols-2 gap-2 pt-1 pb-1">
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
+                pathname === '/'
+                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                  : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
+              }`}
+            >
+              <Home className="w-4 h-4 text-sky-400 shrink-0" />
+              <span>{language === 'en' ? 'Home' : 'হোম'}</span>
+            </Link>
+            <Link
+              href="/map"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
+                pathname === '/map'
+                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                  : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
+              }`}
+            >
+              <MapPin className="w-4 h-4 text-sky-400 shrink-0" />
+              <span>{t.nav.safetyMap}</span>
+            </Link>
+            <Link
+              href="/reports"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
+                pathname === '/reports'
+                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                  : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
+              }`}
+            >
+              <FileText className="w-4 h-4 text-sky-400 shrink-0" />
+              <span>{t.nav.reports}</span>
+            </Link>
+            <Link
+              href="/community"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
+                pathname === '/community'
+                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                  : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
+              }`}
+            >
+              <Users className="w-4 h-4 text-sky-400 shrink-0" />
+              <span>{language === 'en' ? 'Community' : 'কমিউনিটি'}</span>
+            </Link>
+          </div>
+
           {/* Mobile Navigation List */}
           <div className="space-y-1">
             <span className="px-3 text-[10px] font-mono font-black uppercase text-slate-400 tracking-wider block mb-1">
-              {language === 'en' ? 'Navigation & Portals' : 'ন্যাভিগেশন ও সেবা'}
+              {language === 'en' ? 'More Civic Portals' : 'অন্যান্য নাগরিক সেবা'}
             </span>
               {optionLinks.map((item) => {
                 const Icon = item.icon;

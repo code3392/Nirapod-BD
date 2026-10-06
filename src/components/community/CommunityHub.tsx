@@ -712,17 +712,33 @@ export default function CommunityHub() {
 
             <form onSubmit={handleJoinGroup} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-300">
-                  {language === 'en' ? 'Group Invite Code *' : 'ইনভাইট কোড *'}
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-300">
+                    {language === 'en' ? 'Group Invite Code *' : 'ইনভাইট কোড *'}
+                  </label>
+                  <span className="text-[10px] text-slate-400">Case-insensitive</span>
+                </div>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. NBD-8K2Q"
+                  placeholder="e.g. NBD-SAFE"
                   value={joinCodeInput}
                   onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase())}
                   className="w-full px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 text-white font-mono text-center text-base tracking-widest placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
                 />
+                <div className="flex items-center gap-1.5 pt-1.5 flex-wrap">
+                  <span className="text-[10px] text-slate-400">Sample codes:</span>
+                  {['NBD-SAFE', 'NBD-DHAKA', 'NBD-HELP'].map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      onClick={() => setJoinCodeInput(code)}
+                      className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-sky-300 border border-white/10 transition"
+                    >
+                      {code}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="pt-2 flex items-center justify-end gap-2">

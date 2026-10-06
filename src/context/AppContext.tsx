@@ -99,6 +99,57 @@ interface AppContextType {
   markAllNotificationsAsRead: () => void;
 }
 
+export const DEFAULT_PERSONAL_GROUPS: PersonalGroup[] = [
+  {
+    id: 'grp-dhaka-sentinel',
+    name: 'Dhaka Metropolitan Safety Circle',
+    description: 'Central cooperative guardian circle for cross-district emergency coordination.',
+    category: 'neighborhood',
+    creatorId: 'usr-super-admin',
+    creatorName: 'Samiul Haque (Super Admin)',
+    inviteCode: 'NBD-DHAKA',
+    membersCount: 14,
+    members: [
+      { id: 'usr-super-admin', name: 'Samiul Haque (Super Admin)', role: 'admin', joinedAt: 'Oct 2026' }
+    ],
+    createdAt: new Date().toISOString(),
+    isPrivate: true,
+    avatarSeed: 'Dhaka Sentinel'
+  },
+  {
+    id: 'grp-mirpur-patrol',
+    name: 'Mirpur Zone-4 Community Watch',
+    description: 'Active residents monitoring waterlogging, night commute safety, and road hazards.',
+    category: 'family',
+    creatorId: 'usr-super-admin',
+    creatorName: 'Samiul Haque (Super Admin)',
+    inviteCode: 'NBD-SAFE',
+    membersCount: 9,
+    members: [
+      { id: 'usr-super-admin', name: 'Samiul Haque (Super Admin)', role: 'admin', joinedAt: 'Oct 2026' }
+    ],
+    createdAt: new Date().toISOString(),
+    isPrivate: true,
+    avatarSeed: 'Mirpur Watch'
+  },
+  {
+    id: 'grp-emergency-volunteers',
+    name: 'Rapid Disaster & Medical Volunteers',
+    description: 'Emergency first-responders cooperating with DMP and Fire Service 999 hotlink.',
+    category: 'volunteer',
+    creatorId: 'usr-super-admin',
+    creatorName: 'Samiul Haque (Super Admin)',
+    inviteCode: 'NBD-HELP',
+    membersCount: 22,
+    members: [
+      { id: 'usr-super-admin', name: 'Samiul Haque (Super Admin)', role: 'admin', joinedAt: 'Oct 2026' }
+    ],
+    createdAt: new Date().toISOString(),
+    isPrivate: true,
+    avatarSeed: 'Emergency Network'
+  }
+];
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -110,7 +161,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [isOffline, setIsOffline] = useState<boolean>(false);
   const [offlineQueue, setOfflineQueue] = useState<Partial<Report>[]>([]);
-  const [personalGroups, setPersonalGroups] = useState<PersonalGroup[]>([]);
+  const [personalGroups, setPersonalGroups] = useState<PersonalGroup[]>(DEFAULT_PERSONAL_GROUPS);
   const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>(INITIAL_COMMUNITY_MESSAGES);
   const [directMessages, setDirectMessages] = useState<DirectMessage[]>(INITIAL_DIRECT_MESSAGES);
   const [lostAndFoundItems, setLostAndFoundItems] = useState<LostAndFoundItem[]>(INITIAL_LOST_AND_FOUND);
@@ -189,10 +240,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const savedGroups = localStorage.getItem('nirapod_personal_groups');
         if (savedGroups) {
           try {
-            setPersonalGroups(JSON.parse(savedGroups));
+            const parsed: PersonalGroup[] = JSON.parse(savedGroups);
+            const map = new Map<string, PersonalGroup>();
+            DEFAULT_PERSONAL_GROUPS.forEach(g => map.set(g.id, g));
+            if (Array.isArray(parsed)) {
+              parsed.forEach(g => map.set(g.id, g));
+            }
+            const combined = Array.from(map.values());
+            setPersonalGroups(combined);
+            localStorage.setItem('nirapod_personal_groups', JSON.stringify(combined));
           } catch {
-            setPersonalGroups([]);
+            setPersonalGroups(DEFAULT_PERSONAL_GROUPS);
           }
+        } else {
+          setPersonalGroups(DEFAULT_PERSONAL_GROUPS);
+          localStorage.setItem('nirapod_personal_groups', JSON.stringify(DEFAULT_PERSONAL_GROUPS));
         }
 
         const savedDms = localStorage.getItem('nirapod_direct_msgs');
@@ -1047,37 +1109,94 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const joinPersonalGroup = (
     inviteCode: string
   ): { success: boolean; group?: PersonalGroup; error?: string } => {
-    const cleanCode = inviteCode.trim().toUpperCase();
-    if (!cleanCode) return { success: false, error: 'Invite code is required' };
+    const rawInput = inviteCode.trim();
+    if (!rawInput) return { success: false, error: 'Invite code is required' };
 
-    const group = personalGroups.find((g) => g.inviteCode.toUpperCase() === cleanCode);
+    const cleanCode = rawInput.toUpperCase();
+    const alphaNumericInput = cleanCode.replace(/[^A-Z0-9]/g, '');
+
+    // Get latest pool from state AND localStorage
+    let pool = [...personalGroups];
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('nirapod_personal_groups');
+        if (stored) {
+          const parsed: PersonalGroup[] = JSON.parse(stored);
+          const map = new Map<string, PersonalGroup>();
+          DEFAULT_PERSONAL_GROUPS.forEach(g => map.set(g.id, g));
+          pool.forEach(g => map.set(g.id, g));
+          if (Array.isArray(parsed)) {
+            parsed.forEach(g => map.set(g.id, g));
+          }
+          pool = Array.from(map.values());
+        }
+      } catch {}
+    }
+
+    if (pool.length === 0) {
+      pool = [...DEFAULT_PERSONAL_GROUPS];
+    }
+
+    // Flexible matching:
+    const group = pool.find((g) => {
+      const gCode = (g.inviteCode || '').toUpperCase();
+      const gAlpha = gCode.replace(/[^A-Z0-9]/g, '');
+
+      // 1. Exact match (e.g. "NBD-SAFE" === "NBD-SAFE")
+      if (gCode === cleanCode) return true;
+      // 2. Alphanumeric match (e.g. "NBDSAFE" === "NBDSAFE")
+      if (gAlpha === alphaNumericInput) return true;
+      // 3. Suffix match (e.g. user typed "SAFE" and group is "NBD-SAFE")
+      if (cleanCode.length >= 3 && (gCode.endsWith(cleanCode) || gAlpha.endsWith(alphaNumericInput))) return true;
+      // 4. Prefix match (e.g. user typed "NBD-SAFE" and group code is "SAFE")
+      if (gAlpha.length >= 3 && (cleanCode.endsWith(gCode) || alphaNumericInput.endsWith(gAlpha))) return true;
+      // 5. Match by group ID
+      if (g.id.toLowerCase() === rawInput.toLowerCase()) return true;
+      // 6. Match by group name
+      if (g.name.toLowerCase() === rawInput.toLowerCase()) return true;
+
+      return false;
+    });
+
     if (!group) {
-      return { success: false, error: 'Group with this invite code was not found.' };
+      return { 
+        success: false, 
+        error: `Group code "${rawInput}" not found. Try sample codes: NBD-SAFE, NBD-DHAKA, or NBD-HELP.` 
+      };
     }
 
     const currentUserId = user ? user.id : 'usr-guest';
-    if (group.members.some((m) => m.id === currentUserId)) {
-      return { success: true, group };
+    const currentUserName = user ? user.name : 'Joined Member';
+
+    const isAlreadyMember = group.members.some((m) => m.id === currentUserId);
+
+    let updatedGroup: PersonalGroup = group;
+    if (!isAlreadyMember) {
+      updatedGroup = {
+        ...group,
+        membersCount: (group.membersCount || group.members.length) + 1,
+        members: [
+          ...group.members,
+          {
+            id: currentUserId,
+            name: currentUserName,
+            role: 'member',
+            phone: user?.phone,
+            joinedAt: 'Just now',
+          },
+        ],
+      };
     }
 
-    const updatedGroup: PersonalGroup = {
-      ...group,
-      membersCount: group.membersCount + 1,
-      members: [
-        ...group.members,
-        {
-          id: currentUserId,
-          name: user ? `${user.name}` : 'Joined Member',
-          role: 'member',
-          phone: user?.phone,
-          joinedAt: 'Just now',
-        },
-      ],
-    };
+    const updatedPool = pool.some(g => g.id === updatedGroup.id)
+      ? pool.map(g => g.id === updatedGroup.id ? updatedGroup : g)
+      : [updatedGroup, ...pool];
 
-    const updated = personalGroups.map((g) => (g.id === group.id ? updatedGroup : g));
-    setPersonalGroups(updated);
-    if (typeof window !== 'undefined') localStorage.setItem('nirapod_personal_groups', JSON.stringify(updated));
+    setPersonalGroups(updatedPool);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nirapod_personal_groups', JSON.stringify(updatedPool));
+    }
+
     return { success: true, group: updatedGroup };
   };
 

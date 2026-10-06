@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AppProvider } from '@/context/AppContext';
 import Navbar from '@/components/layout/Navbar';
+import NavigationBackButton from '@/components/layout/NavigationBackButton';
 import Footer from '@/components/layout/Footer';
 import OfflineBanner from '@/components/pwa/OfflineBanner';
 import BackgroundCyberCanvas from '@/components/common/BackgroundCyberCanvas';
@@ -74,6 +75,7 @@ export default function RootLayout({
           <BackgroundCyberCanvas />
           <OfflineBanner />
           <Navbar />
+          <NavigationBackButton />
           <main className="flex-1 w-full relative z-10">{children}</main>
           <Footer />
           <NirapodAiAssistant />

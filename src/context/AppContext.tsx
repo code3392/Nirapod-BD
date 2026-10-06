@@ -99,56 +99,7 @@ interface AppContextType {
   markAllNotificationsAsRead: () => void;
 }
 
-export const DEFAULT_PERSONAL_GROUPS: PersonalGroup[] = [
-  {
-    id: 'grp-dhaka-sentinel',
-    name: 'Dhaka Metropolitan Safety Circle',
-    description: 'Central cooperative guardian circle for cross-district emergency coordination.',
-    category: 'neighborhood',
-    creatorId: 'usr-super-admin',
-    creatorName: 'Samiul Haque (Super Admin)',
-    inviteCode: 'NBD-DHAKA',
-    membersCount: 14,
-    members: [
-      { id: 'usr-super-admin', name: 'Samiul Haque (Super Admin)', role: 'admin', joinedAt: 'Oct 2026' }
-    ],
-    createdAt: new Date().toISOString(),
-    isPrivate: true,
-    avatarSeed: 'Dhaka Sentinel'
-  },
-  {
-    id: 'grp-mirpur-patrol',
-    name: 'Mirpur Zone-4 Community Watch',
-    description: 'Active residents monitoring waterlogging, night commute safety, and road hazards.',
-    category: 'family',
-    creatorId: 'usr-super-admin',
-    creatorName: 'Samiul Haque (Super Admin)',
-    inviteCode: 'NBD-SAFE',
-    membersCount: 9,
-    members: [
-      { id: 'usr-super-admin', name: 'Samiul Haque (Super Admin)', role: 'admin', joinedAt: 'Oct 2026' }
-    ],
-    createdAt: new Date().toISOString(),
-    isPrivate: true,
-    avatarSeed: 'Mirpur Watch'
-  },
-  {
-    id: 'grp-emergency-volunteers',
-    name: 'Rapid Disaster & Medical Volunteers',
-    description: 'Emergency first-responders cooperating with DMP and Fire Service 999 hotlink.',
-    category: 'volunteer',
-    creatorId: 'usr-super-admin',
-    creatorName: 'Samiul Haque (Super Admin)',
-    inviteCode: 'NBD-HELP',
-    membersCount: 22,
-    members: [
-      { id: 'usr-super-admin', name: 'Samiul Haque (Super Admin)', role: 'admin', joinedAt: 'Oct 2026' }
-    ],
-    createdAt: new Date().toISOString(),
-    isPrivate: true,
-    avatarSeed: 'Emergency Network'
-  }
-];
+export const DEFAULT_PERSONAL_GROUPS: PersonalGroup[] = [];
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -161,7 +112,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [isOffline, setIsOffline] = useState<boolean>(false);
   const [offlineQueue, setOfflineQueue] = useState<Partial<Report>[]>([]);
-  const [personalGroups, setPersonalGroups] = useState<PersonalGroup[]>(DEFAULT_PERSONAL_GROUPS);
+  const [personalGroups, setPersonalGroups] = useState<PersonalGroup[]>([]);
   const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>(INITIAL_COMMUNITY_MESSAGES);
   const [directMessages, setDirectMessages] = useState<DirectMessage[]>(INITIAL_DIRECT_MESSAGES);
   const [lostAndFoundItems, setLostAndFoundItems] = useState<LostAndFoundItem[]>(INITIAL_LOST_AND_FOUND);
@@ -241,20 +192,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedGroups) {
           try {
             const parsed: PersonalGroup[] = JSON.parse(savedGroups);
-            const map = new Map<string, PersonalGroup>();
-            DEFAULT_PERSONAL_GROUPS.forEach(g => map.set(g.id, g));
-            if (Array.isArray(parsed)) {
-              parsed.forEach(g => map.set(g.id, g));
-            }
-            const combined = Array.from(map.values());
-            setPersonalGroups(combined);
-            localStorage.setItem('nirapod_personal_groups', JSON.stringify(combined));
+            const dummyIds = new Set(['grp-dhaka-sentinel', 'grp-mirpur-patrol', 'grp-emergency-volunteers']);
+            const dummyCodes = new Set(['NBD-DHAKA', 'NBD-SAFE', 'NBD-HELP']);
+            const realGroups = Array.isArray(parsed)
+              ? parsed.filter(g => !dummyIds.has(g.id) && !dummyCodes.has((g.inviteCode || '').toUpperCase()))
+              : [];
+            setPersonalGroups(realGroups);
+            localStorage.setItem('nirapod_personal_groups', JSON.stringify(realGroups));
           } catch {
-            setPersonalGroups(DEFAULT_PERSONAL_GROUPS);
+            setPersonalGroups([]);
           }
         } else {
-          setPersonalGroups(DEFAULT_PERSONAL_GROUPS);
-          localStorage.setItem('nirapod_personal_groups', JSON.stringify(DEFAULT_PERSONAL_GROUPS));
+          setPersonalGroups([]);
         }
 
         const savedDms = localStorage.getItem('nirapod_direct_msgs');
@@ -1123,7 +1072,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (stored) {
           const parsed: PersonalGroup[] = JSON.parse(stored);
           const map = new Map<string, PersonalGroup>();
-          DEFAULT_PERSONAL_GROUPS.forEach(g => map.set(g.id, g));
           pool.forEach(g => map.set(g.id, g));
           if (Array.isArray(parsed)) {
             parsed.forEach(g => map.set(g.id, g));
@@ -1133,22 +1081,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       } catch {}
     }
 
-    if (pool.length === 0) {
-      pool = [...DEFAULT_PERSONAL_GROUPS];
-    }
-
     // Flexible matching:
     const group = pool.find((g) => {
       const gCode = (g.inviteCode || '').toUpperCase();
       const gAlpha = gCode.replace(/[^A-Z0-9]/g, '');
 
-      // 1. Exact match (e.g. "NBD-SAFE" === "NBD-SAFE")
+      // 1. Exact match (e.g. "NBD-ABCD" === "NBD-ABCD")
       if (gCode === cleanCode) return true;
-      // 2. Alphanumeric match (e.g. "NBDSAFE" === "NBDSAFE")
+      // 2. Alphanumeric match (e.g. "NBDABCD" === "NBDABCD")
       if (gAlpha === alphaNumericInput) return true;
-      // 3. Suffix match (e.g. user typed "SAFE" and group is "NBD-SAFE")
+      // 3. Suffix match (e.g. user typed "ABCD" and group is "NBD-ABCD")
       if (cleanCode.length >= 3 && (gCode.endsWith(cleanCode) || gAlpha.endsWith(alphaNumericInput))) return true;
-      // 4. Prefix match (e.g. user typed "NBD-SAFE" and group code is "SAFE")
+      // 4. Prefix match
       if (gAlpha.length >= 3 && (cleanCode.endsWith(gCode) || alphaNumericInput.endsWith(gAlpha))) return true;
       // 5. Match by group ID
       if (g.id.toLowerCase() === rawInput.toLowerCase()) return true;
@@ -1161,7 +1105,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!group) {
       return { 
         success: false, 
-        error: `Group code "${rawInput}" not found. Try sample codes: NBD-SAFE, NBD-DHAKA, or NBD-HELP.` 
+        error: `Group code "${rawInput}" not found. Please verify the invite code provided by the group creator.` 
       };
     }
 

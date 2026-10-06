@@ -380,7 +380,7 @@ export default function MapPreviewSection() {
   };
 
   return (
-    <section className="py-20 bg-transparent border-t border-white/10 relative overflow-hidden text-white">
+    <section className="py-20 bg-transparent relative overflow-hidden text-white">
       {/* Ambient background glow */}
       <div className="absolute top-1/3 -right-32 w-96 h-96 bg-purple-600/12 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 -left-32 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -390,10 +390,6 @@ export default function MapPreviewSection() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emergency/15 border border-emergency/30 text-xs font-mono font-bold text-red-300">
-              <span className="w-2 h-2 rounded-full bg-emergency animate-ping" />
-              <span>{t.mapPreview.title}</span>
-            </div>
             <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
               {language === 'en' ? 'Active Hazards Across Dhaka City' : 'ঢাকা শহরের চলমান নাগরিক ঝুঁকি ও সমাধান'}
             </h2>
@@ -516,24 +512,6 @@ export default function MapPreviewSection() {
               </div>
             </div>
 
-            {/* Quick Dhaka Area 1-Click Pinpoint Toolbar */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-3 bg-[#150D28]/92 backdrop-blur-xl rounded-2xl border border-white/10 shadow-lg pointer-events-auto">
-              <span className="text-[10px] uppercase font-mono font-black text-sky-400 shrink-0 flex items-center gap-1 mr-1">
-                <span>📍</span>
-                <span>{language === 'en' ? 'Quick Area:' : 'দ্রুত এলাকা:'}</span>
-              </span>
-              {DHAKA_QUICK_CHIPS.map((area) => (
-                <button
-                  key={area.id}
-                  type="button"
-                  onClick={() => handleSelectQuickArea(area)}
-                  className="px-2.5 py-1 rounded-xl bg-white/5 hover:bg-sky-500/20 text-slate-300 hover:text-white border border-white/10 hover:border-sky-400/40 text-[11px] font-bold whitespace-nowrap transition shrink-0 active:scale-95"
-                  title={`Pinpoint ${area.name} at street level`}
-                >
-                  {language === 'bn' ? area.nameBn : area.name}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Real Leaflet Map DOM Container */}

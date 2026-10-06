@@ -32,7 +32,7 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[92svh] w-full border-b border-white/10 bg-transparent flex items-center overflow-hidden text-white py-14 lg:py-20">
+    <section className="relative min-h-[92svh] w-full bg-transparent flex items-center overflow-hidden text-white py-14 lg:py-20">
       {/* Background Subtle Gradient & Pure CSS Civic Grid */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(147,51,234,0.22),rgba(255,255,255,0))]" />
       <div className="absolute inset-0 bg-gradient-to-b from-[#0E081B]/40 via-transparent to-transparent pointer-events-none" />
@@ -47,16 +47,6 @@ export default function Hero() {
 
           {/* LEFT COLUMN: Editorial Typography & Actions */}
           <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-            
-            {/* Top Status Pill */}
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-sky-400/25 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-sky-300 backdrop-blur-md">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-400" />
-              </span>
-              <span>Bangladesh Civic Safety Network</span>
-              <span className="text-[11px] text-slate-400 font-display font-medium hidden sm:inline">• 24/7 Verified</span>
-            </div>
 
             {/* Headline */}
             <div className="space-y-4">
@@ -93,7 +83,7 @@ export default function Hero() {
             <div className="flex flex-col min-[420px]:flex-row flex-wrap gap-3 pt-2">
               <Link
                 href="/report/new"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] shadow-lg text-base h-12 w-full min-[420px]:w-auto rounded-xl bg-emergency hover:bg-emergency-hover px-7 font-extrabold text-white border border-emergency/50 group tracking-[-0.01em]"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] shadow-lg text-base h-12 w-full min-[420px]:w-auto rounded-none bg-emergency hover:bg-emergency-hover px-7 font-extrabold text-white border border-emergency/50 group tracking-[-0.01em]"
               >
                 <span>🚨 {t.hero.primaryCta}</span>
                 <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -101,7 +91,7 @@ export default function Hero() {
 
               <Link
                 href="/map"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-base h-12 w-full min-[420px]:w-auto rounded-xl border-white/25 bg-white/[0.05] px-7 font-semibold text-white hover:bg-white/10 hover:border-sky-400/50 backdrop-blur-md tracking-[-0.01em]"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-base h-12 w-full min-[420px]:w-auto rounded-none border-white/25 bg-white/[0.05] px-7 font-semibold text-white hover:bg-white/10 hover:border-sky-400/50 backdrop-blur-md tracking-[-0.01em]"
               >
                 <span>🗺️ {t.hero.secondaryCta}</span>
                 <ArrowUpRight className="w-4 h-4 ml-1 text-slate-300" />
@@ -109,7 +99,7 @@ export default function Hero() {
 
               <a
                 href="tel:999"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-xs h-12 w-full min-[420px]:w-auto rounded-xl border-emergency/40 bg-emergency/15 px-4 font-bold text-red-300 hover:bg-emergency/25 backdrop-blur-md font-display"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-xs h-12 w-full min-[420px]:w-auto rounded-none border-emergency/40 bg-emergency/15 px-4 font-bold text-red-300 hover:bg-emergency/25 backdrop-blur-md font-display"
                 title="Immediate Police / Fire / Ambulance Emergency"
               >
                 <PhoneCall className="w-3.5 h-3.5 text-emergency" />

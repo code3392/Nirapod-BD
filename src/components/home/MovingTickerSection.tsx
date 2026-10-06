@@ -114,7 +114,7 @@ export default function MovingTickerSection() {
   const track2 = [...row2Items, ...row2Items];
 
   return (
-    <section className="py-16 bg-[#090514] border-t border-white/10 relative overflow-hidden">
+    <section className="py-16 bg-[#090514] relative overflow-hidden">
       {/* Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
 

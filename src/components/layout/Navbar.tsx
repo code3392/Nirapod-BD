@@ -35,7 +35,8 @@ import {
   Layers,
   HeartHandshake,
   Eye,
-  EyeOff
+  EyeOff,
+  Info
 } from 'lucide-react';
 import EmergencyDirectoryModal from '@/components/common/EmergencyDirectoryModal';
 
@@ -234,7 +235,7 @@ export default function Navbar() {
       icon: ShieldAlert,
     },
     {
-      href: '/#about-us',
+      href: '/about',
       label: language === 'en' ? 'About Nirapod BD' : 'আমাদের সম্পর্কে',
       desc: language === 'en' ? 'Civic mission, verified team, and principles' : 'নাগরিক উদ্দেশ্য, টিম ও নিরাপত্তা নীতিমালা',
       icon: ShieldAlert,
@@ -444,6 +445,19 @@ export default function Navbar() {
           >
             <Users className="w-3.5 h-3.5 text-sky-400" />
             <span>{language === 'en' ? 'Community' : 'কমিউনিটি'}</span>
+          </Link>
+
+          {/* 5. About */}
+          <Link
+            href="/about"
+            className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+              pathname === '/about'
+                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+            }`}
+          >
+            <Info className="w-3.5 h-3.5 text-sky-400" />
+            <span>{language === 'en' ? 'About' : 'পরিচিতি'}</span>
           </Link>
         </nav>
 

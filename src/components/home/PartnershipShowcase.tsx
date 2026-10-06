@@ -96,7 +96,7 @@ export default function PartnershipShowcase() {
   ];
 
   return (
-    <section className="py-24 bg-transparent border-t border-white/10 relative overflow-hidden text-white">
+    <section className="py-24 bg-transparent relative overflow-hidden text-white">
       {/* Background Subtle Tech Matrix & Glowing Orbs */}
       <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-96 h-96 bg-purple-600/12 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[100px] pointer-events-none" />

@@ -15,7 +15,7 @@ export default function AboutUsSection() {
   const { language } = useApp();
 
   return (
-    <section id="about-us" className="py-24 bg-transparent text-white relative overflow-hidden border-t border-white/10">
+    <section id="about-us" className="py-24 bg-transparent text-white relative overflow-hidden">
       {/* Background Subtle Tech Matrix & Glowing Orbs */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/12 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-violet-500/10 rounded-full blur-[120px] pointer-events-none" />

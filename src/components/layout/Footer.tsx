@@ -40,14 +40,14 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-[#06030E]/80 backdrop-blur-xl text-white pt-16 pb-12 border-t border-white/10 relative overflow-hidden">
+    <footer className="bg-[#06030E]/80 backdrop-blur-xl text-white pt-16 pb-12 relative overflow-hidden">
       {/* Subtle ambient glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Emergency Triage Callout Banner (Frosted Crimson Glass) */}
-        <div className="mb-14 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-red-500/15 via-red-600/10 to-transparent border border-red-500/30 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+        <div className="mb-14 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-red-500/15 via-red-600/10 to-transparent border border-red-500/30 backdrop-blur-xl flex items-center justify-between gap-6 shadow-2xl">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-emergency/20 border border-emergency/40 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
               <PhoneCall className="w-6 h-6 text-red-400 animate-pulse" />
@@ -68,14 +68,6 @@ export default function Footer() {
               </p>
             </div>
           </div>
-
-          <a
-            href="tel:999"
-            className="shrink-0 inline-flex items-center gap-2 bg-emergency hover:bg-emergency-hover text-white font-extrabold px-6 py-3.5 rounded-full shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-transform hover:scale-105 active:scale-95 text-xs uppercase tracking-wider border border-emergency/50"
-          >
-            <PhoneCall className="w-4 h-4" />
-            <span>{language === 'en' ? 'Dial Emergency 999' : 'জরুরি সেবা ৯৯৯ কল করুন'}</span>
-          </a>
         </div>
 
         {/* Footer Navigation Columns */}
@@ -148,6 +140,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/about" className="hover:text-sky-400 transition-colors">
+                  {language === 'en' ? 'About Us' : 'আমাদের সম্পর্কে'}
+                </Link>
+              </li>
+              <li>
                 <Link href="/organization" className="hover:text-sky-400 transition-colors">
                   {t.nav.organizations}
                 </Link>
@@ -205,12 +202,6 @@ export default function Footer() {
               <p className="text-[11px] text-slate-400 leading-tight">
                 Police, Fire Service, Ambulance. Toll-free 24/7 across Bangladesh.
               </p>
-              <a
-                href="tel:999"
-                className="block text-center text-xs font-bold py-2 rounded-xl bg-emergency/15 hover:bg-emergency/25 text-red-300 border border-emergency/30 transition shadow-sm"
-              >
-                Call 999 Direct
-              </a>
             </div>
             <p className="text-[11px] font-mono text-slate-400">
               Women & Child: <strong className="text-slate-200">109</strong> | Civic: <strong className="text-slate-200">333</strong>

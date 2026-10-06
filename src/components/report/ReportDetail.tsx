@@ -15,7 +15,7 @@ import {
   Calendar, 
   User, 
   Share2, 
-  Sparkles, 
+  Bot, 
   CheckCircle2, 
   AlertTriangle, 
   HelpCircle, 
@@ -334,7 +334,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 flex items-center justify-center">
-                <Sparkles className="w-4 h-4" />
+                <Bot className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-black text-white uppercase tracking-wider">

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { 
   Camera, 
-  Sparkles, 
+  Bot, 
   MapPin, 
   UserCheck, 
   CheckCircle2, 
@@ -36,7 +36,7 @@ export default function HowItWorks() {
       number: '02',
       title: t.howItWorks.step2Title,
       desc: t.howItWorks.step2Desc,
-      icon: <Sparkles className="w-6 h-6 text-white" />,
+      icon: <Bot className="w-6 h-6 text-white" />,
       tag: language === 'en' ? 'Computer Vision' : 'কম্পিউটার ভিশন',
       badge: 'Step 2 • AI Triage',
       detail: 'Instant hazard detection & 94% severity tagging',

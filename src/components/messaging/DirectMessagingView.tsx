@@ -16,7 +16,7 @@ import {
   PhoneCall,
   Mail,
   UserPlus,
-  Sparkles,
+  Bot,
   ShieldAlert,
   Phone,
   Check,
@@ -561,7 +561,7 @@ export default function DirectMessagingView() {
             {conversationMessages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-3">
                 <div className="w-14 h-14 rounded-2xl bg-purple-950/50 border border-purple-500/25 flex items-center justify-center text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
-                  <Sparkles className="w-7 h-7 text-purple-400" />
+                  <Bot className="w-7 h-7 text-purple-400" />
                 </div>
                 <div className="space-y-1 max-w-sm">
                   <h4 className="text-sm font-bold text-white">

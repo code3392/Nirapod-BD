@@ -23,7 +23,6 @@ import {
   Home, 
   Briefcase, 
   Heart, 
-  Sparkles, 
   Send, 
   Paperclip,
   Share2,

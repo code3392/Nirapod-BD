@@ -14,7 +14,7 @@ import {
   Camera, 
   Video, 
   Upload, 
-  Sparkles, 
+  Bot, 
   MapPin, 
   Check, 
   AlertTriangle, 
@@ -1067,7 +1067,7 @@ export default function ReportForm() {
                     <div className="relative w-16 h-16 mx-auto">
                       <div className="absolute inset-0 rounded-full border-4 border-sky-400/20 animate-ping" />
                       <div className="w-16 h-16 rounded-full border-4 border-sky-400 border-t-transparent animate-spin flex items-center justify-center">
-                        <Sparkles className="w-6 h-6 text-sky-400" />
+                        <Bot className="w-6 h-6 text-sky-400" />
                       </div>
                     </div>
                     <div>

@@ -8,7 +8,7 @@ import {
   MapPin, 
   PhoneCall, 
   Users, 
-  Sparkles, 
+  Bot, 
   Radio, 
   Flame, 
   Eye, 
@@ -49,7 +49,7 @@ export default function MovingTickerSection() {
       desc: language === 'en' ? 'Direct escalation to repair work orders' : 'নাগরিক সমস্যা সরাসরি সমাধানকারী সংস্থায়',
     },
     {
-      icon: Sparkles,
+      icon: Bot,
       tag: 'AI VISION',
       tagColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
       title: language === 'en' ? 'Automated Risk Categorization' : 'স্বয়ংক্রিয় এআই ঝুঁকি মূল্যায়ন',

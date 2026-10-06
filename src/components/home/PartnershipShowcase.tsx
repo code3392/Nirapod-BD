@@ -12,7 +12,6 @@ import {
   Droplet,
   HeartPulse,
   Scale,
-  Sparkles,
   Award
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';

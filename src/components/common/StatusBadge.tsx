@@ -5,7 +5,7 @@ import { ReportStatus } from '@/types';
 import { useApp } from '@/context/AppContext';
 import { 
   Clock, 
-  Sparkles, 
+  Bot, 
   Search, 
   CheckCircle2, 
   UserCheck, 
@@ -36,7 +36,7 @@ export default function StatusBadge({ status, size = 'md', showIcon = true }: St
       case 'AI_ANALYZED':
         return {
           label: t.status.AI_ANALYZED,
-          icon: <Sparkles className="w-3.5 h-3.5" />,
+          icon: <Bot className="w-3.5 h-3.5" />,
           classes: 'bg-sky-50 text-sky-700 border-sky-200/80',
         };
       case 'UNDER_REVIEW':

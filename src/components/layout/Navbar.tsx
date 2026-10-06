@@ -31,7 +31,6 @@ import {
   UserCheck,
   ChevronDown,
   UserPlus,
-  Sparkles,
   Layers,
   HeartHandshake,
   Eye,

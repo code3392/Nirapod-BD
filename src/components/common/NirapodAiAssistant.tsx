@@ -2,10 +2,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  Sparkles, 
+  Bot,
   X, 
   Send, 
-  Bot, 
   User, 
   ShieldAlert, 
   ChevronRight, 
@@ -171,7 +170,7 @@ export default function NirapodAiAssistant() {
           <div className="relative">
             <span className="absolute -inset-1 rounded-full bg-civic-blue/50 animate-ping" />
             <div className="w-7 h-7 rounded-full bg-civic-blue flex items-center justify-center text-white">
-              <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+              <Bot className="w-4 h-4 group-hover:scale-110 transition-transform" />
             </div>
           </div>
           <div className="text-left hidden sm:block">
@@ -232,7 +231,7 @@ export default function NirapodAiAssistant() {
               >
                 {msg.sender === 'ai' && (
                   <div className="w-7 h-7 rounded-xl bg-civic-blue/20 text-blue-300 border border-civic-blue/30 flex items-center justify-center shrink-0 text-xs">
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Bot className="w-3.5 h-3.5" />
                   </div>
                 )}
 
@@ -272,7 +271,7 @@ export default function NirapodAiAssistant() {
             {isThinking && (
               <div className="flex gap-2.5 items-center text-xs text-slate-400">
                 <div className="w-7 h-7 rounded-xl bg-civic-blue/20 text-blue-300 flex items-center justify-center">
-                  <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                  <Bot className="w-3.5 h-3.5 animate-bounce" />
                 </div>
                 <span>Nirapod AI is generating answer...</span>
               </div>

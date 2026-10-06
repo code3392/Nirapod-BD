@@ -250,7 +250,7 @@ export default function UserProfile() {
         {isEditing ? (
           <form onSubmit={handleSaveProfile} className="mt-6 p-5 rounded-2xl bg-[#150D28]/90 border border-white/10 space-y-4 animate-in fade-in">
             <h4 className="text-xs uppercase font-extrabold text-white tracking-wider">
-              Edit Verified Citizen Details
+              Edit Citizen Details
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <div>
@@ -333,9 +333,6 @@ export default function UserProfile() {
                 <Phone className="w-3 h-3 text-sky-400" />
                 <span>{user.phone || '01711-234567'}</span>
               </p>
-              <span className="flex items-center gap-1 text-[9px] text-sky-400 font-bold">
-                <CheckCircle2 className="w-3 h-3" /> OTP Verified
-              </span>
             </div>
 
             <div>
@@ -344,9 +341,6 @@ export default function UserProfile() {
                 <Mail className="w-3 h-3 text-purple-400" />
                 <span className="truncate">{user.email}</span>
               </p>
-              <span className="flex items-center gap-1 text-[9px] text-sky-400 font-bold">
-                <CheckCircle2 className="w-3 h-3" /> Verified
-              </span>
             </div>
 
             <div>
@@ -379,9 +373,6 @@ export default function UserProfile() {
               <p className="font-mono font-bold text-white">
                 {user.nidNumber || '5928 4910 23'}
               </p>
-              <span className="flex items-center gap-1 text-[9px] text-sky-400 font-bold">
-                <CheckCircle2 className="w-3 h-3" /> NID Verified
-              </span>
             </div>
           </div>
         )}

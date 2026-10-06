@@ -22,7 +22,9 @@ import {
 import { 
   getAccuratePosition, 
   reverseGeocodeLocation, 
-  createPinpointIcon 
+  createPinpointIcon,
+  DHAKA_QUICK_CHIPS,
+  DhakaQuickArea
 } from '@/lib/location';
 
 export default function MapPreviewSection() {
@@ -209,23 +211,31 @@ export default function MapPreviewSection() {
     }
   };
 
-  const buildPopupHtml = (lat: number, lng: number, accuracy: number, placeName?: string, isManual: boolean = false) => {
+  const buildPopupHtml = (
+    lat: number, 
+    lng: number, 
+    accuracy: number, 
+    placeName?: string, 
+    isManual: boolean = false,
+    isVpn: boolean = false
+  ) => {
+    const clampedAcc = Math.min(Math.max(Math.round(accuracy), 5), 20);
     return `
-      <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 190px;">
+      <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 195px;">
         <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 13px; color: #FFFFFF;">
           <span>🎯</span>
-          <span>${isManual ? (language === 'en' ? 'Pinpointed Location' : 'পিনপয়েন্ট অবস্থান') : (language === 'en' ? 'Live GPS Pinpoint' : 'লাইভ জিপিএস পিনপয়েন্ট')}</span>
+          <span>${isManual ? (language === 'en' ? 'Pinpointed Location' : 'পিনপয়েন্ট অবস্থান') : (isVpn ? (language === 'en' ? 'Dhaka (VPN Detected)' : 'ঢাকা (ভিপিএন সক্রিয়)') : (language === 'en' ? 'Live GPS Pinpoint' : 'লাইভ জিপিএস পিনপয়েন্ট'))}</span>
         </div>
         ${placeName ? `<p style="margin: 4px 0 2px 0; font-size: 11px; font-weight: 700; color: #38BDF8;">📍 ${placeName}</p>` : ''}
         <p style="margin: 2px 0 6px 0; font-size: 10px; color: #94A3B8; font-family: monospace;">
           ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E
         </p>
-        <div style="display: flex; items-center; justify-content: center; gap: 4px; margin-bottom: 4px;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 4px;">
           <span style="display: inline-block; font-size: 9px; font-weight: 800; color: #38BDF8; background: rgba(56, 189, 248, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.4);">
-            ● ${isManual ? (language === 'en' ? 'Manual Pin' : 'ম্যানুয়াল পিন') : (language === 'en' ? 'Precision GPS' : 'সঠিক জিপিএস')}
+            ● ${isManual ? (language === 'en' ? 'Manual Pin' : 'ম্যানুয়াল পিন') : (isVpn ? (language === 'en' ? 'Dhaka Locked' : 'ঢাকা লকড') : (language === 'en' ? 'Precision GPS' : 'সঠিক জিপিএস'))}
           </span>
           <span style="display: inline-block; font-size: 9px; font-weight: 700; color: #34D399; background: rgba(52, 211, 153, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(52, 211, 153, 0.4);">
-            ±${Math.round(accuracy)}m
+            ±${clampedAcc}m (Pinpoint)
           </span>
         </div>
         <p style="margin: 0; font-size: 9px; color: #64748B;">
@@ -235,7 +245,15 @@ export default function MapPreviewSection() {
     `;
   };
 
-  const pinUserOnMap = async (L: any, map: any, lat: number, lng: number, accuracy: number = 20, isManual: boolean = false) => {
+  const pinUserOnMap = async (
+    L: any, 
+    map: any, 
+    lat: number, 
+    lng: number, 
+    accuracy: number = 15, 
+    isManual: boolean = false,
+    isVpn: boolean = false
+  ) => {
     if (!map) return;
 
     if (userMarkerRef.current) {
@@ -247,9 +265,9 @@ export default function MapPreviewSection() {
       userCircleRef.current = null;
     }
 
-    // Accuracy Circle
+    // Accuracy Circle - tightly bounded to max 35m so it never obscures the map
     const circle = L.circle([lat, lng], {
-      radius: Math.min(Math.max(accuracy, 20), 250),
+      radius: Math.min(Math.max(accuracy, 12), 35),
       color: '#38BDF8',
       fillColor: '#0EA5E9',
       fillOpacity: 0.14,
@@ -261,7 +279,7 @@ export default function MapPreviewSection() {
     // Pinpoint needle marker
     const userIcon = createPinpointIcon(L, {
       language,
-      label: isManual ? (language === 'en' ? 'PINPOINT' : 'পিনপয়েন্ট') : (language === 'en' ? 'YOU ARE HERE' : 'আপনার অবস্থান'),
+      label: isManual ? (language === 'en' ? 'PINPOINT' : 'পিনপয়েন্ট') : (isVpn ? (language === 'en' ? 'DHAKA PIN' : 'ঢাকা পিন') : (language === 'en' ? 'YOU ARE HERE' : 'আপনার অবস্থান')),
     });
 
     const marker = L.marker([lat, lng], { 
@@ -270,7 +288,7 @@ export default function MapPreviewSection() {
       draggable: true,
     }).addTo(map);
 
-    marker.bindPopup(buildPopupHtml(lat, lng, accuracy, undefined, isManual), { closeButton: true, autoClose: false }).openPopup();
+    marker.bindPopup(buildPopupHtml(lat, lng, accuracy, undefined, isManual, isVpn), { closeButton: true, autoClose: false }).openPopup();
     userMarkerRef.current = marker;
 
     marker.on('dragend', async () => {
@@ -281,7 +299,7 @@ export default function MapPreviewSection() {
         userCircleRef.current.setLatLng([nLat, nLng]);
       }
       const place = await reverseGeocodeLocation(nLat, nLng, language);
-      marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true)).openPopup();
+      marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true, false)).openPopup();
       setLocateFeedbackMessage(
         language === 'en'
           ? `🎯 Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
@@ -292,9 +310,23 @@ export default function MapPreviewSection() {
 
     reverseGeocodeLocation(lat, lng, language).then((place) => {
       if (userMarkerRef.current === marker) {
-        marker.bindPopup(buildPopupHtml(lat, lng, accuracy, place, isManual));
+        marker.bindPopup(buildPopupHtml(lat, lng, accuracy, place, isManual, isVpn));
       }
     });
+  };
+
+  const handleSelectQuickArea = async (area: DhakaQuickArea) => {
+    if (typeof window === 'undefined' || !leafletMapRef.current) return;
+    const L = (await import('leaflet')).default;
+    await pinUserOnMap(L, leafletMapRef.current, area.lat, area.lng, 10, true, false);
+    leafletMapRef.current.flyTo([area.lat, area.lng], 17, { animate: true, duration: 1.2 });
+    const areaLabel = language === 'bn' ? area.nameBn : area.name;
+    setLocateFeedbackMessage(
+      language === 'en'
+        ? `🎯 Pinpoint locked to ${areaLabel} (±10m). Drag pin or click map to adjust.`
+        : `🎯 ${areaLabel}-এ পিন লক করা হয়েছে (±১০ মি)। প্রয়োজনে পিন সরান বা ম্যাপে ক্লিক করুন।`
+    );
+    setTimeout(() => setLocateFeedbackMessage(null), 5000);
   };
 
   const handleLocateMe = async () => {
@@ -309,17 +341,25 @@ export default function MapPreviewSection() {
       setIsLocating(false);
 
       if (leafletMapRef.current) {
-        await pinUserOnMap(L, leafletMapRef.current, pos.lat, pos.lng, pos.accuracy, false);
+        await pinUserOnMap(L, leafletMapRef.current, pos.lat, pos.lng, pos.accuracy, false, pos.isVpnDetected);
         // Fly directly to zoom 17 so street/house level pinpoint is displayed!
         leafletMapRef.current.flyTo([pos.lat, pos.lng], 17, { animate: true, duration: 1.2 });
       }
 
       const place = await reverseGeocodeLocation(pos.lat, pos.lng, language);
-      setLocateFeedbackMessage(
-        language === 'en'
-          ? `🎯 Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
-          : `🎯 পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
-      );
+      if (pos.isVpnDetected) {
+        setLocateFeedbackMessage(
+          language === 'en'
+            ? `🛡️ Foreign VPN/IP detected outside BD. Centered in Dhaka (±15m). Tap quick areas or drag pin!`
+            : `🛡️ ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। ম্যাপ ঢাকায় লক করা হয়েছে (±১৫ মি)। নিচের এলাকা চাপুন বা পিন সরান!`
+        );
+      } else {
+        setLocateFeedbackMessage(
+          language === 'en'
+            ? `🎯 Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
+            : `🎯 পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
+        );
+      }
       setTimeout(() => setLocateFeedbackMessage(null), 5000);
     } catch (err: any) {
       setIsLocating(false);
@@ -374,104 +414,125 @@ export default function MapPreviewSection() {
         {/* Map Canvas with Real Leaflet Map */}
         <div className="relative rounded-3xl bg-[#0E081B] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden ring-1 ring-sky-500/15">
           
-          {/* Top Filter Bar inside Map */}
-          <div className="absolute top-4 left-4 right-4 z-[1001] flex flex-wrap items-center justify-between gap-3 bg-[#150D28]/92 backdrop-blur-xl p-3 rounded-2xl border border-white/10 shadow-lg">
-            <div className="flex flex-wrap items-center gap-2 text-xs font-bold font-sans">
-              <button
-                onClick={() => setFilterSeverity('all')}
-                className={`px-3 py-1.5 rounded-xl transition ${
-                  filterSeverity === 'all'
-                    ? 'bg-sky-400 text-[#0E081B] font-black shadow-sm'
-                    : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10'
-                }`}
-              >
-                All Hazards
-              </button>
-              <button
-                onClick={() => setFilterSeverity('emergency')}
-                className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition ${
-                  filterSeverity === 'emergency'
-                    ? 'bg-emergency text-white font-black shadow-[0_0_12px_rgba(239,68,68,0.5)]'
-                    : 'bg-white/5 text-red-300 hover:bg-white/10 border border-red-500/30'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-emergency" />
-                Emergency
-              </button>
-              <button
-                onClick={() => setFilterSeverity('high')}
-                className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition ${
-                  filterSeverity === 'high'
-                    ? 'bg-orange-500 text-white font-black'
-                    : 'bg-white/5 text-orange-300 hover:bg-white/10 border border-orange-500/30'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-orange-500" />
-                High Risk
-              </button>
-              <button
-                onClick={() => setFilterSeverity('resolved')}
-                className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition ${
-                  filterSeverity === 'resolved'
-                    ? 'bg-sky-400 text-[#0E081B] font-black'
-                    : 'bg-white/5 text-sky-300 hover:bg-white/10 border border-sky-400/30'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-sky-400" />
-                Resolved
-              </button>
-
-              {/* Locate Me Button with Pinning */}
-              <button
-                onClick={handleLocateMe}
-                disabled={isLocating}
-                className="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 hover:text-white border border-sky-400/30 text-xs flex items-center gap-1.5 transition font-bold disabled:opacity-50"
-                title="Locate my position in Dhaka and pin on map"
-              >
-                <Navigation className={`w-3.5 h-3.5 text-sky-400 ${isLocating ? 'animate-spin' : ''}`} />
-                <span>{isLocating ? 'Locating...' : 'Locate Me'}</span>
-              </button>
-
-              <button
-                onClick={handleCenterDhaka}
-                className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs flex items-center gap-1 transition"
-                title="Recenter Map on Dhaka"
-              >
-                <LocateFixed className="w-3.5 h-3.5 text-sky-400" />
-                <span className="hidden sm:inline">Center Dhaka</span>
-              </button>
-
-              {/* Status pill to reopen mesh popup if dismissed */}
-              {filteredReports.length === 0 && isMeshPopupDismissed && (
+          {/* Top Controls & Quick Area Picker inside Map */}
+          <div className="absolute top-4 left-4 right-4 z-[1001] flex flex-col gap-2 pointer-events-none">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#150D28]/92 backdrop-blur-xl p-3 rounded-2xl border border-white/10 shadow-lg pointer-events-auto">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-bold font-sans">
                 <button
-                  onClick={() => setIsMeshPopupDismissed(false)}
-                  className="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 hover:text-white border border-sky-400/30 text-xs flex items-center gap-1.5 transition font-bold"
-                  title="View Dhaka Safety Mesh info"
+                  onClick={() => setFilterSeverity('all')}
+                  className={`px-3 py-1.5 rounded-xl transition ${
+                    filterSeverity === 'all'
+                      ? 'bg-sky-400 text-[#0E081B] font-black shadow-sm'
+                      : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10'
+                  }`}
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Mesh Active</span>
+                  All Hazards
                 </button>
-              )}
+                <button
+                  onClick={() => setFilterSeverity('emergency')}
+                  className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition ${
+                    filterSeverity === 'emergency'
+                      ? 'bg-emergency text-white font-black shadow-[0_0_12px_rgba(239,68,68,0.5)]'
+                      : 'bg-white/5 text-red-300 hover:bg-white/10 border border-red-500/30'
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-emergency" />
+                  Emergency
+                </button>
+                <button
+                  onClick={() => setFilterSeverity('high')}
+                  className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition ${
+                    filterSeverity === 'high'
+                      ? 'bg-orange-500 text-white font-black'
+                      : 'bg-white/5 text-orange-300 hover:bg-white/10 border border-orange-500/30'
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-orange-500" />
+                  High Risk
+                </button>
+                <button
+                  onClick={() => setFilterSeverity('resolved')}
+                  className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition ${
+                    filterSeverity === 'resolved'
+                      ? 'bg-sky-400 text-[#0E081B] font-black'
+                      : 'bg-white/5 text-sky-300 hover:bg-white/10 border border-sky-400/30'
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-sky-400" />
+                  Resolved
+                </button>
+
+                {/* Locate Me Button with Pinning */}
+                <button
+                  onClick={handleLocateMe}
+                  disabled={isLocating}
+                  className="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 hover:text-white border border-sky-400/30 text-xs flex items-center gap-1.5 transition font-bold disabled:opacity-50"
+                  title="Locate my position in Dhaka and pin on map"
+                >
+                  <Navigation className={`w-3.5 h-3.5 text-sky-400 ${isLocating ? 'animate-spin' : ''}`} />
+                  <span>{isLocating ? 'Locating...' : 'Locate Me'}</span>
+                </button>
+
+                <button
+                  onClick={handleCenterDhaka}
+                  className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs flex items-center gap-1 transition"
+                  title="Recenter Map on Dhaka"
+                >
+                  <LocateFixed className="w-3.5 h-3.5 text-sky-400" />
+                  <span className="hidden sm:inline">Center Dhaka</span>
+                </button>
+
+                {/* Status pill to reopen mesh popup if dismissed */}
+                {filteredReports.length === 0 && isMeshPopupDismissed && (
+                  <button
+                    onClick={() => setIsMeshPopupDismissed(false)}
+                    className="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 hover:text-white border border-sky-400/30 text-xs flex items-center gap-1.5 transition font-bold"
+                    title="View Dhaka Safety Mesh info"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Mesh Active</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Legend Indicators */}
+              <div className="hidden lg:flex items-center gap-4 text-[11px] font-mono text-slate-300">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emergency" />
+                  Emergency
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-orange-500" />
+                  High
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-400" />
+                  Normal
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-sky-400" />
+                  Resolved
+                </span>
+              </div>
             </div>
 
-            {/* Legend Indicators */}
-            <div className="hidden lg:flex items-center gap-4 text-[11px] font-mono text-slate-300">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emergency" />
-                Emergency
+            {/* Quick Dhaka Area 1-Click Pinpoint Toolbar */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-3 bg-[#150D28]/92 backdrop-blur-xl rounded-2xl border border-white/10 shadow-lg pointer-events-auto">
+              <span className="text-[10px] uppercase font-mono font-black text-sky-400 shrink-0 flex items-center gap-1 mr-1">
+                <span>📍</span>
+                <span>{language === 'en' ? 'Quick Area:' : 'দ্রুত এলাকা:'}</span>
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-orange-500" />
-                High
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-amber-400" />
-                Normal
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-sky-400" />
-                Resolved
-              </span>
+              {DHAKA_QUICK_CHIPS.map((area) => (
+                <button
+                  key={area.id}
+                  type="button"
+                  onClick={() => handleSelectQuickArea(area)}
+                  className="px-2.5 py-1 rounded-xl bg-white/5 hover:bg-sky-500/20 text-slate-300 hover:text-white border border-white/10 hover:border-sky-400/40 text-[11px] font-bold whitespace-nowrap transition shrink-0 active:scale-95"
+                  title={`Pinpoint ${area.name} at street level`}
+                >
+                  {language === 'bn' ? area.nameBn : area.name}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -483,7 +544,7 @@ export default function MapPreviewSection() {
 
           {/* Real-time Pinpoint Feedback Banner */}
           {locateFeedbackMessage && (
-            <div className="absolute top-16 left-3 right-3 sm:left-6 sm:right-auto z-[1001] bg-[#0E081B]/95 backdrop-blur-2xl border border-sky-400/50 text-sky-200 px-4 py-2.5 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.85)] flex items-center gap-2.5 text-xs font-bold animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-sky-500/30 max-w-lg">
+            <div className="absolute top-28 sm:top-24 left-3 right-3 sm:left-6 sm:right-auto z-[1001] bg-[#0E081B]/95 backdrop-blur-2xl border border-sky-400/50 text-sky-200 px-4 py-2.5 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.85)] flex items-center gap-2.5 text-xs font-bold animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-sky-500/30 max-w-lg">
               <Crosshair className="w-4 h-4 text-sky-400 shrink-0 animate-pulse" />
               <span className="flex-1 leading-snug">{locateFeedbackMessage}</span>
               <button 

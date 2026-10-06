@@ -307,6 +307,12 @@ export default function ReportForm() {
         step4LeafletMapRef.current.setView([pos.lat, pos.lng], 17, { animate: true });
         step4MarkerRef.current.setLatLng([pos.lat, pos.lng]);
       }
+
+      if (pos.isVpnDetected) {
+        alert(language === 'en'
+          ? 'Foreign VPN / Network IP detected outside Bangladesh. Location set to Dhaka City Center. Tap any neighborhood pill below or drag the pin to your hazard spot!'
+          : 'ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। অবস্থান ঢাকায় সেট করা হয়েছে। নিচের এলাকা বাটনে চাপুন বা পিন টেনে ঝুঁকি চিহ্নিত করুন!');
+      }
     } catch {
       setIsLocating(false);
       alert(language === 'en'

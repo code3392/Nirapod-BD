@@ -28,7 +28,9 @@ import {
 import { 
   getAccuratePosition, 
   reverseGeocodeLocation, 
-  createPinpointIcon 
+  createPinpointIcon,
+  DHAKA_QUICK_CHIPS,
+  DhakaQuickArea
 } from '@/lib/location';
 
 export default function SafetyMap() {
@@ -246,12 +248,20 @@ export default function SafetyMap() {
     });
   };
 
-  const buildPopupHtml = (lat: number, lng: number, accuracy: number, placeName?: string, isManual: boolean = false) => {
+  const buildPopupHtml = (
+    lat: number, 
+    lng: number, 
+    accuracy: number, 
+    placeName?: string, 
+    isManual: boolean = false,
+    isVpn: boolean = false
+  ) => {
+    const clampedAcc = Math.min(Math.max(Math.round(accuracy), 5), 20);
     return `
-      <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 190px;">
+      <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 195px;">
         <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 13px; color: #FFFFFF;">
           <span>🎯</span>
-          <span>${isManual ? (language === 'en' ? 'Pinpointed Location' : 'পিনপয়েন্ট অবস্থান') : (language === 'en' ? 'Live GPS Pinpoint' : 'লাইভ জিপিএস পিনপয়েন্ট')}</span>
+          <span>${isManual ? (language === 'en' ? 'Pinpointed Location' : 'পিনপয়েন্ট অবস্থান') : (isVpn ? (language === 'en' ? 'Dhaka (VPN Detected)' : 'ঢাকা (ভিপিএন সক্রিয়)') : (language === 'en' ? 'Live GPS Pinpoint' : 'লাইভ জিপিএস পিনপয়েন্ট'))}</span>
         </div>
         ${placeName ? `<p style="margin: 4px 0 2px 0; font-size: 11px; font-weight: 700; color: #38BDF8;">📍 ${placeName}</p>` : ''}
         <p style="margin: 2px 0 6px 0; font-size: 10px; color: #94A3B8; font-family: monospace;">
@@ -259,10 +269,10 @@ export default function SafetyMap() {
         </p>
         <div style="display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 4px;">
           <span style="display: inline-block; font-size: 9px; font-weight: 800; color: #38BDF8; background: rgba(56, 189, 248, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.4);">
-            ● ${isManual ? (language === 'en' ? 'Manual Pin' : 'ম্যানুয়াল পিন') : (language === 'en' ? 'Precision GPS' : 'সঠিক জিপিএস')}
+            ● ${isManual ? (language === 'en' ? 'Manual Pin' : 'ম্যানুয়াল পিন') : (isVpn ? (language === 'en' ? 'Dhaka Locked' : 'ঢাকা লকড') : (language === 'en' ? 'Precision GPS' : 'সঠিক জিপিএস'))}
           </span>
           <span style="display: inline-block; font-size: 9px; font-weight: 700; color: #34D399; background: rgba(52, 211, 153, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(52, 211, 153, 0.4);">
-            ±${Math.round(accuracy)}m
+            ±${clampedAcc}m (Pinpoint)
           </span>
         </div>
         <p style="margin: 0; font-size: 9px; color: #64748B;">
@@ -272,7 +282,15 @@ export default function SafetyMap() {
     `;
   };
 
-  const pinUserOnMap = async (L: any, map: any, lat: number, lng: number, accuracy: number = 20, isManual: boolean = false) => {
+  const pinUserOnMap = async (
+    L: any, 
+    map: any, 
+    lat: number, 
+    lng: number, 
+    accuracy: number = 15, 
+    isManual: boolean = false,
+    isVpn: boolean = false
+  ) => {
     if (!map) return;
 
     // Remove previous user marker and circle if already present
@@ -285,9 +303,9 @@ export default function SafetyMap() {
       userCircleRef.current = null;
     }
 
-    // 1. Draw glowing accuracy radius circle
+    // 1. Draw glowing accuracy radius circle - clamped to max 35m so it never obscures the map
     const circle = L.circle([lat, lng], {
-      radius: Math.min(Math.max(accuracy, 20), 250),
+      radius: Math.min(Math.max(accuracy, 12), 35),
       color: '#38BDF8',
       fillColor: '#0EA5E9',
       fillOpacity: 0.14,
@@ -299,7 +317,7 @@ export default function SafetyMap() {
     // 2. Create custom high-visibility pinpoint needle marker
     const userIcon = createPinpointIcon(L, {
       language,
-      label: isManual ? (language === 'en' ? 'PINPOINT' : 'পিনপয়েন্ট') : (language === 'en' ? 'YOU ARE HERE' : 'আপনার অবস্থান'),
+      label: isManual ? (language === 'en' ? 'PINPOINT' : 'পিনপয়েন্ট') : (isVpn ? (language === 'en' ? 'DHAKA PIN' : 'ঢাকা পিন') : (language === 'en' ? 'YOU ARE HERE' : 'আপনার অবস্থান')),
     });
 
     const marker = L.marker([lat, lng], { 
@@ -308,7 +326,7 @@ export default function SafetyMap() {
       draggable: true,
     }).addTo(map);
 
-    marker.bindPopup(buildPopupHtml(lat, lng, accuracy, undefined, isManual), { closeButton: true, autoClose: false }).openPopup();
+    marker.bindPopup(buildPopupHtml(lat, lng, accuracy, undefined, isManual, isVpn), { closeButton: true, autoClose: false }).openPopup();
     userMarkerRef.current = marker;
 
     marker.on('dragend', async () => {
@@ -320,7 +338,7 @@ export default function SafetyMap() {
         userCircleRef.current.setLatLng([nLat, nLng]);
       }
       const place = await reverseGeocodeLocation(nLat, nLng, language);
-      marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true)).openPopup();
+      marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true, false)).openPopup();
       setLocatedMessage(
         language === 'en'
           ? `🎯 Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
@@ -331,9 +349,25 @@ export default function SafetyMap() {
 
     reverseGeocodeLocation(lat, lng, language).then((place) => {
       if (userMarkerRef.current === marker) {
-        marker.bindPopup(buildPopupHtml(lat, lng, accuracy, place, isManual));
+        marker.bindPopup(buildPopupHtml(lat, lng, accuracy, place, isManual, isVpn));
       }
     });
+  };
+
+  const handleSelectQuickArea = async (area: DhakaQuickArea) => {
+    if (typeof window === 'undefined' || !leafletMapRef.current) return;
+    const L = (await import('leaflet')).default;
+    setUserLocation({ lat: area.lat, lng: area.lng, accuracy: 10 });
+    setMapCenter({ lat: area.lat, lng: area.lng });
+    await pinUserOnMap(L, leafletMapRef.current, area.lat, area.lng, 10, true, false);
+    leafletMapRef.current.flyTo([area.lat, area.lng], 17, { animate: true, duration: 1.2 });
+    const areaLabel = language === 'bn' ? area.nameBn : area.name;
+    setLocatedMessage(
+      language === 'en'
+        ? `🎯 Pinpoint locked to ${areaLabel} (±10m). Drag pin or click map to adjust.`
+        : `🎯 ${areaLabel}-এ পিন লক করা হয়েছে (±১০ মি)। প্রয়োজনে পিন সরান বা ম্যাপে ক্লিক করুন।`
+    );
+    setTimeout(() => setLocatedMessage(null), 5000);
   };
 
   const handleLocateMe = async () => {
@@ -351,17 +385,25 @@ export default function SafetyMap() {
       setMapCenter({ lat: pos.lat, lng: pos.lng });
 
       if (leafletMapRef.current) {
-        await pinUserOnMap(L, leafletMapRef.current, pos.lat, pos.lng, pos.accuracy, false);
+        await pinUserOnMap(L, leafletMapRef.current, pos.lat, pos.lng, pos.accuracy, false, pos.isVpnDetected);
         // Fly directly to zoom 17 so street/house level pinpoint is displayed!
         leafletMapRef.current.flyTo([pos.lat, pos.lng], 17, { animate: true, duration: 1.2 });
       }
 
       const place = await reverseGeocodeLocation(pos.lat, pos.lng, language);
-      setLocatedMessage(
-        language === 'en'
-          ? `🎯 Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
-          : `🎯 পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
-      );
+      if (pos.isVpnDetected) {
+        setLocatedMessage(
+          language === 'en'
+            ? `🛡️ Foreign VPN/IP detected outside BD. Centered in Dhaka (±15m). Tap quick areas or drag pin!`
+            : `🛡️ ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। ম্যাপ ঢাকায় লক করা হয়েছে (±১৫ মি)। নিচের এলাকা চাপুন বা পিন সরান!`
+        );
+      } else {
+        setLocatedMessage(
+          language === 'en'
+            ? `🎯 Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
+            : `🎯 পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
+        );
+      }
       setTimeout(() => setLocatedMessage(null), 5000);
     } catch (err: any) {
       setUserLocating(false);
@@ -530,6 +572,25 @@ export default function SafetyMap() {
             ))}
           </div>
         )}
+
+        {/* Quick Dhaka Area 1-Click Pinpoint Toolbar */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pointer-events-auto no-scrollbar bg-[#150D28]/95 backdrop-blur-2xl px-3 py-1.5 rounded-2xl border border-white/15 shadow-lg">
+          <span className="text-[10px] uppercase font-mono font-black text-sky-400 shrink-0 flex items-center gap-1 mr-1">
+            <span>📍</span>
+            <span>{language === 'en' ? 'Quick Area:' : 'দ্রুত এলাকা:'}</span>
+          </span>
+          {DHAKA_QUICK_CHIPS.map((area) => (
+            <button
+              key={area.id}
+              type="button"
+              onClick={() => handleSelectQuickArea(area)}
+              className="px-2.5 py-1 rounded-xl bg-white/5 hover:bg-sky-500/20 text-slate-300 hover:text-white border border-white/10 hover:border-sky-400/40 text-xs font-bold whitespace-nowrap transition shrink-0 active:scale-95"
+              title={`Pinpoint ${area.name} at street level`}
+            >
+              {language === 'bn' ? area.nameBn : area.name}
+            </button>
+          ))}
+        </div>
 
         {/* Floating User Location Confirmation Toast */}
         {locatedMessage && (

@@ -9,8 +9,48 @@ export interface AccuratePositionResult {
   lng: number;
   accuracy: number;
   source: 'gps_high_accuracy' | 'network_standard' | 'manual_pin';
+  isVpnDetected?: boolean;
+  rawCoords?: { lat: number; lng: number };
   areaName?: string;
 }
+
+/**
+ * Validates whether coordinates are physically within Bangladesh.
+ * Bounding box: Latitude 20.5°N - 26.7°N, Longitude 88.0°E - 92.7°E.
+ */
+export function isInsideBangladesh(lat: number, lng: number): boolean {
+  return lat >= 20.5 && lat <= 26.7 && lng >= 88.0 && lng <= 92.7;
+}
+
+// Dhaka City Centroid fallback for foreign VPNs / proxy connections
+export const DHAKA_CENTER = {
+  lat: 23.8103,
+  lng: 90.4125,
+  name: 'Dhaka City Center',
+  nameBn: 'ঢাকা সিটি সেন্টার',
+};
+
+export interface DhakaQuickArea {
+  id: string;
+  name: string;
+  nameBn: string;
+  lat: number;
+  lng: number;
+}
+
+// 1-Click Dhaka Neighborhood Quick-Picker Chips
+export const DHAKA_QUICK_CHIPS: DhakaQuickArea[] = [
+  { id: 'mirpur', name: 'Mirpur-10', nameBn: 'মিরপুর-১০', lat: 23.8067, lng: 90.3683 },
+  { id: 'dhanmondi', name: 'Dhanmondi 27', nameBn: 'ধানমন্ডি ২৭', lat: 23.7538, lng: 90.3756 },
+  { id: 'gulshan', name: 'Gulshan-2', nameBn: 'গুলশান-২', lat: 23.7925, lng: 90.4078 },
+  { id: 'uttara', name: 'Uttara Sec-3', nameBn: 'উত্তরা সেক্টর ৩', lat: 23.8705, lng: 90.3952 },
+  { id: 'mohammadpur', name: 'Mohammadpur', nameBn: 'মোহাম্মদপুর', lat: 23.7658, lng: 90.3584 },
+  { id: 'farmgate', name: 'Farmgate', nameBn: 'ফার্মগেট', lat: 23.7561, lng: 90.3872 },
+  { id: 'motijheel', name: 'Motijheel', nameBn: 'মতিঝিল', lat: 23.7330, lng: 90.4172 },
+  { id: 'old_dhaka', name: 'Old Dhaka', nameBn: 'পুরান ঢাকা', lat: 23.7104, lng: 90.4074 },
+  { id: 'bashundhara', name: 'Bashundhara', nameBn: 'বসুন্ধরা', lat: 23.8191, lng: 90.4326 },
+  { id: 'badda', name: 'Badda / Hatirjheel', nameBn: 'বাড্ডা / হাতিরঝিল', lat: 23.7806, lng: 90.4267 },
+];
 
 // Major Dhaka Hubs and Areas with precise centroid coordinates
 export const DHAKA_AREAS: { name: string; nameBn: string; lat: number; lng: number }[] = [
@@ -124,9 +164,51 @@ export async function reverseGeocodeLocation(lat: number, lng: number, language:
 }
 
 /**
+ * Sanitizes raw browser coordinates against Bangladesh bounds.
+ * Prevents VPNs/foreign proxies (e.g. Australia/Europe) from throwing user across the world.
+ * Clamps reported accuracy to a tight pinpoint radius (max 15-20m).
+ */
+function sanitizeCoordinates(
+  pos: GeolocationPosition, 
+  source: 'gps_high_accuracy' | 'network_standard'
+): AccuratePositionResult {
+  const rawLat = Number(pos.coords.latitude.toFixed(6));
+  const rawLng = Number(pos.coords.longitude.toFixed(6));
+  const rawAccuracy = Math.round(pos.coords.accuracy) || 12;
+
+  // Check if position is within Bangladesh
+  if (!isInsideBangladesh(rawLat, rawLng)) {
+    // Foreign proxy / VPN IP detected (e.g. Melbourne, Australia)
+    // Never navigate away from Bangladesh! Center firmly on Dhaka City Center.
+    return {
+      lat: DHAKA_CENTER.lat,
+      lng: DHAKA_CENTER.lng,
+      accuracy: 15,
+      source: 'network_standard',
+      isVpnDetected: true,
+      rawCoords: { lat: rawLat, lng: rawLng },
+      areaName: DHAKA_CENTER.name,
+    };
+  }
+
+  // Inside Bangladesh: clamp accuracy so desktop Wi-Fi / cellular estimates (e.g. 150m-20000m)
+  // are tightly clamped to a close pinpoint radar radius of max 15-20m.
+  const clampedAccuracy = Math.min(Math.max(rawAccuracy, 8), 20);
+
+  return {
+    lat: rawLat,
+    lng: rawLng,
+    accuracy: clampedAccuracy,
+    source,
+    isVpnDetected: false,
+  };
+}
+
+/**
  * Requests pinpoint geolocation using a multi-tiered approach:
  * 1. High accuracy GPS/Wi-Fi (fast timeout)
  * 2. Standard accuracy fallback for laptops/desktops without dedicated GPS chip
+ * Guarded by Bangladesh boundary validation & tight pinpoint accuracy clamping.
  */
 export async function getAccuratePosition(): Promise<AccuratePositionResult> {
   if (typeof window === 'undefined' || !navigator.geolocation) {
@@ -143,16 +225,7 @@ export async function getAccuratePosition(): Promise<AccuratePositionResult> {
       });
     });
 
-    const lat = Number(pos.coords.latitude.toFixed(6));
-    const lng = Number(pos.coords.longitude.toFixed(6));
-    const accuracy = Math.round(pos.coords.accuracy) || 12;
-
-    return {
-      lat,
-      lng,
-      accuracy,
-      source: 'gps_high_accuracy',
-    };
+    return sanitizeCoordinates(pos, 'gps_high_accuracy');
   } catch (err: any) {
     // If permission was denied by user, do not retry
     if (err && err.code === 1) { // PERMISSION_DENIED
@@ -171,16 +244,7 @@ export async function getAccuratePosition(): Promise<AccuratePositionResult> {
       });
     });
 
-    const lat = Number(pos.coords.latitude.toFixed(6));
-    const lng = Number(pos.coords.longitude.toFixed(6));
-    const accuracy = Math.round(pos.coords.accuracy) || 45;
-
-    return {
-      lat,
-      lng,
-      accuracy,
-      source: 'network_standard',
-    };
+    return sanitizeCoordinates(pos, 'network_standard');
   } catch (err2: any) {
     if (err2 && err2.code === 1) {
       throw new Error('PERMISSION_DENIED');

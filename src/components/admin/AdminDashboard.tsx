@@ -253,9 +253,9 @@ export default function AdminDashboard() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Toast Notice */}
       {actionMessage && (
-        <div className="p-4 rounded-2xl bg-navy text-white text-xs font-bold shadow-lg border border-civic-blue/30 flex items-center justify-between animate-in fade-in duration-200">
+        <div className="p-4 rounded-2xl bg-[#190F33] text-white text-xs font-bold shadow-2xl border border-purple-500/40 flex items-center justify-between animate-in fade-in duration-200">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-civic-blue" />
+            <CheckCircle2 className="w-4 h-4 text-sky-400" />
             <span>{actionMessage}</span>
           </div>
           <button onClick={() => setActionMessage(null)} className="text-slate-400 hover:text-white" aria-label="Close">
@@ -268,14 +268,14 @@ export default function AdminDashboard() {
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy/10 text-xs font-bold text-navy uppercase tracking-wider mb-2">
-              <ShieldCheck className="w-4 h-4 text-civic-blue" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-xs font-bold text-purple-300 uppercase tracking-wider mb-2">
+              <ShieldCheck className="w-4 h-4 text-sky-400" />
               <span>Civic Control Centre & Root Administration</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-navy tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
               {t.admin.title}
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-300 mt-1">
               Super Admin root controls, citizen moderation, warning strikes, and agency dispatch.
             </p>
           </div>
@@ -283,13 +283,13 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-3">
             <Link
               href="/organization"
-              className="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-navy hover:bg-slate-100 transition shadow-2xs"
+              className="px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/10 transition shadow-sm"
             >
               Agency Portal →
             </Link>
             <Link
               href="/map"
-              className="px-4 py-2.5 rounded-xl bg-navy text-white text-xs font-bold shadow-md hover:bg-navy-dark transition"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-xs font-bold shadow-[0_0_15px_rgba(56,189,248,0.35)] transition"
             >
               Live Map Monitor
             </Link>
@@ -297,16 +297,17 @@ export default function AdminDashboard() {
         </div>
 
         {/* SUPER ADMIN STATUS CALLOUT (Rule 13) */}
-        <div className="p-5 rounded-3xl bg-gradient-to-r from-navy via-navy to-navy-dark text-white border border-navy-subtle shadow-elevated flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
-              isSuperAdminUser ? 'bg-amber-500 text-white' : 'bg-slate-700 text-slate-300'
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-[#170E32] via-[#22104B] to-[#120826] text-white border border-purple-500/30 shadow-[0_15px_40px_rgba(0,0,0,0.6)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="flex items-center gap-4 relative z-10">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
+              isSuperAdminUser ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-[0_0_20px_rgba(245,158,11,0.4)]' : 'bg-slate-800 text-slate-400'
             }`}>
               <Crown className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500 text-white">
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 font-mono">
                   {isSuperAdminUser ? 'Super Admin Mode Active' : 'Restricted Admin View'}
                 </span>
                 <span className="text-xs font-mono text-slate-300">
@@ -327,7 +328,7 @@ export default function AdminDashboard() {
           </div>
 
           {!isSuperAdminUser && (
-            <div className="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[11px] font-mono text-slate-400">
+            <div className="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[11px] font-mono text-slate-400 relative z-10">
               Ordinary Ward Moderator
             </div>
           )}
@@ -336,48 +337,48 @@ export default function AdminDashboard() {
 
       {/* 5 KPI Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-1">
-          <span className="text-xs text-muted font-bold block">{t.admin.totalUsers}</span>
-          <p className="text-3xl font-black text-navy">{totalUsersCount.toLocaleString()}</p>
-          <span className="text-[11px] text-civic-blue font-bold flex items-center gap-1">
+        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#160D30]/90 to-[#0F0724]/90 border border-purple-500/20 hover:border-purple-400/40 shadow-xl space-y-1 transition duration-200">
+          <span className="text-xs text-slate-400 font-bold block">{t.admin.totalUsers}</span>
+          <p className="text-3xl font-black text-white">{totalUsersCount.toLocaleString()}</p>
+          <span className="text-[11px] text-sky-400 font-bold flex items-center gap-1">
             <TrendingUp className="w-3 h-3" /> +142 this week
           </span>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-1">
-          <span className="text-xs text-muted font-bold block">{t.admin.totalReports}</span>
-          <p className="text-3xl font-black text-navy">{totalReportsCount.toLocaleString()}</p>
-          <span className="text-[11px] text-muted">All-time submissions</span>
+        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#160D30]/90 to-[#0F0724]/90 border border-purple-500/20 hover:border-purple-400/40 shadow-xl space-y-1 transition duration-200">
+          <span className="text-xs text-slate-400 font-bold block">{t.admin.totalReports}</span>
+          <p className="text-3xl font-black text-white">{totalReportsCount.toLocaleString()}</p>
+          <span className="text-[11px] text-slate-400">All-time submissions</span>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-1">
-          <span className="text-xs text-muted font-bold block">{t.admin.verifiedReports}</span>
-          <p className="text-3xl font-black text-indigo-600">{verifiedReportsCount.toLocaleString()}</p>
-          <span className="text-[11px] text-indigo-600 font-bold">75.7% accuracy</span>
+        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#160D30]/90 to-[#0F0724]/90 border border-purple-500/20 hover:border-purple-400/40 shadow-xl space-y-1 transition duration-200">
+          <span className="text-xs text-slate-400 font-bold block">{t.admin.verifiedReports}</span>
+          <p className="text-3xl font-black text-indigo-300">{verifiedReportsCount.toLocaleString()}</p>
+          <span className="text-[11px] text-indigo-400 font-bold">75.7% accuracy</span>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-1">
-          <span className="text-xs text-muted font-bold block">{t.admin.resolvedReports}</span>
-          <p className="text-3xl font-black text-civic-blue">{resolvedReportsCount.toLocaleString()}</p>
-          <span className="text-[11px] text-civic-blue font-bold">71.8% resolution</span>
+        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#160D30]/90 to-[#0F0724]/90 border border-purple-500/20 hover:border-purple-400/40 shadow-xl space-y-1 transition duration-200">
+          <span className="text-xs text-slate-400 font-bold block">{t.admin.resolvedReports}</span>
+          <p className="text-3xl font-black text-sky-300">{resolvedReportsCount.toLocaleString()}</p>
+          <span className="text-[11px] text-sky-400 font-bold">71.8% resolution</span>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-1 col-span-2 lg:col-span-1">
-          <span className="text-xs text-muted font-bold block">{t.admin.activeReports}</span>
-          <p className="text-3xl font-black text-amber-500">{activeReportsCount.toLocaleString()}</p>
-          <span className="text-[11px] text-amber-600 font-bold">Under civic action</span>
+        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#160D30]/90 to-[#0F0724]/90 border border-purple-500/20 hover:border-purple-400/40 shadow-xl space-y-1 col-span-2 lg:col-span-1 transition duration-200">
+          <span className="text-xs text-slate-400 font-bold block">{t.admin.activeReports}</span>
+          <p className="text-3xl font-black text-amber-400">{activeReportsCount.toLocaleString()}</p>
+          <span className="text-[11px] text-amber-400 font-bold">Under civic action</span>
         </div>
       </div>
 
       {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Category Breakdown Donut */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-4">
+        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#130C26]/90 border border-purple-500/20 backdrop-blur-xl shadow-2xl space-y-4">
           <div>
-            <h3 className="text-base font-extrabold text-navy">
+            <h3 className="text-base font-extrabold text-white">
               {t.admin.categoriesBreakdown}
             </h3>
-            <p className="text-xs text-slate-500">Distribution across 1,284 logged incidents</p>
+            <p className="text-xs text-slate-400">Distribution across 1,284 logged incidents</p>
           </div>
 
           <div className="h-64 w-full">
@@ -396,75 +397,81 @@ export default function AdminDashboard() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <RechartsTooltip />
+                <RechartsTooltip 
+                  contentStyle={{ backgroundColor: '#130C26', borderColor: 'rgba(255,255,255,0.15)', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
+                  itemStyle={{ color: '#fff' }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
           {/* Legend */}
-          <div className="grid grid-cols-2 gap-2 text-xs font-semibold pt-2 border-t border-slate-100">
+          <div className="grid grid-cols-2 gap-2 text-xs font-semibold pt-2 border-t border-white/10">
             {categoryData.map((c, i) => (
               <div key={i} className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: c.color }} />
-                <span className="text-slate-700 truncate">{c.name}:</span>
-                <span className="font-bold text-navy">{c.value}%</span>
+                <span className="text-slate-300 truncate">{c.name}:</span>
+                <span className="font-bold text-white">{c.value}%</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Hotspots Bar Chart */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-white border border-surface-border shadow-subtle space-y-4">
+        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#130C26]/90 border border-purple-500/20 backdrop-blur-xl shadow-2xl space-y-4">
           <div>
-            <h3 className="text-base font-extrabold text-navy">
+            <h3 className="text-base font-extrabold text-white">
               {t.admin.hotspotsTitle}
             </h3>
-            <p className="text-xs text-slate-500">High-frequency incident wards requiring municipal triage</p>
+            <p className="text-xs text-slate-400">High-frequency incident wards requiring municipal triage</p>
           </div>
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={hotspotData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#627D98' }} />
-                <YAxis tick={{ fontSize: 11, fill: '#627D98' }} />
-                <RechartsTooltip />
-                <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#2E1065" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#94A3B8' }} />
+                <YAxis tick={{ fontSize: 11, fill: '#94A3B8' }} />
+                <RechartsTooltip 
+                  contentStyle={{ backgroundColor: '#130C26', borderColor: 'rgba(255,255,255,0.15)', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
+                  itemStyle={{ color: '#fff' }}
+                />
+                <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#8B5CF6" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-muted pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/10">
             <span>Primary Focus: Mirpur (DNCC Zone 4) & Mohammadpur (Zone 5)</span>
-            <span className="text-civic-blue font-bold">Real-time Telemetry</span>
+            <span className="text-sky-400 font-bold">Real-time Telemetry</span>
           </div>
         </div>
       </div>
 
       {/* USER MANAGEMENT & SUPER ADMIN RBAC TABLE (Rules 12, 13, 14, 15, 16, 17) */}
-      <div className="bg-white rounded-3xl border border-surface-border shadow-subtle overflow-hidden space-y-4 p-6">
+      <div className="bg-[#130C26]/90 rounded-3xl border border-purple-500/20 backdrop-blur-xl shadow-2xl overflow-hidden space-y-4 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-navy" />
-              <h3 className="text-lg font-black text-navy">
+              <Users className="w-5 h-5 text-purple-400" />
+              <h3 className="text-lg font-black text-white">
                 Citizen Registry & Super Admin Moderation Panel
               </h3>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-400">
               Manage roles, 3-strike violations, email suspensions, and community creation bans.
             </p>
           </div>
 
-          <div className="text-xs font-mono bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-            Super Admin: <strong className="text-navy font-bold">smdsami59@gmail.com</strong>
+          <div className="text-xs font-mono bg-purple-900/30 text-purple-200 px-3 py-1.5 rounded-xl border border-purple-500/30">
+            Super Admin: <strong className="text-white font-bold">smdsami59@gmail.com</strong>
           </div>
         </div>
 
         {/* User Table */}
         <div className="overflow-x-auto -mx-6">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-y border-surface-border text-navy uppercase font-extrabold text-[10px] tracking-wider">
+            <thead className="bg-white/[0.04] border-y border-white/10 text-slate-300 uppercase font-extrabold text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-6">User</th>
                 <th className="py-3 px-4">Role</th>
@@ -474,29 +481,29 @@ export default function AdminDashboard() {
                 <th className="py-3 px-6 text-right">Moderation Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/5">
               {allUsers.map((u) => {
                 const isSuspended = u.suspendedUntil && new Date(u.suspendedUntil) > new Date();
                 const isRootTarget = u.email.toLowerCase() === 'smdsami59@gmail.com';
 
                 return (
-                  <tr key={u.id} className="hover:bg-slate-50/80 transition">
+                  <tr key={u.id} className="hover:bg-white/[0.03] transition">
                     {/* User info */}
                     <td className="py-3 px-6">
                       <div className="flex items-center gap-3">
                         <img
                           src={u.avatar}
                           alt={u.name}
-                          className="w-8 h-8 rounded-full object-cover border border-slate-200"
+                          className="w-8 h-8 rounded-full object-cover border border-purple-500/40"
                         />
                         <div>
-                          <p className="font-bold text-navy flex items-center gap-1">
+                          <p className="font-bold text-white flex items-center gap-1">
                             <span>{u.name}</span>
                             {u.isSuperAdmin && (
-                              <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                              <Crown className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                             )}
                           </p>
-                          <p className="text-[11px] text-slate-500 font-mono">{u.email}</p>
+                          <p className="text-[11px] text-slate-400 font-mono">{u.email}</p>
                         </div>
                       </div>
                     </td>
@@ -507,7 +514,7 @@ export default function AdminDashboard() {
                         <select
                           value={u.role}
                           onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                          className="text-[11px] font-bold py-1 px-2 rounded-lg border border-slate-300 bg-white"
+                          className="text-[11px] font-bold py-1 px-2 rounded-lg border border-white/20 bg-[#1A1033] text-white focus:outline-none focus:border-purple-400"
                         >
                           <option value="Community Guardian">Community Guardian</option>
                           <option value="Ward Coordinator Admin">Ward Coordinator Admin</option>
@@ -515,7 +522,7 @@ export default function AdminDashboard() {
                         </select>
                       ) : (
                         <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                          u.isSuperAdmin ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-slate-100 text-slate-700'
+                          u.isSuperAdmin ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-white/10 text-slate-300'
                         }`}>
                           {u.role}
                         </span>
@@ -526,17 +533,17 @@ export default function AdminDashboard() {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-1.5 text-[10px] font-mono">
                         <span className={`px-1.5 py-0.5 rounded font-bold ${
-                          (u.warningStrikes?.fakePostCount || 0) > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-500'
+                          (u.warningStrikes?.fakePostCount || 0) > 0 ? 'bg-red-500/20 text-red-300 border border-red-500/30' : 'bg-white/5 text-slate-400 border border-white/10'
                         }`} title="Fake Report Strikes (Max 3 = 3-Day Suspension)">
                           Fake: {u.warningStrikes?.fakePostCount || 0}/3
                         </span>
                         <span className={`px-1.5 py-0.5 rounded font-bold ${
-                          (u.warningStrikes?.badWordsCount || 0) > 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'
+                          (u.warningStrikes?.badWordsCount || 0) > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-white/5 text-slate-400 border border-white/10'
                         }`} title="Bad Words Strikes (Max 3 = 5-Day Suspension)">
                           Words: {u.warningStrikes?.badWordsCount || 0}/3
                         </span>
                         <span className={`px-1.5 py-0.5 rounded font-bold ${
-                          (u.warningStrikes?.racismCount || 0) > 0 ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-500'
+                          (u.warningStrikes?.racismCount || 0) > 0 ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-white/5 text-slate-400 border border-white/10'
                         }`} title="Hate Speech Strikes (Max 3 = 5-Day Suspension)">
                           Hate: {u.warningStrikes?.racismCount || 0}/3
                         </span>
@@ -550,12 +557,12 @@ export default function AdminDashboard() {
                           <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emergency text-white">
                             Suspended
                           </span>
-                          <p className="text-[10px] text-emergency mt-0.5 font-mono">
+                          <p className="text-[10px] text-red-400 mt-0.5 font-mono">
                             Until {new Date(u.suspendedUntil!).toLocaleDateString()}
                           </p>
                         </div>
                       ) : (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                           Active & Good Standing
                         </span>
                       )}
@@ -567,8 +574,8 @@ export default function AdminDashboard() {
                         onClick={() => banUserFromCommunity(u.id, !(u.bannedFromCommunities || u.bannedFromCreatingCommunity))}
                         className={`text-[10px] font-bold px-2 py-1 rounded-lg border transition ${
                           (u.bannedFromCommunities || u.bannedFromCreatingCommunity)
-                            ? 'bg-rose-100 text-rose-800 border-rose-300'
-                            : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                            ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 hover:bg-rose-500/30'
+                            : 'bg-white/5 text-slate-300 border-white/15 hover:bg-white/10'
                         }`}
                       >
                         {(u.bannedFromCommunities || u.bannedFromCreatingCommunity) ? 'Banned from Community' : 'Normal Access'}
@@ -580,7 +587,7 @@ export default function AdminDashboard() {
                       {isSuspended ? (
                         <button
                           onClick={() => handleRevoke(u.id)}
-                          className="px-2.5 py-1 rounded-lg bg-civic-blue hover:bg-civic-royal text-white font-bold text-[11px] shadow-sm transition"
+                          className="px-2.5 py-1 rounded-lg bg-sky-500 hover:bg-sky-600 text-white font-bold text-[11px] shadow-sm transition"
                         >
                           Cancel Suspension
                         </button>
@@ -603,15 +610,15 @@ export default function AdminDashboard() {
       </div>
 
       {/* SUSPENSION AUDIT EMAIL LOGS (Rule 14) */}
-      <div className="bg-white rounded-3xl border border-surface-border shadow-subtle p-6 space-y-4">
+      <div className="bg-[#130C26]/90 rounded-3xl border border-purple-500/20 backdrop-blur-xl shadow-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Mail className="w-5 h-5 text-navy" />
-            <h3 className="text-base font-black text-navy">
+            <Mail className="w-5 h-5 text-purple-400" />
+            <h3 className="text-base font-black text-white">
               Automated Suspension Notice Email Dispatch Log
             </h3>
           </div>
-          <span className="text-xs text-muted">
+          <span className="text-xs text-slate-400">
             {suspensionLogs.length} logged events
           </span>
         </div>
@@ -621,24 +628,24 @@ export default function AdminDashboard() {
             No suspensions have been executed yet in this session.
           </p>
         ) : (
-          <div className="space-y-2 max-h-60 overflow-y-auto divide-y divide-slate-100">
+          <div className="space-y-2 max-h-60 overflow-y-auto divide-y divide-white/5">
             {suspensionLogs.map((log) => (
               <div key={log.id} className="pt-2 flex items-start justify-between gap-4 text-xs">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className={`text-[10px] font-black uppercase px-2 py-0.2 rounded ${
-                      log.action === 'SUSPENDED' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
+                      log.action === 'SUSPENDED' ? 'bg-red-500/20 text-red-300 border border-red-500/30' : 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
                     }`}>
                       {log.action}
                     </span>
-                    <span className="font-bold text-navy">{log.targetUserName || log.userName}</span>
+                    <span className="font-bold text-white">{log.targetUserName || log.userName}</span>
                     <span className="text-[11px] text-slate-400 font-mono">({log.targetUserEmail || log.userEmail})</span>
                   </div>
-                  <p className="text-[11px] text-slate-600">
+                  <p className="text-[11px] text-slate-300">
                     Reason: <em>{log.reason}</em>
                   </p>
                   <p className="text-[10px] text-slate-400">
-                    Authorized by: <strong className="text-navy">{log.issuedByEmail || log.authorizedBy}</strong> • Email Dispatch: <span className="text-civic-blue font-bold">Delivered</span>
+                    Authorized by: <strong className="text-slate-200">{log.issuedByEmail || log.authorizedBy}</strong> • Email Dispatch: <span className="text-emerald-400 font-bold">Delivered</span>
                   </p>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono shrink-0">
@@ -651,13 +658,13 @@ export default function AdminDashboard() {
       </div>
 
       {/* Report Management Table */}
-      <div className="bg-white rounded-3xl border border-surface-border shadow-subtle overflow-hidden space-y-4 p-6">
+      <div className="bg-[#130C26]/90 rounded-3xl border border-purple-500/20 backdrop-blur-xl shadow-2xl overflow-hidden space-y-4 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg font-black text-navy">
+            <h3 className="text-lg font-black text-white">
               {t.admin.recentReports}
             </h3>
-            <p className="text-xs text-slate-500">Triage, verify, or dispatch maintenance crews to open issues</p>
+            <p className="text-xs text-slate-400">Triage, verify, or dispatch maintenance crews to open issues</p>
           </div>
 
           {/* Filters */}
@@ -669,14 +676,14 @@ export default function AdminDashboard() {
                 placeholder={t.admin.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-safety focus:outline-none w-48 sm:w-64"
+                className="pl-8 pr-3 py-1.5 rounded-xl border border-white/15 bg-white/5 text-white placeholder:text-slate-500 text-xs focus:ring-2 focus:ring-purple-400 focus:outline-none w-48 sm:w-64"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-navy bg-white focus:outline-none"
+              className="px-3 py-1.5 rounded-xl border border-white/15 text-xs font-semibold text-white bg-[#1A1033] focus:outline-none focus:border-purple-400"
             >
               <option value="all">All Statuses</option>
               <option value="SUBMITTED">Submitted</option>
@@ -691,7 +698,7 @@ export default function AdminDashboard() {
         {/* Table Content */}
         <div className="overflow-x-auto -mx-6">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-y border-surface-border text-navy uppercase font-extrabold text-[10px] tracking-wider">
+            <thead className="bg-white/[0.04] border-y border-white/10 text-slate-300 uppercase font-extrabold text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-6">ID</th>
                 <th className="py-3 px-4">Category</th>
@@ -703,16 +710,16 @@ export default function AdminDashboard() {
                 <th className="py-3 px-6 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/5">
               {filteredReports.slice(0, 15).map((report) => (
-                <tr key={report.id} className="hover:bg-slate-50/80 transition">
-                  <td className="py-3 px-6 font-mono font-bold text-navy whitespace-nowrap">
+                <tr key={report.id} className="hover:bg-white/[0.03] transition">
+                  <td className="py-3 px-6 font-mono font-bold text-sky-400 whitespace-nowrap">
                     {report.publicId}
                   </td>
-                  <td className="py-3 px-4 capitalize font-semibold text-slate-700 whitespace-nowrap">
+                  <td className="py-3 px-4 capitalize font-semibold text-slate-200 whitespace-nowrap">
                     {report.categoryId.replace('_', ' ')}
                   </td>
-                  <td className="py-3 px-4 max-w-xs truncate text-slate-800">
+                  <td className="py-3 px-4 max-w-xs truncate text-white">
                     {report.locationName}
                   </td>
                   <td className="py-3 px-4 whitespace-nowrap">
@@ -721,16 +728,16 @@ export default function AdminDashboard() {
                   <td className="py-3 px-4 whitespace-nowrap">
                     <StatusBadge status={report.status} size="sm" />
                   </td>
-                  <td className="py-3 px-4 text-slate-600 whitespace-nowrap">
+                  <td className="py-3 px-4 text-slate-300 whitespace-nowrap">
                     {report.userName}
                   </td>
-                  <td className="py-3 px-4 text-muted text-[11px] whitespace-nowrap">
+                  <td className="py-3 px-4 text-slate-400 text-[11px] whitespace-nowrap">
                     {new Date(report.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap text-right space-x-1.5">
                     <Link
                       href={`/report/${report.id}`}
-                      className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition inline-block"
+                      className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white border border-white/10 font-bold text-[11px] transition inline-block"
                       title="View Report"
                     >
                       View
@@ -739,7 +746,7 @@ export default function AdminDashboard() {
                     {report.status !== 'VERIFIED' && (
                       <button
                         onClick={() => updateReportStatus(report.id, 'VERIFIED', 'Admin manual verification')}
-                        className="px-2 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-[11px] border border-sky-200 transition"
+                        className="px-2 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-bold text-[11px] border border-sky-400/30 transition"
                         title="Verify Report"
                       >
                         Verify
@@ -749,7 +756,7 @@ export default function AdminDashboard() {
                     {report.status !== 'IN_PROGRESS' && report.status !== 'RESOLVED' && (
                       <button
                         onClick={() => updateReportStatus(report.id, 'IN_PROGRESS', 'Admin assigned to field crew')}
-                        className="px-2 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] border border-blue-200 transition"
+                        className="px-2 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 font-bold text-[11px] border border-indigo-400/30 transition"
                         title="Assign to Crew"
                       >
                         Assign
@@ -759,7 +766,7 @@ export default function AdminDashboard() {
                     {report.status !== 'RESOLVED' && (
                       <button
                         onClick={() => updateReportStatus(report.id, 'RESOLVED', 'Admin marked resolved')}
-                        className="px-2 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-civic-blue font-bold text-[11px] border border-blue-200 transition"
+                        className="px-2 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-[11px] border border-emerald-400/30 transition"
                         title="Mark Resolved"
                       >
                         Resolve
@@ -769,7 +776,7 @@ export default function AdminDashboard() {
                     {report.status !== 'REJECTED' && (
                       <button
                         onClick={() => updateReportStatus(report.id, 'REJECTED', 'Marked non-civic / spam')}
-                        className="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] border border-rose-200 transition"
+                        className="px-2 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-[11px] border border-rose-400/30 transition"
                         title="Reject Report"
                       >
                         Reject
@@ -783,7 +790,7 @@ export default function AdminDashboard() {
                             deleteReport(report.id);
                           }
                         }}
-                        className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 font-bold text-[11px] border border-red-200 transition"
+                        className="px-2 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 font-bold text-[11px] border border-red-400/30 transition"
                         title="Permanently Delete Report"
                       >
                         Delete
@@ -799,32 +806,32 @@ export default function AdminDashboard() {
 
       {/* SUSPENSION MODAL (Rule 14) */}
       {suspensionModalUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-dark/75 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-surface-border space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="bg-[#140C26] rounded-3xl max-w-md w-full p-6 shadow-2xl border border-purple-500/30 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div className="flex items-center gap-2">
                 <UserX className="w-5 h-5 text-emergency" />
-                <h3 className="font-black text-navy text-base">Authorize Account Suspension</h3>
+                <h3 className="font-black text-white text-base">Authorize Account Suspension</h3>
               </div>
-              <button onClick={() => setSuspensionModalUser(null)} className="text-slate-400 hover:text-slate-600" aria-label="Close">
+              <button onClick={() => setSuspensionModalUser(null)} className="text-slate-400 hover:text-white" aria-label="Close">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-xl text-xs space-y-1">
-              <p className="font-bold text-navy">Target: {suspensionModalUser.name}</p>
-              <p className="text-slate-500 font-mono">Email: {suspensionModalUser.email}</p>
+            <div className="p-3 bg-white/5 rounded-xl text-xs space-y-1 border border-white/10">
+              <p className="font-bold text-white">Target: {suspensionModalUser.name}</p>
+              <p className="text-slate-400 font-mono">Email: {suspensionModalUser.email}</p>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-navy block mb-1">Suspension Duration</label>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Suspension Duration</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setSuspensionDays(3)}
                     className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
-                      suspensionDays === 3 ? 'bg-navy text-white border-navy' : 'bg-slate-50 border-slate-200'
+                      suspensionDays === 3 ? 'bg-purple-600 text-white border-purple-400 shadow-md' : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
                     }`}
                   >
                     3 Days (Rule 12: Fake Post)
@@ -833,7 +840,7 @@ export default function AdminDashboard() {
                     type="button"
                     onClick={() => setSuspensionDays(5)}
                     className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
-                      suspensionDays === 5 ? 'bg-navy text-white border-navy' : 'bg-slate-50 border-slate-200'
+                      suspensionDays === 5 ? 'bg-purple-600 text-white border-purple-400 shadow-md' : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
                     }`}
                   >
                     5 Days (Rules 16/17)
@@ -842,23 +849,23 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-navy block mb-1">Formal Reason (Emailed to User)</label>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Formal Reason (Emailed to User)</label>
                 <textarea
                   rows={3}
                   value={suspensionReason}
                   onChange={(e) => setSuspensionReason(e.target.value)}
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emergency focus:outline-none"
+                  className="w-full text-xs p-2.5 border border-white/15 rounded-xl bg-white/5 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-purple-400 focus:outline-none"
                 />
               </div>
 
-              <div className="p-3 rounded-xl bg-amber-50 text-[11px] text-amber-900 border border-amber-200">
+              <div className="p-3 rounded-xl bg-amber-500/10 text-[11px] text-amber-300 border border-amber-500/20">
                 Notice: An automated suspension email will be immediately dispatched to <strong>{suspensionModalUser.email}</strong>.
               </div>
 
               <button
                 type="button"
                 onClick={handleConfirmSuspension}
-                className="w-full py-2.5 bg-emergency hover:bg-emergency-hover text-white text-xs font-extrabold rounded-xl shadow transition flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-emergency hover:bg-emergency-hover text-white text-xs font-extrabold rounded-xl shadow-[0_0_15px_rgba(239,68,68,0.4)] transition flex items-center justify-center gap-1.5"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>Confirm Suspension & Dispatch Email Notice</span>

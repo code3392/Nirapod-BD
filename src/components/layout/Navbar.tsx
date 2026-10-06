@@ -285,14 +285,9 @@ export default function Navbar() {
                 <span className="w-2 h-2 rounded-full bg-emergency absolute -bottom-0.5 -right-0.5 ring-2 ring-[#0E081B] animate-pulse" />
               </div>
             </div>
-            <div>
-              <span className="font-black text-lg sm:text-xl tracking-tight text-white group-hover:text-sky-300 transition-colors">
-                Nirapod<span className="text-sky-400">BD</span>
-              </span>
-              <p className="text-[9px] text-slate-400 font-medium font-bengali leading-none -mt-0.5 hidden sm:block">
-                নিরাপদ বাংলাদেশ প্ল্যাটফর্ম
-              </p>
-            </div>
+            <span className="font-black text-lg sm:text-xl tracking-tight text-white group-hover:text-sky-300 transition-colors">
+              Nirapod<span className="text-sky-400">BD</span>
+            </span>
           </Link>
 
           {/* Desktop More Options Dropdown Button (After Brand Logo) */}

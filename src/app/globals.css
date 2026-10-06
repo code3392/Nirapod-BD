@@ -421,3 +421,17 @@
   will-change: transform;
 }
 
+/* Hide Leaflet map attribution and flags across all maps */
+.leaflet-control-attribution,
+.leaflet-control-container .leaflet-bottom.leaflet-right,
+.leaflet-bottom.leaflet-right .leaflet-control-attribution {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
+
+

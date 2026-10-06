@@ -83,7 +83,7 @@ export default function SafetyMap() {
     let url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     let options: any = {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors',
+      attribution: '',
       subdomains: ['a', 'b', 'c'],
     };
 
@@ -95,7 +95,7 @@ export default function SafetyMap() {
       url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
       options.className = 'map-tiles-satellite';
       options.subdomains = [];
-      options.attribution = 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics';
+      options.attribution = '';
     }
 
     const layer = L.tileLayer(url, options).addTo(map);
@@ -131,6 +131,7 @@ export default function SafetyMap() {
         center: [mapCenter.lat, mapCenter.lng],
         zoom: 12,
         zoomControl: false,
+        attributionControl: false,
         scrollWheelZoom: true,
       });
 

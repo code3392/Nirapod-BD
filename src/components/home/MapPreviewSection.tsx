@@ -84,6 +84,7 @@ export default function MapPreviewSection() {
         center: [centerLat, centerLng],
         zoom: 12,
         zoomControl: false,
+        attributionControl: false,
         scrollWheelZoom: true,
       });
 
@@ -93,7 +94,7 @@ export default function MapPreviewSection() {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         className: 'map-tiles-dark',
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
+        attribution: '',
       }).addTo(map);
 
       leafletMapRef.current = map;

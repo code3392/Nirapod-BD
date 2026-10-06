@@ -217,6 +217,7 @@ export default function ReportForm() {
         center: [latitude, longitude],
         zoom: 15,
         zoomControl: false,
+        attributionControl: false,
       });
 
       L.control.zoom({ position: 'topright' }).addTo(map);
@@ -224,7 +225,7 @@ export default function ReportForm() {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         className: 'map-tiles-dark',
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
+        attribution: '',
       }).addTo(map);
 
       // Custom pulsing red needle pinpoint icon

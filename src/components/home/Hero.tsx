@@ -5,12 +5,12 @@ import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { 
   ArrowRight, 
-  ArrowUpRight, 
+  LogIn, 
   PhoneCall
 } from 'lucide-react';
 
 export default function Hero() {
-  const { language, t } = useApp();
+  const { language, t, user, openAuthModal } = useApp();
 
   return (
     <section className="relative min-h-[92svh] w-full bg-transparent flex items-center overflow-hidden text-white py-14 lg:py-20">
@@ -57,31 +57,34 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* Primary & Secondary Action Buttons */}
+          {/* Exactly 2 Action Buttons: Login / Register & Call 999 (Red) */}
           <div className="flex flex-col min-[420px]:flex-row flex-wrap gap-3 pt-2">
-            <Link
-              href="/report/new"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] shadow-lg text-base h-12 w-full min-[420px]:w-auto rounded-none bg-emergency hover:bg-emergency-hover px-7 font-extrabold text-white border border-emergency/50 group tracking-[-0.01em]"
-            >
-              <span>{t.hero.primaryCta}</span>
-              <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-            </Link>
-
-            <Link
-              href="/map"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-base h-12 w-full min-[420px]:w-auto rounded-none border-white/25 bg-white/[0.05] px-7 font-semibold text-white hover:bg-white/10 hover:border-sky-400/50 backdrop-blur-md tracking-[-0.01em]"
-            >
-              <span>{t.hero.secondaryCta}</span>
-              <ArrowUpRight className="w-4 h-4 ml-1 text-slate-300" />
-            </Link>
+            {!user ? (
+              <button
+                type="button"
+                onClick={() => openAuthModal('login')}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border border-white/25 bg-white/10 hover:bg-white/20 text-white font-extrabold text-base h-12 w-full min-[420px]:w-auto px-7 backdrop-blur-md tracking-[-0.01em] shadow-lg"
+              >
+                <LogIn className="w-4 h-4 text-sky-400" />
+                <span>{language === 'en' ? 'Login / Register' : 'লগইন / নিবন্ধন'}</span>
+              </button>
+            ) : (
+              <Link
+                href="/report/new"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border border-white/25 bg-white/10 hover:bg-white/20 text-white font-extrabold text-base h-12 w-full min-[420px]:w-auto px-7 backdrop-blur-md tracking-[-0.01em] shadow-lg group"
+              >
+                <span>{language === 'en' ? 'Report a Problem' : 'রিপোর্ট করুন'}</span>
+                <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            )}
 
             <a
               href="tel:999"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-xs h-12 w-full min-[420px]:w-auto rounded-none border-emergency/40 bg-emergency/15 px-4 font-bold text-red-300 hover:bg-emergency/25 backdrop-blur-md font-display"
-              title="Immediate Police / Fire / Ambulance Emergency"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] shadow-lg shadow-red-900/40 text-base h-12 w-full min-[420px]:w-auto bg-emergency hover:bg-emergency-hover text-white px-7 font-extrabold border border-emergency/70 tracking-[-0.01em]"
+              title="Immediate Police / Fire / Ambulance Emergency (Call 999)"
             >
-              <PhoneCall className="w-3.5 h-3.5 text-emergency" />
-              <span>Call 999 Hotline</span>
+              <PhoneCall className="w-4 h-4 text-white" />
+              <span>{language === 'en' ? 'Call 999' : 'কল করুন ৯৯৯'}</span>
             </a>
           </div>
 

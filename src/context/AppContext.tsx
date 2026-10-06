@@ -59,6 +59,12 @@ interface AppContextType {
   switchUser: (email: string) => void;
   updateUserRole: (targetUserId: string, newRole: UserRole) => { success: boolean; message: string };
   updateUserProfile: (data: Partial<UserProfile>) => void;
+  authModalOpen: boolean;
+  setAuthModalOpen: (open: boolean) => void;
+  authMode: 'login' | 'register';
+  setAuthMode: (mode: 'login' | 'register') => void;
+  openAuthModal: (mode?: 'login' | 'register') => void;
+  closeAuthModal: () => void;
   
   // Moderation & Suspensions
   suspendUser: (targetUserId: string, reason: string, durationDays: number) => { success: boolean; message: string };
@@ -117,6 +123,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [directMessages, setDirectMessages] = useState<DirectMessage[]>(INITIAL_DIRECT_MESSAGES);
   const [lostAndFoundItems, setLostAndFoundItems] = useState<LostAndFoundItem[]>(INITIAL_LOST_AND_FOUND);
   const [suspensionLogs, setSuspensionLogs] = useState<SuspensionAuditLog[]>([]);
+  const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+
+  const openAuthModal = (mode: 'login' | 'register' = 'login') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setAuthModalOpen(false);
+  };
 
   // Load state from localStorage on client mount
   useEffect(() => {
@@ -1349,6 +1366,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         updatePrivacySettings,
         markNotificationAsRead,
         markAllNotificationsAsRead,
+        authModalOpen,
+        setAuthModalOpen,
+        authMode,
+        setAuthMode,
+        openAuthModal,
+        closeAuthModal,
       }}
     >
       {children}

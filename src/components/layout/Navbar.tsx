@@ -36,7 +36,8 @@ import {
   HeartHandshake,
   Eye,
   EyeOff,
-  Info
+  Info,
+  Lock
 } from 'lucide-react';
 import EmergencyDirectoryModal from '@/components/common/EmergencyDirectoryModal';
 
@@ -54,7 +55,12 @@ export default function Navbar() {
     user,
     login,
     register,
-    logout
+    logout,
+    authModalOpen,
+    setAuthModalOpen,
+    authMode,
+    setAuthMode,
+    openAuthModal
   } = useApp();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,8 +68,6 @@ export default function Navbar() {
   const [optionsDropdownOpen, setOptionsDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [hotlinesModalOpen, setHotlinesModalOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -293,21 +297,29 @@ export default function Navbar() {
           {/* Desktop More Options Dropdown Button (After Brand Logo) */}
           <div className="relative shrink-0 hidden lg:block" ref={optionsRef}>
             <button
-              onClick={() => setOptionsDropdownOpen(!optionsDropdownOpen)}
+              onClick={() => {
+                if (!user) {
+                  openAuthModal('login');
+                  return;
+                }
+                setOptionsDropdownOpen(!optionsDropdownOpen);
+              }}
               className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shadow-sm ${
-                optionsDropdownOpen 
-                  ? 'bg-purple-500/25 text-purple-200 border-purple-400/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]' 
-                  : 'bg-white/5 text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40'
+                !user
+                  ? 'opacity-40 cursor-not-allowed bg-white/5 text-slate-400 border-white/10 hover:opacity-70'
+                  : optionsDropdownOpen 
+                    ? 'bg-purple-500/25 text-purple-200 border-purple-400/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]' 
+                    : 'bg-white/5 text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40'
               }`}
               aria-label="Toggle options menu"
-              title="More Services & Portals"
+              title={!user ? (language === 'en' ? 'Login or register to enable civic tools' : 'নাগরিক সেবা আনলক করতে লগইন বা নিবন্ধন করুন') : 'More Services & Portals'}
             >
-              <Menu className="w-3.5 h-3.5 text-purple-400" />
+              {!user ? <Lock className="w-3.5 h-3.5 text-amber-400/80" /> : <Menu className="w-3.5 h-3.5 text-purple-400" />}
               <span>{language === 'en' ? 'More' : 'আরও'}</span>
               <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${optionsDropdownOpen ? 'rotate-180 text-purple-300' : 'text-slate-400'}`} />
             </button>
 
-            {optionsDropdownOpen && (
+            {user && optionsDropdownOpen && (
               <div className="absolute left-0 mt-3 w-80 sm:w-96 bg-[#150D28]/95 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/15 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-purple-500/20">
                 <div className="px-3.5 py-2.5 border-b border-white/10 mb-1.5 flex items-center justify-between">
                   <span className="text-[11px] font-mono font-black uppercase tracking-wider text-slate-400">
@@ -387,71 +399,107 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Navigation: Primary Important Tabs */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 shrink mx-auto pointer-events-auto z-20">
-          {/* 1. Home */}
-          <Link
-            href="/"
-            className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
-              pathname === '/'
-                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
-                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
-            }`}
-          >
-            <Home className="w-3.5 h-3.5 text-sky-400" />
-            <span>{language === 'en' ? 'Home' : 'হোম'}</span>
-          </Link>
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 shrink mx-auto pointer-events-auto z-20" aria-disabled={!user}>
+          {!user ? (
+            // Disabled State before user registers or logs in
+            <div className="flex items-center gap-1.5 p-1 rounded-full bg-white/[0.04] border border-white/10 shadow-inner">
+              <span className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono font-bold text-amber-400/90 bg-amber-500/10 rounded-full border border-amber-400/25">
+                <Lock className="w-3 h-3 text-amber-400 animate-pulse" />
+                <span>{language === 'en' ? 'Nav Locked' : 'লকড'}</span>
+              </span>
+              {[
+                { label: language === 'en' ? 'Home' : 'হোম', icon: Home, key: 'home' },
+                { label: t.nav.safetyMap, icon: MapPin, key: 'map' },
+                { label: t.nav.reports, icon: FileText, key: 'reports' },
+                { label: language === 'en' ? 'Community' : 'কমিউনিটি', icon: Users, key: 'community', hideBelowXl: true },
+                { label: language === 'en' ? 'About' : 'পরিচিতি', icon: Info, key: 'about' },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => openAuthModal('login')}
+                    className={`opacity-40 hover:opacity-80 cursor-not-allowed px-2.5 xl:px-3 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 flex items-center gap-1.5 border border-transparent hover:border-white/20 hover:bg-white/5 text-slate-400 shrink-0 ${
+                      item.hideBelowXl ? 'hidden xl:flex' : ''
+                    }`}
+                    title={language === 'en' ? `Login or register to enable ${item.label}` : `লগইন করে ${item.label} সক্রিয় করুন`}
+                  >
+                    <Icon className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            // Enabled State after user registers or logs in
+            <>
+              {/* 1. Home */}
+              <Link
+                href="/"
+                className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+                  pathname === '/'
+                    ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                    : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+                }`}
+              >
+                <Home className="w-3.5 h-3.5 text-sky-400" />
+                <span>{language === 'en' ? 'Home' : 'হোম'}</span>
+              </Link>
 
-          {/* 2. Safety Map */}
-          <Link
-            href="/map"
-            className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
-              pathname === '/map'
-                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
-                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
-            }`}
-          >
-            <MapPin className="w-3.5 h-3.5 text-sky-400" />
-            <span>{t.nav.safetyMap}</span>
-          </Link>
+              {/* 2. Safety Map */}
+              <Link
+                href="/map"
+                className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+                  pathname === '/map'
+                    ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                    : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+                }`}
+              >
+                <MapPin className="w-3.5 h-3.5 text-sky-400" />
+                <span>{t.nav.safetyMap}</span>
+              </Link>
 
-          {/* 3. Reports */}
-          <Link
-            href="/reports"
-            className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
-              pathname === '/reports'
-                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
-                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
-            }`}
-          >
-            <FileText className="w-3.5 h-3.5 text-sky-400" />
-            <span>{t.nav.reports}</span>
-          </Link>
+              {/* 3. Reports */}
+              <Link
+                href="/reports"
+                className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+                  pathname === '/reports'
+                    ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                    : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5 text-sky-400" />
+                <span>{t.nav.reports}</span>
+              </Link>
 
-          {/* 4. Community */}
-          <Link
-            href="/community"
-            className={`hidden xl:flex px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 items-center gap-1.5 border shrink-0 ${
-              pathname === '/community'
-                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
-                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5 text-sky-400" />
-            <span>{language === 'en' ? 'Community' : 'কমিউনিটি'}</span>
-          </Link>
+              {/* 4. Community */}
+              <Link
+                href="/community"
+                className={`hidden xl:flex px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 items-center gap-1.5 border shrink-0 ${
+                  pathname === '/community'
+                    ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                    : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+                }`}
+              >
+                <Users className="w-3.5 h-3.5 text-sky-400" />
+                <span>{language === 'en' ? 'Community' : 'কমিউনিটি'}</span>
+              </Link>
 
-          {/* 5. About */}
-          <Link
-            href="/about"
-            className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
-              pathname === '/about'
-                ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
-                : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
-            }`}
-          >
-            <Info className="w-3.5 h-3.5 text-sky-400" />
-            <span>{language === 'en' ? 'About' : 'পরিচিতি'}</span>
-          </Link>
+              {/* 5. About */}
+              <Link
+                href="/about"
+                className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+                  pathname === '/about'
+                    ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                    : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
+                }`}
+              >
+                <Info className="w-3.5 h-3.5 text-sky-400" />
+                <span>{language === 'en' ? 'About' : 'পরিচিতি'}</span>
+              </Link>
+            </>
+          )}
         </nav>
 
         {/* Right Action Island (999 Hotline, Lang, Notifs, Profile, Report CTA) */}
@@ -672,13 +720,25 @@ export default function Navbar() {
           )}
 
           {/* Primary Report CTA Button */}
-          <Link
-            href="/report/new"
-            className="inline-flex items-center gap-1.5 bg-emergency hover:bg-emergency-hover text-white text-xs sm:text-sm font-extrabold px-3.5 sm:px-4 py-2 rounded-full shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all transform hover:scale-105 active:scale-95 border border-emergency/50"
-          >
-            <AlertTriangle className="w-3.5 h-3.5 fill-white text-emergency" />
-            <span>{language === 'en' ? 'Report' : 'রিপোর্ট'}</span>
-          </Link>
+          {!user ? (
+            <button
+              type="button"
+              onClick={() => openAuthModal('login')}
+              className="inline-flex items-center gap-1.5 opacity-60 hover:opacity-100 bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-2 rounded-full border border-white/15 transition-all cursor-pointer"
+              title={language === 'en' ? 'Login or register to submit a report' : 'রিপোর্ট করতে লগইন বা নিবন্ধন করুন'}
+            >
+              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <span>{language === 'en' ? 'Report' : 'রিপোর্ট'}</span>
+            </button>
+          ) : (
+            <Link
+              href="/report/new"
+              className="inline-flex items-center gap-1.5 bg-emergency hover:bg-emergency-hover text-white text-xs sm:text-sm font-extrabold px-3.5 sm:px-4 py-2 rounded-full shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all transform hover:scale-105 active:scale-95 border border-emergency/50"
+            >
+              <AlertTriangle className="w-3.5 h-3.5 fill-white text-emergency" />
+              <span>{language === 'en' ? 'Report' : 'রিপোর্ট'}</span>
+            </Link>
+          )}
 
           {/* Mobile Menu Toggle Button */}
           <button
@@ -729,8 +789,7 @@ export default function Navbar() {
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    setAuthMode('login');
-                    setAuthModalOpen(true);
+                    openAuthModal('login');
                   }}
                   className="px-3 py-1.5 text-xs font-bold bg-white/10 text-white rounded-full border border-white/10"
                 >
@@ -739,8 +798,7 @@ export default function Navbar() {
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    setAuthMode('register');
-                    setAuthModalOpen(true);
+                    openAuthModal('register');
                   }}
                   className="px-3 py-1.5 text-xs font-black bg-sky-400 text-[#0E081B] rounded-full"
                 >
@@ -750,114 +808,152 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* Mobile Quick Action Navigation Buttons */}
-          <div className="grid grid-cols-2 gap-2 pt-1 pb-1">
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
-                pathname === '/'
-                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
-                  : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
-              }`}
-            >
-              <Home className="w-4 h-4 text-sky-400 shrink-0" />
-              <span>{language === 'en' ? 'Home' : 'হোম'}</span>
-            </Link>
-            <Link
-              href="/map"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
-                pathname === '/map'
-                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
-                  : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
-              }`}
-            >
-              <MapPin className="w-4 h-4 text-sky-400 shrink-0" />
-              <span>{t.nav.safetyMap}</span>
-            </Link>
-            <Link
-              href="/reports"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
-                pathname === '/reports'
-                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
-                  : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
-              }`}
-            >
-              <FileText className="w-4 h-4 text-sky-400 shrink-0" />
-              <span>{t.nav.reports}</span>
-            </Link>
-            <Link
-              href="/community"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
-                pathname === '/community'
-                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
-                  : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
-              }`}
-            >
-              <Users className="w-4 h-4 text-sky-400 shrink-0" />
-              <span>{language === 'en' ? 'Community' : 'কমিউনিটি'}</span>
-            </Link>
-          </div>
+          {!user ? (
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-center space-y-2.5">
+              <div className="flex items-center justify-center gap-1.5 text-amber-300 font-bold text-xs">
+                <Lock className="w-4 h-4 text-amber-400" />
+                <span>{language === 'en' ? 'Navigation Locked for Guests' : 'অতিথিদের জন্য নেভিগেশন লক করা আছে'}</span>
+              </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                {language === 'en' 
+                  ? 'The navigation bar and civic tools are enabled only after you register or log in.' 
+                  : 'আপনি নিবন্ধন বা লগইন করার পরেই কেবল নেভিগেশন বার ও নাগরিক সেবাসমূহ সক্রিয় হবে।'}
+              </p>
+              <div className="flex gap-2 pt-1 justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuthModal('login');
+                  }}
+                  className="px-4 py-2 text-xs font-bold bg-white/10 text-white rounded-xl border border-white/20 hover:bg-white/15 transition"
+                >
+                  {language === 'en' ? 'Sign In' : 'লগইন'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuthModal('register');
+                  }}
+                  className="px-4 py-2 text-xs font-black bg-gradient-to-r from-sky-400 to-blue-500 text-[#0E081B] rounded-xl shadow-lg transition"
+                >
+                  {language === 'en' ? 'Register' : 'নিবন্ধন'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Mobile Quick Action Navigation Buttons */}
+              <div className="grid grid-cols-2 gap-2 pt-1 pb-1">
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
+                    pathname === '/'
+                      ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                      : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  <Home className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>{language === 'en' ? 'Home' : 'হোম'}</span>
+                </Link>
+                <Link
+                  href="/map"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
+                    pathname === '/map'
+                      ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                      : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  <MapPin className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>{t.nav.safetyMap}</span>
+                </Link>
+                <Link
+                  href="/reports"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
+                    pathname === '/reports'
+                      ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                      : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  <FileText className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>{t.nav.reports}</span>
+                </Link>
+                <Link
+                  href="/community"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`p-2.5 rounded-2xl flex items-center gap-2 border font-bold text-xs ${
+                    pathname === '/community'
+                      ? 'bg-sky-500/20 text-sky-200 border-sky-400/50'
+                      : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  <Users className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>{language === 'en' ? 'Community' : 'কমিউনিটি'}</span>
+                </Link>
+              </div>
 
-          {/* Mobile Navigation List */}
-          <div className="space-y-1">
-            <span className="px-3 text-[10px] font-mono font-black uppercase text-slate-400 tracking-wider block mb-1">
-              {language === 'en' ? 'More Civic Portals' : 'অন্যান্য নাগরিক সেবা'}
-            </span>
-              {optionLinks.map((item) => {
-                const Icon = item.icon;
-                if (item.isAction) {
+              {/* Mobile Navigation List */}
+              <div className="space-y-1">
+                <span className="px-3 text-[10px] font-mono font-black uppercase text-slate-400 tracking-wider block mb-1">
+                  {language === 'en' ? 'More Civic Portals' : 'অন্যান্য নাগরিক সেবা'}
+                </span>
+                {optionLinks.map((item) => {
+                  const Icon = item.icon;
+                  if (item.isAction) {
+                    return (
+                      <button
+                        key={item.label}
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          item.onClick();
+                        }}
+                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-red-300 hover:bg-red-500/10 transition"
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <Icon className="w-4 h-4 text-emergency" />
+                          <span>{item.label}</span>
+                        </span>
+                        <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white">
+                          24/7
+                        </span>
+                      </button>
+                    );
+                  }
                   return (
-                    <button
-                      key={item.label}
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        item.onClick();
-                      }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-red-300 hover:bg-red-500/10 transition"
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-white/5 transition"
                     >
                       <span className="flex items-center gap-2.5">
-                        <Icon className="w-4 h-4 text-emergency" />
+                        <Icon className="w-4 h-4 text-sky-400" />
                         <span>{item.label}</span>
                       </span>
-                      <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded-full bg-emergency text-white">
-                        24/7
-                      </span>
-                    </button>
+                      {item.badge && (
+                        <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
                   );
-                }
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-white/5 transition"
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <Icon className="w-4 h-4 text-sky-400" />
-                      <span>{item.label}</span>
-                    </span>
-                    {item.badge && (
-                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
+                })}
 
-            <Link
-              href="/profile"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-300 hover:bg-white/5"
-            >
-              <span>{t.nav.profile}</span>
-              <User className="w-4 h-4 text-sky-400" />
-            </Link>
-          </div>
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-300 hover:bg-white/5"
+                >
+                  <span>{t.nav.profile}</span>
+                  <User className="w-4 h-4 text-sky-400" />
+                </Link>
+              </div>
+            </>
+          )}
 
           <div className="pt-2 border-t border-white/10 flex items-center justify-between">
             <span className="text-xs text-slate-400 font-mono">

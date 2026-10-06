@@ -396,31 +396,6 @@ export default function DirectMessagingView() {
                   </button>
                 </div>
               </form>
-
-              {/* Quick Preset Buttons */}
-              <div className="pt-2 border-t border-purple-500/20 flex flex-wrap gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => { setContactInput('+8801700999999'); }}
-                  className="px-2 py-0.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 text-[10px] text-purple-300 font-mono transition"
-                >
-                  +8801700999999
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setContactInput('support@nirapod.bd'); }}
-                  className="px-2 py-0.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 text-[10px] text-purple-300 font-mono transition"
-                >
-                  support@nirapod.bd
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setContactInput('smdsami59@gmail.com'); }}
-                  className="px-2 py-0.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 text-[10px] text-purple-300 font-mono transition"
-                >
-                  smdsami59@gmail.com
-                </button>
-              </div>
             </div>
 
             {/* Filter Contacts Search Input */}

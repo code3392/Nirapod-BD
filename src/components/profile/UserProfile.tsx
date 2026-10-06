@@ -191,7 +191,7 @@ export default function UserProfile() {
                   {user.verificationStatus === 'GREATLY_VERIFIED' && (
                     <span 
                       className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[11px] font-extrabold border border-purple-400/30 shadow-sm"
-                      title="Identity fully verified by Bangladesh National ID & Mobile OTP"
+                      title="Identity fully verified Guardian"
                     >
                       <BadgeCheck className="w-3.5 h-3.5 text-purple-400" />
                       <span>Greatly Verified Guardian</span>
@@ -326,7 +326,7 @@ export default function UserProfile() {
             </div>
           </form>
         ) : (
-          <div className="mt-6 p-5 rounded-2xl bg-[#150D28]/90 border border-white/10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
+          <div className="mt-6 p-5 rounded-2xl bg-[#150D28]/90 border border-white/10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-xs">
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Phone Number</span>
               <p className="font-bold text-white flex items-center gap-1">
@@ -366,13 +366,6 @@ export default function UserProfile() {
                 <span>{user.bloodGroup || 'B+'}</span>
               </p>
               <span className="text-[9px] text-slate-400">Emergency Ready</span>
-            </div>
-
-            <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">National ID</span>
-              <p className="font-mono font-bold text-white">
-                {user.nidNumber || '5928 4910 23'}
-              </p>
             </div>
           </div>
         )}

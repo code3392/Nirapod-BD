@@ -33,7 +33,6 @@ export default function MapPreviewSection() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(reports[0] || null);
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
   const [isLocating, setIsLocating] = useState<boolean>(false);
-  const [locateFeedbackMessage, setLocateFeedbackMessage] = useState<string | null>(null);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any>(null);
@@ -115,13 +114,7 @@ export default function MapPreviewSection() {
         const cLat = Number(lat.toFixed(6));
         const cLng = Number(lng.toFixed(6));
         await pinUserOnMap(L, map, cLat, cLng, 10, true);
-        const place = await reverseGeocodeLocation(cLat, cLng, language);
-        setLocateFeedbackMessage(
-          language === 'en'
-            ? `Pinpoint locked at ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
-            : `পিনপয়েন্ট চিহ্নিত করা হয়েছে: ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
-        );
-        setTimeout(() => setLocateFeedbackMessage(null), 4000);
+        await reverseGeocodeLocation(cLat, cLng, language);
       });
     }
 
@@ -299,12 +292,6 @@ export default function MapPreviewSection() {
       }
       const place = await reverseGeocodeLocation(nLat, nLng, language);
       marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true, false)).openPopup();
-      setLocateFeedbackMessage(
-        language === 'en'
-          ? `Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
-          : `পিনপয়েন্ট সরানো হয়েছে: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
-      );
-      setTimeout(() => setLocateFeedbackMessage(null), 4000);
     });
 
     reverseGeocodeLocation(lat, lng, language).then((place) => {
@@ -319,19 +306,11 @@ export default function MapPreviewSection() {
     const L = (await import('leaflet')).default;
     await pinUserOnMap(L, leafletMapRef.current, area.lat, area.lng, 10, true, false);
     leafletMapRef.current.flyTo([area.lat, area.lng], 17, { animate: true, duration: 1.2 });
-    const areaLabel = language === 'bn' ? area.nameBn : area.name;
-    setLocateFeedbackMessage(
-      language === 'en'
-        ? `Pinpoint locked to ${areaLabel} (±10m). Drag pin or click map to adjust.`
-        : `${areaLabel}-এ পিন লক করা হয়েছে (±১০ মি)। প্রয়োজনে পিন সরান বা ম্যাপে ক্লিক করুন।`
-    );
-    setTimeout(() => setLocateFeedbackMessage(null), 5000);
   };
 
   const handleLocateMe = async () => {
     if (typeof window === 'undefined') return;
     setIsLocating(true);
-    setLocateFeedbackMessage(null);
 
     const L = (await import('leaflet')).default;
 
@@ -345,36 +324,10 @@ export default function MapPreviewSection() {
         leafletMapRef.current.flyTo([pos.lat, pos.lng], 17, { animate: true, duration: 1.2 });
       }
 
-      const place = await reverseGeocodeLocation(pos.lat, pos.lng, language);
-      if (pos.isVpnDetected) {
-        setLocateFeedbackMessage(
-          language === 'en'
-            ? `Foreign VPN/IP detected outside BD. Centered in Dhaka (±15m). Tap quick areas or drag pin!`
-            : `ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। ম্যাপ ঢাকায় লক করা হয়েছে (±১৫ মি)। নিচের এলাকা চাপুন বা পিন সরান!`
-        );
-      } else {
-        setLocateFeedbackMessage(
-          language === 'en'
-            ? `Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
-            : `পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
-        );
-      }
-      setTimeout(() => setLocateFeedbackMessage(null), 5000);
+      await reverseGeocodeLocation(pos.lat, pos.lng, language);
     } catch (err: any) {
       setIsLocating(false);
       console.warn('Geolocation error:', err);
-
-      const isPermissionDenied = err?.message === 'PERMISSION_DENIED';
-      setLocateFeedbackMessage(
-        isPermissionDenied
-          ? (language === 'en'
-              ? 'Browser location permission blocked. Click anywhere on the map to pinpoint your location!'
-              : 'ব্রাউজারে লোকেশন অনুমতি বন্ধ রয়েছে। পিন বসাতে ম্যাপে ক্লিক করুন!')
-          : (language === 'en'
-              ? 'GPS sensor unavailable on this device. Click anywhere on the map to pinpoint your location!'
-              : 'জিপিএস সেন্সর পাওয়া যায়নি। পিন বসাতে ম্যাপে যে কোনো জায়গায় ক্লিক করুন!')
-      );
-      setTimeout(() => setLocateFeedbackMessage(null), 6000);
     }
   };
 
@@ -507,19 +460,7 @@ export default function MapPreviewSection() {
             className="w-full h-[500px] sm:h-[580px] bg-[#05020B] z-0" 
           />
 
-          {/* Real-time Pinpoint Feedback Banner */}
-          {locateFeedbackMessage && (
-            <div className="absolute top-28 sm:top-24 left-3 right-3 sm:left-6 sm:right-auto z-[1001] bg-[#0E081B]/95 backdrop-blur-2xl border border-sky-400/50 text-sky-200 px-4 py-2.5 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.85)] flex items-center gap-2.5 text-xs font-bold animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-sky-500/30 max-w-lg">
-              <Crosshair className="w-4 h-4 text-sky-400 shrink-0 animate-pulse" />
-              <span className="flex-1 leading-snug">{locateFeedbackMessage}</span>
-              <button 
-                onClick={() => setLocateFeedbackMessage(null)} 
-                className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-white/10 shrink-0"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
+
 
           {/* Floating Report Preview Card with Dark Obsidian Frosted Glass */}
           {selectedReport && (

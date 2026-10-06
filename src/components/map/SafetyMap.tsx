@@ -44,7 +44,6 @@ export default function SafetyMap() {
   const [isListView, setIsListView] = useState<boolean>(false);
   const [userLocating, setUserLocating] = useState<boolean>(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy?: number } | null>(null);
-  const [locatedMessage, setLocatedMessage] = useState<string | null>(null);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 23.8103, lng: 90.4125 });
   const [mapStyle, setMapStyle] = useState<'dark' | 'streets' | 'satellite'>('dark');
   const [showCategoryFilter, setShowCategoryFilter] = useState<boolean>(false);
@@ -154,13 +153,7 @@ export default function SafetyMap() {
         const cLng = Number(lng.toFixed(6));
         setUserLocation({ lat: cLat, lng: cLng, accuracy: 10 });
         await pinUserOnMap(L, map, cLat, cLng, 10, true);
-        const place = await reverseGeocodeLocation(cLat, cLng, language);
-        setLocatedMessage(
-          language === 'en'
-            ? `Pinpoint locked at ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
-            : `পিনপয়েন্ট চিহ্নিত করা হয়েছে: ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
-        );
-        setTimeout(() => setLocatedMessage(null), 4500);
+        await reverseGeocodeLocation(cLat, cLng, language);
       });
     }
 
@@ -341,12 +334,6 @@ export default function SafetyMap() {
       }
       const place = await reverseGeocodeLocation(nLat, nLng, language);
       marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true, false)).openPopup();
-      setLocatedMessage(
-        language === 'en'
-          ? `Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
-          : `পিনপয়েন্ট সরানো হয়েছে: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
-      );
-      setTimeout(() => setLocatedMessage(null), 4000);
     });
 
     reverseGeocodeLocation(lat, lng, language).then((place) => {
@@ -363,20 +350,13 @@ export default function SafetyMap() {
     setMapCenter({ lat: area.lat, lng: area.lng });
     await pinUserOnMap(L, leafletMapRef.current, area.lat, area.lng, 10, true, false);
     leafletMapRef.current.flyTo([area.lat, area.lng], 17, { animate: true, duration: 1.2 });
-    const areaLabel = language === 'bn' ? area.nameBn : area.name;
-    setLocatedMessage(
-      language === 'en'
-        ? `Pinpoint locked to ${areaLabel} (±10m). Drag pin or click map to adjust.`
-        : `${areaLabel}-এ পিন লক করা হয়েছে (±১০ মি)। প্রয়োজনে পিন সরান বা ম্যাপে ক্লিক করুন।`
-    );
-    setTimeout(() => setLocatedMessage(null), 5000);
+    // Area selected without popup
   };
 
   const handleLocateMe = async () => {
     if (typeof window === 'undefined') return;
 
     setUserLocating(true);
-    setLocatedMessage(null);
     const L = (await import('leaflet')).default;
 
     try {
@@ -392,36 +372,10 @@ export default function SafetyMap() {
         leafletMapRef.current.flyTo([pos.lat, pos.lng], 17, { animate: true, duration: 1.2 });
       }
 
-      const place = await reverseGeocodeLocation(pos.lat, pos.lng, language);
-      if (pos.isVpnDetected) {
-        setLocatedMessage(
-          language === 'en'
-            ? `Foreign VPN/IP detected outside BD. Centered in Dhaka (±15m). Tap quick areas or drag pin!`
-            : `ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। ম্যাপ ঢাকায় লক করা হয়েছে (±১৫ মি)। নিচের এলাকা চাপুন বা পিন সরান!`
-        );
-      } else {
-        setLocatedMessage(
-          language === 'en'
-            ? `Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
-            : `পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
-        );
-      }
-      setTimeout(() => setLocatedMessage(null), 5000);
+      await reverseGeocodeLocation(pos.lat, pos.lng, language);
     } catch (err: any) {
       setUserLocating(false);
       console.warn('Geolocation error:', err);
-
-      const isPermissionDenied = err?.message === 'PERMISSION_DENIED';
-      setLocatedMessage(
-        isPermissionDenied
-          ? (language === 'en'
-              ? 'Browser location permission blocked. Click anywhere on the map to pinpoint your location!'
-              : 'ব্রাউজারে লোকেশন অনুমতি বন্ধ রয়েছে। পিন বসাতে ম্যাপে ক্লিক করুন!')
-          : (language === 'en'
-              ? 'GPS sensor unavailable on this device. Click anywhere on the map to pinpoint your location!'
-              : 'জিপিএস সেন্সর পাওয়া যায়নি। পিন বসাতে ম্যাপে যে কোনো জায়গায় ক্লিক করুন!')
-      );
-      setTimeout(() => setLocatedMessage(null), 6000);
     }
   };
 
@@ -593,19 +547,7 @@ export default function SafetyMap() {
           ))}
         </div>
 
-        {/* Floating User Location Confirmation Toast */}
-        {locatedMessage && (
-          <div className="pointer-events-auto self-center px-4 py-2 rounded-2xl bg-[#150D28]/95 backdrop-blur-2xl border border-sky-400/50 shadow-[0_10px_35px_rgba(56,189,248,0.4)] text-white text-xs font-bold flex items-center gap-2.5 animate-in fade-in slide-in-from-top-2 ring-1 ring-sky-400/30">
-            <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping shrink-0" />
-            <span>{locatedMessage}</span>
-            <button
-              onClick={() => setLocatedMessage(null)}
-              className="ml-1 p-0.5 rounded-full text-slate-400 hover:text-white"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
+
       </div>
 
       {/* Main Map View & Side Drawer */}

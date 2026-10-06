@@ -276,7 +276,7 @@ export default function Navbar() {
       </div>
 
       {/* Header Content Container (Aligned with Site Grid) */}
-      <div className="relative max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between z-10">
+      <div className="relative max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 lg:gap-4 z-10">
         
         {/* Left Section: Brand Logo 1st + More Options Dropdown */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -393,11 +393,11 @@ export default function Navbar() {
 
         {/* Desktop Navigation: Primary Important Tabs - Invisible when !user */}
         {user && (
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2 shrink mx-auto pointer-events-auto z-20">
+          <nav className="hidden lg:flex items-center justify-center gap-1 xl:gap-2 flex-1 min-w-0 pointer-events-auto z-20">
             {/* 1. Home */}
             <Link
               href="/"
-              className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+              className={`px-2 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
                 pathname === '/'
                   ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                   : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -410,7 +410,7 @@ export default function Navbar() {
             {/* 2. Safety Map */}
             <Link
               href="/map"
-              className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+              className={`px-2 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
                 pathname === '/map'
                   ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                   : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -423,7 +423,7 @@ export default function Navbar() {
             {/* 3. Reports */}
             <Link
               href="/reports"
-              className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+              className={`px-2 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
                 pathname === '/reports'
                   ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                   : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -436,7 +436,7 @@ export default function Navbar() {
             {/* 4. Community */}
             <Link
               href="/community"
-              className={`hidden xl:flex px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 items-center gap-1.5 border shrink-0 ${
+              className={`hidden xl:flex px-2 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 items-center gap-1.5 border shrink-0 ${
                 pathname === '/community'
                   ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                   : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -449,7 +449,7 @@ export default function Navbar() {
             {/* 5. About */}
             <Link
               href="/about"
-              className={`px-2.5 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
+              className={`px-2 xl:px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 border shrink-0 ${
                 pathname === '/about'
                   ? 'bg-sky-500/20 text-sky-200 border-sky-400/50 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
                   : 'text-slate-200 hover:text-white hover:bg-white/10 border-white/10 hover:border-purple-400/40 shadow-sm'
@@ -462,7 +462,7 @@ export default function Navbar() {
         )}
 
         {/* Right Action Island (999 Hotline, Lang, Notifs, Profile, Report CTA) */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto lg:ml-0">
           
           {/* Integrated 999 Hotline Pill */}
           <a 

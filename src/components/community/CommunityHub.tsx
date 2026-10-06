@@ -409,12 +409,7 @@ export default function CommunityHub() {
 
               {/* Header Right Actions */}
               <div className="flex items-center gap-2">
-                {isMainCommunity ? (
-                  <span className="text-xs font-mono font-bold text-sky-300 bg-sky-500/15 border border-sky-400/30 px-3 py-1 rounded-full flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping" />
-                    <span>Live Hub</span>
-                  </span>
-                ) : (
+                {!isMainCommunity && (
                   <>
                     <button
                       onClick={() => currentPersonalGroup && copyInviteCode(currentPersonalGroup.inviteCode)}

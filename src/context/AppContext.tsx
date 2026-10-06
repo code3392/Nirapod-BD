@@ -168,9 +168,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedNotifs) {
           try {
             const parsed: NotificationItem[] = JSON.parse(savedNotifs);
-            const realNotifs = parsed.filter(n => !n.id.startsWith('notif-'));
-            setNotifications(realNotifs);
-            localStorage.setItem('nirapod_notifications', JSON.stringify(realNotifs));
+            if (Array.isArray(parsed)) setNotifications(parsed);
           } catch {
             setNotifications([]);
           }
@@ -180,9 +178,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedMsgs) {
           try {
             const parsed: CommunityMessage[] = JSON.parse(savedMsgs);
-            const realMsgs = parsed.filter(m => !m.id.startsWith('msg-'));
-            setCommunityMessages(realMsgs);
-            localStorage.setItem('nirapod_community_msgs', JSON.stringify(realMsgs));
+            if (Array.isArray(parsed)) setCommunityMessages(parsed);
           } catch {
             setCommunityMessages([]);
           }
@@ -210,9 +206,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedDms) {
           try {
             const parsed: DirectMessage[] = JSON.parse(savedDms);
-            const realDms = parsed.filter(m => !m.id.startsWith('dm-'));
-            setDirectMessages(realDms);
-            localStorage.setItem('nirapod_direct_msgs', JSON.stringify(realDms));
+            if (Array.isArray(parsed)) setDirectMessages(parsed);
           } catch {
             setDirectMessages([]);
           }
@@ -222,9 +216,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedLaf) {
           try {
             const parsed: LostAndFoundItem[] = JSON.parse(savedLaf);
-            const realLaf = parsed.filter(l => !l.id.startsWith('laf-'));
-            setLostAndFoundItems(realLaf);
-            localStorage.setItem('nirapod_lost_and_found', JSON.stringify(realLaf));
+            if (Array.isArray(parsed)) setLostAndFoundItems(parsed);
           } catch {
             setLostAndFoundItems([]);
           }
@@ -236,7 +228,66 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         console.error('Error loading localStorage state', e);
       }
 
-      const handleOnline = () => { setIsOffline(false); syncOfflineReports(); };
+      // Real-time cross-tab synchronization via storage event
+      const handleStorageChange = (e: StorageEvent) => {
+        if (!e.newValue) return;
+        try {
+          if (e.key === 'nirapod_community_msgs') {
+            const msgs = JSON.parse(e.newValue);
+            if (Array.isArray(msgs)) setCommunityMessages(msgs);
+          } else if (e.key === 'nirapod_direct_msgs') {
+            const dms = JSON.parse(e.newValue);
+            if (Array.isArray(dms)) setDirectMessages(dms);
+          } else if (e.key === 'nirapod_personal_groups') {
+            const grps = JSON.parse(e.newValue);
+            if (Array.isArray(grps)) setPersonalGroups(grps);
+          } else if (e.key === 'nirapod_reports') {
+            const reps = JSON.parse(e.newValue);
+            if (Array.isArray(reps)) setReports(reps);
+          }
+        } catch {}
+      };
+      window.addEventListener('storage', handleStorageChange);
+
+      // Real-time server sync across devices & users
+      const syncServerMessages = async () => {
+        try {
+          const res = await fetch('/api/community');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.messages && Array.isArray(data.messages) && data.messages.length > 0) {
+              setCommunityMessages((prev) => {
+                const map = new Map<string, CommunityMessage>();
+                prev.forEach(m => map.set(m.id, m));
+                data.messages.forEach((m: CommunityMessage) => map.set(m.id, m));
+                const merged = Array.from(map.values()).sort((a, b) => (a.id > b.id ? 1 : -1));
+                localStorage.setItem('nirapod_community_msgs', JSON.stringify(merged));
+                return merged;
+              });
+            }
+          }
+
+          const dmRes = await fetch('/api/direct-messages');
+          if (dmRes.ok) {
+            const dmData = await dmRes.json();
+            if (dmData.messages && Array.isArray(dmData.messages) && dmData.messages.length > 0) {
+              setDirectMessages((prev) => {
+                const map = new Map<string, DirectMessage>();
+                prev.forEach(m => map.set(m.id, m));
+                dmData.messages.forEach((m: DirectMessage) => map.set(m.id, m));
+                const merged = Array.from(map.values()).sort((a, b) => (a.id > b.id ? 1 : -1));
+                localStorage.setItem('nirapod_direct_msgs', JSON.stringify(merged));
+                return merged;
+              });
+            }
+          }
+        } catch {}
+      };
+
+      syncServerMessages();
+      const syncInterval = setInterval(syncServerMessages, 3500);
+
+      const handleOnline = () => { setIsOffline(false); syncOfflineReports(); syncServerMessages(); };
       const handleOffline = () => setIsOffline(true);
 
       setIsOffline(!navigator.onLine);
@@ -246,6 +297,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return () => {
         window.removeEventListener('online', handleOnline);
         window.removeEventListener('offline', handleOffline);
+        window.removeEventListener('storage', handleStorageChange);
+        clearInterval(syncInterval);
       };
     }
   }, []);
@@ -1014,7 +1067,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const updated = [...communityMessages, newMsg];
     setCommunityMessages(updated);
-    if (typeof window !== 'undefined') localStorage.setItem('nirapod_community_msgs', JSON.stringify(updated));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nirapod_community_msgs', JSON.stringify(updated));
+      fetch('/api/community', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMsg),
+      }).catch(() => {});
+    }
     return { success: true };
   };
 
@@ -1176,7 +1236,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const updated = [...directMessages, newDm];
     setDirectMessages(updated);
-    if (typeof window !== 'undefined') localStorage.setItem('nirapod_direct_msgs', JSON.stringify(updated));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nirapod_direct_msgs', JSON.stringify(updated));
+      fetch('/api/direct-messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newDm),
+      }).catch(() => {});
+    }
     return { success: true };
   };
 

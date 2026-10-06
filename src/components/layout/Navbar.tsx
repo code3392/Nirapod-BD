@@ -275,9 +275,27 @@ export default function Navbar() {
       {/* Header Content Container (Aligned with Site Grid) */}
       <div className="relative max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between z-10">
         
-        {/* Left Section: More Button in Left Corner + Brand Logo */}
+        {/* Left Section: Brand Logo 1st + More Options Dropdown */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Desktop More Options Dropdown Button (Left Corner) */}
+          {/* Brand Logo (Always 1st on the Far Left) */}
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-sky-500 to-blue-700 flex items-center justify-center shadow-[0_0_18px_rgba(56,189,248,0.4)] text-white group-hover:scale-105 transition-transform duration-200 border border-sky-400/30">
+              <div className="relative">
+                <ShieldAlert className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-white" />
+                <span className="w-2 h-2 rounded-full bg-emergency absolute -bottom-0.5 -right-0.5 ring-2 ring-[#0E081B] animate-pulse" />
+              </div>
+            </div>
+            <div>
+              <span className="font-black text-lg sm:text-xl tracking-tight text-white group-hover:text-sky-300 transition-colors">
+                Nirapod<span className="text-sky-400">BD</span>
+              </span>
+              <p className="text-[9px] text-slate-400 font-medium font-bengali leading-none -mt-0.5 hidden sm:block">
+                নিরাপদ বাংলাদেশ প্ল্যাটফর্ম
+              </p>
+            </div>
+          </Link>
+
+          {/* Desktop More Options Dropdown Button (After Brand Logo) */}
           <div className="relative shrink-0 hidden lg:block" ref={optionsRef}>
             <button
               onClick={() => setOptionsDropdownOpen(!optionsDropdownOpen)}
@@ -371,35 +389,6 @@ export default function Navbar() {
               </div>
             )}
           </div>
-
-          {/* Mobile Menu Toggle Button (Left Corner) */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 sm:px-2.5 sm:py-1.5 rounded-full text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 lg:hidden flex items-center gap-1.5 transition"
-            aria-label="Toggle menu"
-            title="Menu"
-          >
-            {mobileMenuOpen ? <X className="w-4 h-4 text-sky-400" /> : <Menu className="w-4 h-4 text-purple-400" />}
-            <span className="text-xs font-bold sm:inline hidden">{language === 'en' ? 'More' : 'আরও'}</span>
-          </button>
-
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-sky-500 to-blue-700 flex items-center justify-center shadow-[0_0_18px_rgba(56,189,248,0.4)] text-white group-hover:scale-105 transition-transform duration-200 border border-sky-400/30">
-              <div className="relative">
-                <ShieldAlert className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-white" />
-                <span className="w-2 h-2 rounded-full bg-emergency absolute -bottom-0.5 -right-0.5 ring-2 ring-[#0E081B] animate-pulse" />
-              </div>
-            </div>
-            <div>
-              <span className="font-black text-lg sm:text-xl tracking-tight text-white group-hover:text-sky-300 transition-colors">
-                Nirapod<span className="text-sky-400">BD</span>
-              </span>
-              <p className="text-[9px] text-slate-400 font-medium font-bengali leading-none -mt-0.5 hidden sm:block">
-                নিরাপদ বাংলাদেশ প্ল্যাটফর্ম
-              </p>
-            </div>
-          </Link>
         </div>
 
         {/* Desktop Navigation: Primary Important Tabs */}
@@ -692,6 +681,17 @@ export default function Navbar() {
             <AlertTriangle className="w-3.5 h-3.5 fill-white text-emergency" />
             <span>{language === 'en' ? 'Report' : 'রিপোর্ট'}</span>
           </Link>
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 sm:px-2.5 sm:py-2 rounded-full text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 lg:hidden flex items-center gap-1.5 transition ml-1"
+            aria-label="Toggle menu"
+            title="Menu"
+          >
+            {mobileMenuOpen ? <X className="w-4 h-4 text-sky-400" /> : <Menu className="w-4 h-4 text-purple-400" />}
+            <span className="text-xs font-bold sm:inline hidden">{language === 'en' ? 'More' : 'আরও'}</span>
+          </button>
         </div>
       </div>
 

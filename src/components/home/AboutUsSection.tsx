@@ -4,64 +4,15 @@ import React from 'react';
 import { useApp } from '@/context/AppContext';
 import { 
   ShieldCheck, 
-  HeartHandshake, 
-  MapPin, 
   Eye, 
-  CheckCircle2, 
-  Building2, 
-  Award,
-  Globe2,
-  Users2,
-  Sparkles,
+  Globe2, 
+  Users2, 
   ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AboutUsSection() {
   const { language } = useApp();
-
-  const civicActionPillars = [
-    {
-      titleEn: 'Youth & Student Civic Volunteers',
-      titleBn: 'তরুণ ও শিক্ষার্থী স্বেচ্ছাসেবক নেটওয়ার্ক',
-      roleEn: 'Field Incident Verification & Rapid Alerting',
-      roleBn: 'মাঠপর্যায়ে দ্রুত তথ্য সংগ্রহ ও প্রাথমিক সতর্কতা',
-      icon: <Users2 className="w-8 h-8 text-sky-400" />,
-      tag: 'Field Volunteers',
-      metric: '1,200+ Active',
-      gradient: 'from-blue-600/30 to-indigo-900/40',
-    },
-    {
-      titleEn: 'Emergency & First Aid Liaison',
-      titleBn: 'জরুরি সেবা ও প্রাথমিক চিকিৎসা সমন্বয়',
-      roleEn: 'Fast-Track Protocol with 999 & Ambulance Network',
-      roleBn: 'জাতীয় ৯৯৯ ও অ্যাম্বুলেন্স নেটওয়ার্কের সাথে দ্রুত যোগাযোগ',
-      icon: <HeartHandshake className="w-8 h-8 text-red-400" />,
-      tag: 'Emergency Protocol',
-      metric: '24/7 Standby',
-      gradient: 'from-red-600/30 to-slate-900/40',
-    },
-    {
-      titleEn: 'Municipal Technical Support Desk',
-      titleBn: 'পৌর প্রযুক্তিগত সহায়তা ডেস্ক',
-      roleEn: 'Direct Coordination with City Corporations & DESCO',
-      roleBn: 'সিটি কর্পোরেশন, ডেসকো ও ওয়াসার সাথে সমন্বয়',
-      icon: <Building2 className="w-8 h-8 text-sky-400" />,
-      tag: 'Public Liaison',
-      metric: 'Zone 1-10 Dhaka',
-      gradient: 'from-sky-600/30 to-blue-900/40',
-    },
-    {
-      titleEn: 'Neighborhood Safety Circles',
-      titleBn: 'ওয়ার্ডভিত্তিক নিরাপত্তা সার্কেল',
-      roleEn: 'Community-led Problem Resolution & Accountability',
-      roleBn: 'এলাকাভিত্তিক নাগরিক জবাবদিহিতা ও টেকসই সমাধান',
-      icon: <ShieldCheck className="w-8 h-8 text-blue-400" />,
-      tag: 'Local Guardianship',
-      metric: '54 Wards Covered',
-      gradient: 'from-indigo-600/30 to-blue-950/40',
-    },
-  ];
 
   return (
     <section id="about-us" className="py-24 bg-transparent text-white relative overflow-hidden border-t border-white/10">
@@ -118,65 +69,6 @@ export default function AboutUsSection() {
             <p className="text-xs text-slate-300 leading-relaxed">
               Under Rule 25, once authorities mark work complete, citizens verify resolution with before & after photographic evidence to guarantee genuine outcomes.
             </p>
-          </div>
-        </div>
-
-        {/* Real Civic Action & Volunteer Teams */}
-        <div className="space-y-6 pt-6">
-          <div className="text-center space-y-1">
-            <h3 className="text-2xl sm:text-3xl font-black text-white">
-              {language === 'en' ? 'Community In Action Across Bangladesh' : 'বাস্তব নাগরিক উদ্যোগ ও স্বেচ্ছাসেবক কার্যক্রম'}
-            </h3>
-            <p className="text-xs text-slate-400 font-mono">
-              {language === 'en'
-                ? 'Authentic citizen patrols and youth volunteers making streets safe every day'
-                : 'প্রতিদিনের রাস্তাঘাট নিরাপদ করতে সক্রিয় নাগরিক ও তরুণ স্বেচ্ছাসেবকদের ভূমিকা'}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {civicActionPillars.map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-[#130C24]/85 rounded-3xl border border-white/10 overflow-hidden hover:border-purple-400/50 transition-all duration-300 transform hover:-translate-y-2 group shadow-[0_10px_35px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.15)] flex flex-col justify-between"
-              >
-                <div>
-                  <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${item.gradient} flex items-center justify-center border-b border-white/10`}>
-                    <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 backdrop-blur-md">
-                      {item.icon}
-                    </div>
-                    
-                    <div className="absolute top-3 left-3">
-                      <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#0E081B]/80 backdrop-blur-md text-sky-300 border border-white/20">
-                        {item.tag}
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-2 right-3">
-                      <span className="text-[10px] font-mono font-bold text-sky-200 bg-sky-500/30 px-2 py-0.5 rounded-md backdrop-blur-md border border-sky-400/30">
-                        {item.metric}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-5 space-y-2">
-                    <h4 className="font-extrabold text-base text-white group-hover:text-sky-300 transition-colors">
-                      {language === 'en' ? item.titleEn : item.titleBn}
-                    </h4>
-                    <p className="text-xs text-slate-300 leading-relaxed">
-                      {language === 'en' ? item.roleEn : item.roleBn}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-5 pt-0">
-                  <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
-                    <span>Verified Network</span>
-                    <CheckCircle2 className="w-4 h-4 text-sky-400" />
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 

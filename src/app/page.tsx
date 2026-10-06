@@ -5,7 +5,6 @@ import Hero from '@/components/home/Hero';
 import LiveStatistics from '@/components/home/LiveStatistics';
 import HowItWorks from '@/components/home/HowItWorks';
 import MapPreviewSection from '@/components/home/MapPreviewSection';
-import PartnershipShowcase from '@/components/home/PartnershipShowcase';
 import AboutUsSection from '@/components/home/AboutUsSection';
 import MovingTickerSection from '@/components/home/MovingTickerSection';
 export default function HomePage() {
@@ -24,10 +23,7 @@ export default function HomePage() {
       {/* 4. 5-Step Civic Reporting Workflow */}
       <HowItWorks />
 
-      {/* 5. Public Safety Partnership Showcase (Official 999, DNCC, DSCC, WASA, DESCO) */}
-      <PartnershipShowcase />
-
-      {/* 6. Authentic About Us Section */}
+      {/* 5. Authentic About Us Section */}
       <AboutUsSection />
 
       {/* 7. Moving Text Blocks (Continuous Sentinel Stream) */}

@@ -45,31 +45,6 @@ export default function Footer() {
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Emergency Triage Callout Banner (Frosted Crimson Glass) */}
-        <div className="mb-14 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-red-500/15 via-red-600/10 to-transparent border border-red-500/30 backdrop-blur-xl flex items-center justify-between gap-6 shadow-2xl">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emergency/20 border border-emergency/40 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-              <PhoneCall className="w-6 h-6 text-red-400 animate-pulse" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase font-black px-2 py-0.5 rounded-full bg-emergency text-white tracking-wider">
-                  Emergency Notice
-                </span>
-                <h3 className="text-base sm:text-lg font-black text-white">
-                  {language === 'en' ? 'Is Someone In Immediate Life Danger?' : 'কেউ কি সরাসরি জীবন বিপন্ন পরিস্থিতিতে আছেন?'}
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-                {language === 'en'
-                  ? 'Nirapod BD is a community civic reporting platform and CANNOT dispatch police, fire brigades, or ambulances. For immediate physical emergency response, dial 999 directly.'
-                  : 'নিরাপদ বিডি একটি নাগরিক সমস্যা জানানোর প্ল্যাটফর্ম এবং এটি সরাসরি পুলিশ বা অ্যাম্বুলেন্স প্রেরণ করে না। তাত্ক্ষণিক বিপদে ৯৯৯ নম্বরে সরাসরি কল করুন।'}
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Footer Navigation Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
           

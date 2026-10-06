@@ -84,10 +84,6 @@ export default function LostAndFoundDirectory() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-xs font-mono font-bold text-purple-300 uppercase tracking-wider">
-              <Tag className="w-3.5 h-3.5 text-purple-400" />
-              <span>Community Lost & Found Hub</span>
-            </div>
             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
               {language === 'en' ? 'Dhaka Lost & Found Registry' : 'ঢাকা হারানো ও প্রাপ্তি তালিকা'}
             </h1>

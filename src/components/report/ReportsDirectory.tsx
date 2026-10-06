@@ -73,10 +73,6 @@ export default function ReportsDirectory() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-500/15 border border-sky-400/30 text-xs font-mono font-bold text-sky-300">
-              <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-              <span>Public Civic Registry</span>
-            </div>
             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
               {language === 'en' ? 'Civic Hazards & Community Reports' : 'নাগরিক সমস্যা ও প্রতিবেদনের তালিকা'}
             </h1>

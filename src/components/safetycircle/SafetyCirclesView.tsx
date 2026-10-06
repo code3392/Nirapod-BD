@@ -170,12 +170,6 @@ export default function SafetyCirclesView() {
         <div className="bg-[#130C24]/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.7)] flex flex-col md:flex-row md:items-center justify-between gap-6 ring-1 ring-purple-500/15 relative overflow-hidden">
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="space-y-2 relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-400/30 text-xs font-mono font-bold text-sky-300">
-              <ShieldCheck className="w-4 h-4 text-sky-400" />
-              <span>{language === 'en' ? 'Personal & Family Security Circles' : 'ব্যক্তিগত নিরাপত্তা ও পরিবার সার্কেল'}</span>
-              <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-            </div>
-
             <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
               {language === 'en' ? 'Keep Your Loved Ones Safe Across Bangladesh' : 'আপনার পরিবার ও আপনজনদের নিরাপত্তা নিশ্চিত রাখুন'}
             </h1>

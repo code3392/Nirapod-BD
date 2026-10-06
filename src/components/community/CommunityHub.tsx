@@ -174,10 +174,6 @@ export default function CommunityHub() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-500/15 text-xs font-mono font-bold text-sky-300 border border-sky-400/30 uppercase tracking-wider">
-              <Globe className="w-3.5 h-3.5 text-sky-400" />
-              <span>Unified Community & Personal Groups</span>
-            </div>
             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
               {language === 'en' ? 'Civic Community & Personal Groups' : 'নাগরিক কমিউনিটি ও ব্যক্তিগত গ্রুপ'}
             </h1>

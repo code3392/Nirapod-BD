@@ -120,10 +120,6 @@ export default function MovingTickerSection() {
 
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center relative z-10">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-mono font-bold uppercase tracking-wider mb-3">
-          <Activity className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-          <span>{language === 'en' ? 'Live Sentinel Network Feed' : 'লাইভ সেন্টিনেল নেটওয়ার্ক স্ট্রিম'}</span>
-        </div>
         <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
           {language === 'en' ? 'Continuous Community Safety Stream' : 'সার্বক্ষণিক নাগরিক নিরাপত্তা আপডেট'}
         </h2>

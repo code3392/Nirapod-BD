@@ -23,11 +23,6 @@ export default function AboutUsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/15 border border-sky-400/30 text-xs font-mono font-bold text-sky-300 uppercase tracking-wider backdrop-blur-md shadow-[0_0_15px_rgba(56,189,248,0.2)]">
-            <ShieldCheck className="w-4 h-4 text-sky-400" />
-            <span>About Nirapod BD</span>
-          </div>
-
           <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
             {language === 'en' ? 'Building a Safer, Cleaner Bangladesh Together' : 'একটি নিরাপদ ও আধুনিক বাংলাদেশের প্রত্যয়ে'}
           </h2>

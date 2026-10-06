@@ -37,8 +37,14 @@ import {
   Radio,
   ExternalLink,
   Flame,
-  AlertOctagon
+  AlertOctagon,
+  Crosshair
 } from 'lucide-react';
+import { 
+  getAccuratePosition, 
+  reverseGeocodeLocation, 
+  getNearestDhakaArea 
+} from '@/lib/location';
 
 export default function ReportForm() {
   const router = useRouter();
@@ -197,42 +203,68 @@ export default function ReportForm() {
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(map);
 
-      // Custom pulsing red pin icon
+      // Custom pulsing red needle pinpoint icon
       const customPinIcon = L.divIcon({
-        className: 'custom-map-marker',
+        className: 'custom-map-pinpoint-marker',
         html: `
-          <div style="position: relative; width: 36px; height: 36px; background-color: #EF4444; border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 0 20px rgba(239,68,68,0.7); border: 2.5px solid white; cursor: pointer;">
-            <span style="position: absolute; inset: -4px; border-radius: 9999px; background-color: #EF4444; opacity: 0.5; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
-            <svg style="width: 18px; height: 18px; position: relative; z-index: 10;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
+          <div style="position: relative; width: 36px; height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; cursor: grab;">
+            <!-- Ground radar pulse at needle tip -->
+            <div style="position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%); width: 22px; height: 10px; pointer-events: none;">
+              <span style="position: absolute; inset: 0; border-radius: 9999px; background: rgba(239, 68, 68, 0.45); animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
+              <span style="position: absolute; inset: 2px; border-radius: 9999px; background: rgba(220, 38, 38, 0.6); border: 1px solid #EF4444;"></span>
+            </div>
+            <!-- Sharp teardrop pin pointing down -->
+            <div style="position: relative; z-index: 10; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));">
+              <svg width="34" height="42" viewBox="0 0 34 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 0C7.61116 0 0 7.61116 0 17C0 26.8 14.5 40.5 16.2 41.95C16.65 42.35 17.35 42.35 17.8 41.95C19.5 40.5 34 26.8 34 17C34 7.61116 26.3888 0 17 0Z" fill="url(#hazardPinGrad)" />
+                <path d="M17 1C8.16344 1 1 8.16344 1 17C1 26.1 14.9 39.3 16.5 40.7C16.8 40.95 17.2 40.95 17.5 40.7C19.1 39.3 33 26.1 33 17C33 8.16344 25.8366 1 17 1Z" stroke="white" stroke-width="1.6" stroke-opacity="0.9" />
+                <circle cx="17" cy="17" r="7" fill="#0A0518" stroke="#EF4444" stroke-width="2" />
+                <circle cx="17" cy="17" r="3" fill="#FFFFFF" />
+                <defs>
+                  <linearGradient id="hazardPinGrad" x1="0" y1="0" x2="34" y2="42" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#DC2626"/>
+                    <stop offset="0.5" stop-color="#EF4444"/>
+                    <stop offset="1" stop-color="#F87171"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
           </div>
         `,
-        iconSize: [36, 36],
-        iconAnchor: [18, 18],
+        iconSize: [36, 46],
+        iconAnchor: [18, 42], // Needle tip touches ground
       });
 
       const marker = L.marker([latitude, longitude], { icon: customPinIcon, draggable: true }).addTo(map);
 
-      // On marker drag end, update coords
-      marker.on('dragend', () => {
+      // On marker drag end, update coords and address dynamically
+      marker.on('dragend', async () => {
         const pos = marker.getLatLng();
-        const lat = Number(pos.lat.toFixed(4));
-        const lng = Number(pos.lng.toFixed(4));
+        const lat = Number(pos.lat.toFixed(5));
+        const lng = Number(pos.lng.toFixed(5));
         setLatitude(lat);
         setLongitude(lng);
-        setLocationName(`Selected Pin (${lat}, ${lng}), ${area}, Dhaka`);
+        const nearest = getNearestDhakaArea(lat, lng);
+        const cleanArea = nearest.name.split(' ')[0].replace(/-\d+$/, '');
+        setArea(cleanArea);
+        setLocationPill(cleanArea);
+        const place = await reverseGeocodeLocation(lat, lng, language);
+        setLocationName(place || `${nearest.name}, Dhaka`);
       });
 
-      // On map click, move marker and update coords
-      map.on('click', (e: any) => {
-        const lat = Number(e.latlng.lat.toFixed(4));
-        const lng = Number(e.latlng.lng.toFixed(4));
+      // On map click, move marker and update coords dynamically
+      map.on('click', async (e: any) => {
+        const lat = Number(e.latlng.lat.toFixed(5));
+        const lng = Number(e.latlng.lng.toFixed(5));
         marker.setLatLng([lat, lng]);
         setLatitude(lat);
         setLongitude(lng);
-        setLocationName(`Selected Pin (${lat}, ${lng}), ${area}, Dhaka`);
+        const nearest = getNearestDhakaArea(lat, lng);
+        const cleanArea = nearest.name.split(' ')[0].replace(/-\d+$/, '');
+        setArea(cleanArea);
+        setLocationPill(cleanArea);
+        const place = await reverseGeocodeLocation(lat, lng, language);
+        setLocationName(place || `${nearest.name}, Dhaka`);
       });
 
       step4LeafletMapRef.current = map;
@@ -254,42 +286,32 @@ export default function ReportForm() {
     };
   }, [currentStep]);
 
-  // GPS Auto-Locate Button with Radar Simulation
-  const handleUseMyLocation = () => {
+  // GPS Auto-Locate Button with Precision Multi-tier Geolocation
+  const handleUseMyLocation = async () => {
     setIsLocating(true);
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = Number(position.coords.latitude.toFixed(4));
-          const lng = Number(position.coords.longitude.toFixed(4));
-          setLatitude(lat);
-          setLongitude(lng);
-          setLocationName(`Auto-Located GPS (${lat}, ${lng}), Mirpur Sector 10, Dhaka`);
-          setArea('Mirpur');
-          setLocationPill('Mirpur');
-          setIsLocating(false);
-          if (step4LeafletMapRef.current && step4MarkerRef.current) {
-            step4LeafletMapRef.current.setView([lat, lng], 15, { animate: true });
-            step4MarkerRef.current.setLatLng([lat, lng]);
-          }
-        },
-        () => {
-          // Fallback to Dhaka central
-          setLatitude(23.8041);
-          setLongitude(90.3667);
-          setLocationName('Mirpur Road, Near Mirpur-10 Roundabout, Dhaka');
-          setArea('Mirpur');
-          setLocationPill('Mirpur');
-          setIsLocating(false);
-          if (step4LeafletMapRef.current && step4MarkerRef.current) {
-            step4LeafletMapRef.current.setView([23.8041, 90.3667], 15, { animate: true });
-            step4MarkerRef.current.setLatLng([23.8041, 90.3667]);
-          }
-        },
-        { timeout: 7000 }
-      );
-    } else {
+    try {
+      const pos = await getAccuratePosition();
+      setLatitude(pos.lat);
+      setLongitude(pos.lng);
+
+      const nearest = getNearestDhakaArea(pos.lat, pos.lng);
+      const cleanArea = nearest.name.split(' ')[0].replace(/-\d+$/, '');
+      setArea(cleanArea);
+      setLocationPill(cleanArea);
+
+      const place = await reverseGeocodeLocation(pos.lat, pos.lng, language);
+      setLocationName(place || `${nearest.name}, Dhaka`);
       setIsLocating(false);
+
+      if (step4LeafletMapRef.current && step4MarkerRef.current) {
+        step4LeafletMapRef.current.setView([pos.lat, pos.lng], 17, { animate: true });
+        step4MarkerRef.current.setLatLng([pos.lat, pos.lng]);
+      }
+    } catch {
+      setIsLocating(false);
+      alert(language === 'en'
+        ? 'Could not access GPS sensor. Please tap directly on the map to pinpoint your hazard location!'
+        : 'জিপিএস অবস্থান পাওয়া যায়নি। ঝুঁকি চিহ্নিত করতে ম্যাপে সরাসরি ক্লিক করুন!');
     }
   };
 

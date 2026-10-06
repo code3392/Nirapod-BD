@@ -15,8 +15,15 @@ import {
   ShieldCheck,
   LocateFixed,
   Navigation,
-  X
+  X,
+  Crosshair,
+  AlertCircle
 } from 'lucide-react';
+import { 
+  getAccuratePosition, 
+  reverseGeocodeLocation, 
+  createPinpointIcon 
+} from '@/lib/location';
 
 export default function MapPreviewSection() {
   const { language, t, reports } = useApp();
@@ -25,6 +32,7 @@ export default function MapPreviewSection() {
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
   const [isLocating, setIsLocating] = useState<boolean>(false);
   const [isMeshPopupDismissed, setIsMeshPopupDismissed] = useState<boolean>(false);
+  const [locateFeedbackMessage, setLocateFeedbackMessage] = useState<string | null>(null);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any>(null);
@@ -98,6 +106,21 @@ export default function MapPreviewSection() {
 
       // Render initial markers
       renderMarkers(L, map, filteredReports);
+
+      // Enable clicking anywhere on map to pinpoint!
+      map.on('click', async (e: any) => {
+        const { lat, lng } = e.latlng;
+        const cLat = Number(lat.toFixed(6));
+        const cLng = Number(lng.toFixed(6));
+        await pinUserOnMap(L, map, cLat, cLng, 10, true);
+        const place = await reverseGeocodeLocation(cLat, cLng, language);
+        setLocateFeedbackMessage(
+          language === 'en'
+            ? `🎯 Pinpoint locked at ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
+            : `🎯 পিনপয়েন্ট চিহ্নিত করা হয়েছে: ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
+        );
+        setTimeout(() => setLocateFeedbackMessage(null), 4000);
+      });
     }
 
     initMap();
@@ -186,7 +209,33 @@ export default function MapPreviewSection() {
     }
   };
 
-  const pinUserOnMap = (L: any, map: any, lat: number, lng: number, accuracy: number = 80) => {
+  const buildPopupHtml = (lat: number, lng: number, accuracy: number, placeName?: string, isManual: boolean = false) => {
+    return `
+      <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 190px;">
+        <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 13px; color: #FFFFFF;">
+          <span>🎯</span>
+          <span>${isManual ? (language === 'en' ? 'Pinpointed Location' : 'পিনপয়েন্ট অবস্থান') : (language === 'en' ? 'Live GPS Pinpoint' : 'লাইভ জিপিএস পিনপয়েন্ট')}</span>
+        </div>
+        ${placeName ? `<p style="margin: 4px 0 2px 0; font-size: 11px; font-weight: 700; color: #38BDF8;">📍 ${placeName}</p>` : ''}
+        <p style="margin: 2px 0 6px 0; font-size: 10px; color: #94A3B8; font-family: monospace;">
+          ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E
+        </p>
+        <div style="display: flex; items-center; justify-content: center; gap: 4px; margin-bottom: 4px;">
+          <span style="display: inline-block; font-size: 9px; font-weight: 800; color: #38BDF8; background: rgba(56, 189, 248, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.4);">
+            ● ${isManual ? (language === 'en' ? 'Manual Pin' : 'ম্যানুয়াল পিন') : (language === 'en' ? 'Precision GPS' : 'সঠিক জিপিএস')}
+          </span>
+          <span style="display: inline-block; font-size: 9px; font-weight: 700; color: #34D399; background: rgba(52, 211, 153, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(52, 211, 153, 0.4);">
+            ±${Math.round(accuracy)}m
+          </span>
+        </div>
+        <p style="margin: 0; font-size: 9px; color: #64748B;">
+          ${language === 'en' ? '💡 Drag pin or click map to adjust' : '💡 পিন টেনে বা ম্যাপে ক্লিক করে অবস্থান বদলান'}
+        </p>
+      </div>
+    `;
+  };
+
+  const pinUserOnMap = async (L: any, map: any, lat: number, lng: number, accuracy: number = 20, isManual: boolean = false) => {
     if (!map) return;
 
     if (userMarkerRef.current) {
@@ -198,97 +247,96 @@ export default function MapPreviewSection() {
       userCircleRef.current = null;
     }
 
+    // Accuracy Circle
     const circle = L.circle([lat, lng], {
-      radius: Math.min(Math.max(accuracy, 60), 400),
+      radius: Math.min(Math.max(accuracy, 20), 250),
       color: '#38BDF8',
       fillColor: '#0EA5E9',
-      fillOpacity: 0.18,
+      fillOpacity: 0.14,
       weight: 1.5,
-      dashArray: '4, 4',
+      dashArray: '3, 5',
     }).addTo(map);
     userCircleRef.current = circle;
 
-    const userIcon = L.divIcon({
-      className: 'user-live-gps-marker',
-      html: `
-        <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-          <span style="position: absolute; width: 44px; height: 44px; border-radius: 9999px; background-color: rgba(56, 189, 248, 0.45); animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
-          <span style="position: absolute; width: 30px; height: 30px; border-radius: 9999px; background-color: rgba(14, 165, 233, 0.35); border: 1px solid rgba(56, 189, 248, 0.8);"></span>
-          <div style="position: relative; z-index: 10; width: 22px; height: 22px; border-radius: 9999px; background: linear-gradient(135deg, #0284C7, #38BDF8); border: 2.5px solid white; box-shadow: 0 0 18px rgba(56, 189, 248, 0.95); display: flex; align-items: center; justify-content: center;">
-            <div style="width: 7px; height: 7px; border-radius: 9999px; background: white;"></div>
-          </div>
-          <div style="position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); background: #0E081B; color: #38BDF8; font-family: monospace; font-weight: 800; font-size: 10px; padding: 2px 7px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.5); white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.5); pointer-events: none;">
-            ${language === 'en' ? '📍 YOU ARE HERE' : '📍 আপনার অবস্থান'}
-          </div>
-        </div>
-      `,
-      iconSize: [44, 44],
-      iconAnchor: [22, 22],
-      popupAnchor: [0, -26],
+    // Pinpoint needle marker
+    const userIcon = createPinpointIcon(L, {
+      language,
+      label: isManual ? (language === 'en' ? 'PINPOINT' : 'পিনপয়েন্ট') : (language === 'en' ? 'YOU ARE HERE' : 'আপনার অবস্থান'),
     });
 
-    const popupHtml = `
-      <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 170px;">
-        <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 13px; color: #FFFFFF;">
-          <span>📍</span>
-          <span>${language === 'en' ? 'Your Current Location' : 'আপনার বর্তমান অবস্থান'}</span>
-        </div>
-        <p style="margin: 4px 0 6px 0; font-size: 10px; color: #94A3B8; font-family: monospace;">
-          ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E
-        </p>
-        <div style="display: flex; items-center; justify-content: center; gap: 4px;">
-          <span style="display: inline-block; font-size: 9px; font-weight: 800; color: #38BDF8; background: rgba(56, 189, 248, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.4);">
-            ● GPS Live Pin
-          </span>
-          <span style="display: inline-block; font-size: 9px; font-weight: 700; color: #34D399; background: rgba(52, 211, 153, 0.18); padding: 2px 8px; border-radius: 9999px; border: 1px solid rgba(52, 211, 153, 0.4);">
-            ±${Math.round(accuracy)}m
-          </span>
-        </div>
-      </div>
-    `;
+    const marker = L.marker([lat, lng], { 
+      icon: userIcon, 
+      zIndexOffset: 1500,
+      draggable: true,
+    }).addTo(map);
 
-    const marker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 })
-      .addTo(map)
-      .bindPopup(popupHtml, { closeButton: true, autoClose: false })
-      .openPopup();
-
+    marker.bindPopup(buildPopupHtml(lat, lng, accuracy, undefined, isManual), { closeButton: true, autoClose: false }).openPopup();
     userMarkerRef.current = marker;
+
+    marker.on('dragend', async () => {
+      const pos = marker.getLatLng();
+      const nLat = Number(pos.lat.toFixed(6));
+      const nLng = Number(pos.lng.toFixed(6));
+      if (userCircleRef.current) {
+        userCircleRef.current.setLatLng([nLat, nLng]);
+      }
+      const place = await reverseGeocodeLocation(nLat, nLng, language);
+      marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true)).openPopup();
+      setLocateFeedbackMessage(
+        language === 'en'
+          ? `🎯 Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
+          : `🎯 পিনপয়েন্ট সরানো হয়েছে: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
+      );
+      setTimeout(() => setLocateFeedbackMessage(null), 4000);
+    });
+
+    reverseGeocodeLocation(lat, lng, language).then((place) => {
+      if (userMarkerRef.current === marker) {
+        marker.bindPopup(buildPopupHtml(lat, lng, accuracy, place, isManual));
+      }
+    });
   };
 
   const handleLocateMe = async () => {
     if (typeof window === 'undefined') return;
-    if (!navigator.geolocation) {
-      alert(language === 'en' ? 'Geolocation is not supported by your browser.' : 'আপনার ব্রাউজারে লোকেশন সুবিধা সমর্থিত নয়।');
-      return;
-    }
-
     setIsLocating(true);
+    setLocateFeedbackMessage(null);
+
     const L = (await import('leaflet')).default;
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setIsLocating(false);
-        const { latitude, longitude, accuracy } = pos.coords;
-        const lat = Number(latitude.toFixed(5));
-        const lng = Number(longitude.toFixed(5));
+    try {
+      const pos = await getAccuratePosition();
+      setIsLocating(false);
 
-        if (leafletMapRef.current) {
-          pinUserOnMap(L, leafletMapRef.current, lat, lng, accuracy || 80);
-          leafletMapRef.current.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
-        }
-      },
-      (err) => {
-        setIsLocating(false);
-        console.warn('Geolocation error:', err);
-        const fallbackLat = 23.8103;
-        const fallbackLng = 90.4125;
-        if (leafletMapRef.current) {
-          pinUserOnMap(L, leafletMapRef.current, fallbackLat, fallbackLng, 150);
-          leafletMapRef.current.flyTo([fallbackLat, fallbackLng], 14, { animate: true, duration: 1.2 });
-        }
-      },
-      { timeout: 10000, enableHighAccuracy: true, maximumAge: 0 }
-    );
+      if (leafletMapRef.current) {
+        await pinUserOnMap(L, leafletMapRef.current, pos.lat, pos.lng, pos.accuracy, false);
+        // Fly directly to zoom 17 so street/house level pinpoint is displayed!
+        leafletMapRef.current.flyTo([pos.lat, pos.lng], 17, { animate: true, duration: 1.2 });
+      }
+
+      const place = await reverseGeocodeLocation(pos.lat, pos.lng, language);
+      setLocateFeedbackMessage(
+        language === 'en'
+          ? `🎯 Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
+          : `🎯 পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
+      );
+      setTimeout(() => setLocateFeedbackMessage(null), 5000);
+    } catch (err: any) {
+      setIsLocating(false);
+      console.warn('Geolocation error:', err);
+
+      const isPermissionDenied = err?.message === 'PERMISSION_DENIED';
+      setLocateFeedbackMessage(
+        isPermissionDenied
+          ? (language === 'en'
+              ? '⚠️ Browser location permission blocked. Click anywhere on the map to pinpoint your location!'
+              : '⚠️ ব্রাউজারে লোকেশন অনুমতি বন্ধ রয়েছে। পিন বসাতে ম্যাপে ক্লিক করুন!')
+          : (language === 'en'
+              ? '📍 GPS sensor unavailable on this device. Click anywhere on the map to pinpoint your location!'
+              : '📍 জিপিএস সেন্সর পাওয়া যায়নি। পিন বসাতে ম্যাপে যে কোনো জায়গায় ক্লিক করুন!')
+      );
+      setTimeout(() => setLocateFeedbackMessage(null), 6000);
+    }
   };
 
   return (
@@ -432,6 +480,20 @@ export default function MapPreviewSection() {
             ref={mapContainerRef} 
             className="w-full h-[500px] sm:h-[580px] bg-[#05020B] z-0" 
           />
+
+          {/* Real-time Pinpoint Feedback Banner */}
+          {locateFeedbackMessage && (
+            <div className="absolute top-16 left-3 right-3 sm:left-6 sm:right-auto z-[1001] bg-[#0E081B]/95 backdrop-blur-2xl border border-sky-400/50 text-sky-200 px-4 py-2.5 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.85)] flex items-center gap-2.5 text-xs font-bold animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-sky-500/30 max-w-lg">
+              <Crosshair className="w-4 h-4 text-sky-400 shrink-0 animate-pulse" />
+              <span className="flex-1 leading-snug">{locateFeedbackMessage}</span>
+              <button 
+                onClick={() => setLocateFeedbackMessage(null)} 
+                className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-white/10 shrink-0"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
 
           {/* Zero Reports Active Overlay */}
           {filteredReports.length === 0 && !isMeshPopupDismissed && (

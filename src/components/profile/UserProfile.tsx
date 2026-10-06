@@ -31,7 +31,11 @@ import {
   FileCheck,
   Upload,
   Radio,
-  ShieldAlert
+  ShieldAlert,
+  Users,
+  X,
+  Camera,
+  Video
 } from 'lucide-react';
 
 export default function UserProfile() {
@@ -329,7 +333,9 @@ export default function UserProfile() {
                 <Phone className="w-3 h-3 text-sky-400" />
                 <span>{user.phone || '01711-234567'}</span>
               </p>
-              <span className="text-[9px] text-sky-400 font-bold">✓ OTP Verified</span>
+              <span className="flex items-center gap-1 text-[9px] text-sky-400 font-bold">
+                <CheckCircle2 className="w-3 h-3" /> OTP Verified
+              </span>
             </div>
 
             <div>
@@ -338,7 +344,9 @@ export default function UserProfile() {
                 <Mail className="w-3 h-3 text-purple-400" />
                 <span className="truncate">{user.email}</span>
               </p>
-              <span className="text-[9px] text-sky-400 font-bold">✓ Verified</span>
+              <span className="flex items-center gap-1 text-[9px] text-sky-400 font-bold">
+                <CheckCircle2 className="w-3 h-3" /> Verified
+              </span>
             </div>
 
             <div>
@@ -371,7 +379,9 @@ export default function UserProfile() {
               <p className="font-mono font-bold text-white">
                 {user.nidNumber || '5928 4910 23'}
               </p>
-              <span className="text-[9px] text-sky-400 font-bold">✓ NID Verified</span>
+              <span className="flex items-center gap-1 text-[9px] text-sky-400 font-bold">
+                <CheckCircle2 className="w-3 h-3" /> NID Verified
+              </span>
             </div>
           </div>
         )}
@@ -454,8 +464,8 @@ export default function UserProfile() {
                     {language === 'en' ? badge.titleEn : badge.titleBn}
                   </h4>
                   {badge.isUnlocked ? (
-                    <span className="text-[10px] font-bold text-sky-400 bg-sky-500/20 border border-sky-500/30 px-2 py-0.5 rounded-full">
-                      Earned ✓
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-sky-400 bg-sky-500/20 border border-sky-500/30 px-2 py-0.5 rounded-full">
+                      <CheckCircle2 className="w-3 h-3" /> Earned
                     </span>
                   ) : (
                     <span className="text-[10px] font-bold text-slate-400 bg-white/5 border border-white/10 px-1.5 py-0.2 rounded">
@@ -544,8 +554,9 @@ export default function UserProfile() {
                 </div>
 
                 <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
-                  <span className="text-xs font-bold text-sky-400">
-                    👥 {report.confirmationsCount} votes
+                  <span className="text-xs font-bold text-sky-400 flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5" />
+                    <span>{report.confirmationsCount} votes</span>
                   </span>
                   <Link
                     href={`/report/${report.id}`}
@@ -566,7 +577,9 @@ export default function UserProfile() {
           <div className="bg-[#150D28] rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-white/15 space-y-4 text-white">
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <h3 className="font-black text-white text-base">Submit Work Completion Proof</h3>
-              <button onClick={() => setShowWorkProofModal(false)} className="text-slate-400 hover:text-white transition">✕</button>
+              <button onClick={() => setShowWorkProofModal(false)} className="text-slate-400 hover:text-white transition">
+                <X className="w-4 h-4" />
+              </button>
             </div>
             <p className="text-xs text-slate-300">
               Upload photo or video verifying that ticket <strong>{user.unresolvedReportIdForWorkProof}</strong> was indeed resolved.
@@ -576,16 +589,18 @@ export default function UserProfile() {
                 <button
                   type="button"
                   onClick={() => setWorkProofType('image')}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold border transition ${workProofType === 'image' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'}`}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold border transition flex items-center justify-center gap-1.5 ${workProofType === 'image' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'}`}
                 >
-                  📷 Photo
+                  <Camera className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Photo</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setWorkProofType('video')}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold border transition ${workProofType === 'video' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'}`}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold border transition flex items-center justify-center gap-1.5 ${workProofType === 'video' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'}`}
                 >
-                  🎥 Video
+                  <Video className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Video</span>
                 </button>
               </div>
               <input

@@ -65,7 +65,18 @@ export default async function Image() {
               fontSize: '32px',
             }}
           >
-            🛡️
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span
@@ -145,13 +156,13 @@ export default async function Image() {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
             <span style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 700 }}>
-              🚨 Bangladesh Emergency 999
+              National Emergency 999
             </span>
             <span style={{ color: '#93C5FD', fontSize: '16px', fontWeight: 600 }}>
-              🏥 Shastho Batayon 16263
+              Shastho Batayon 16263
             </span>
             <span style={{ color: '#93C5FD', fontSize: '16px', fontWeight: 600 }}>
-              🏛️ Citizen Helpline 333
+              Citizen Helpline 333
             </span>
           </div>
           <span

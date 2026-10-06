@@ -21,42 +21,42 @@ export default function MovingTickerSection() {
 
   const row1Items = [
     {
-      icon: '🚨',
+      icon: PhoneCall,
       tag: 'EMERGENCY',
       tagColor: 'bg-red-500/20 text-red-400 border-red-500/30',
       title: language === 'en' ? 'Sub-Second 999 Hotlink' : 'দ্রুততম ৯৯৯ জরুরি সংযোগ',
       desc: language === 'en' ? 'Direct dispatch to DMP & Fire Rescue' : 'ডিএমপি ও ফায়ার সার্ভিসে তাত্ক্ষণিক অ্যালার্ট',
     },
     {
-      icon: '🛡️',
+      icon: ShieldAlert,
       tag: 'COMMUNITY MESH',
       tagColor: 'bg-sky-500/20 text-sky-400 border-sky-500/30',
       title: language === 'en' ? '12,450+ Verified Guardians' : '১২,৪৫০+ যাচাইকৃত নাগরিক প্রহরী',
       desc: language === 'en' ? 'Active across all 54 wards of Dhaka' : 'ঢাকার ৫৪টি ওয়ার্ডে সার্বক্ষণিক সক্রিয়',
     },
     {
-      icon: '⚡',
+      icon: Radio,
       tag: 'GEO-RADAR',
       tagColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
       title: language === 'en' ? 'Real-Time Hazard Pinpointing' : 'লাইভ হ্যাজার্ড পিনপয়েন্টিং',
       desc: language === 'en' ? 'Precise street GPS tracking without delays' : 'সরাসরি নিখুঁত জিপিএস ম্যাপিং',
     },
     {
-      icon: '🤝',
+      icon: HeartHandshake,
       tag: 'MUNICIPAL SYNC',
       tagColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
       title: language === 'en' ? 'DNCC, DSCC & WASA Escalation' : 'ডিএনসিসি, ডিএসসিসি ও ওয়াসা সংযোগ',
       desc: language === 'en' ? 'Direct escalation to repair work orders' : 'নাগরিক সমস্যা সরাসরি সমাধানকারী সংস্থায়',
     },
     {
-      icon: '🔍',
+      icon: Sparkles,
       tag: 'AI VISION',
       tagColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
       title: language === 'en' ? 'Automated Risk Categorization' : 'স্বয়ংক্রিয় এআই ঝুঁকি মূল্যায়ন',
       desc: language === 'en' ? 'Instant computer-vision damage scanning' : 'ছবি ও ভিডিও থেকে স্বয়ংক্রিয় ঝুঁকি চিহ্নিতকরণ',
     },
     {
-      icon: '🌟',
+      icon: CheckCircle2,
       tag: 'RESOLUTION',
       tagColor: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
       title: language === 'en' ? '94.2% Verified Resolution Rate' : '৯৪.২% যাচাইকৃত সমাধান হার',
@@ -66,42 +66,42 @@ export default function MovingTickerSection() {
 
   const row2Items = [
     {
-      icon: '📢',
+      icon: Radio,
       tag: 'SAFETY BROADCAST',
       tagColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
       title: language === 'en' ? 'Instant WhatsApp Citizen Alerts' : 'হোয়াটসঅ্যাপে তাত্ক্ষণিক সতর্কতা',
       desc: language === 'en' ? 'Neighbors receive push alerts within 300m' : '৩০০ মিটারের মধ্যে নাগরিকদের কাছে স্বয়ংক্রিয় মেসেজ',
     },
     {
-      icon: '🔒',
+      icon: ShieldAlert,
       tag: 'ZERO SPAM',
       tagColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
       title: language === 'en' ? 'Community Consensus Verification' : 'নাগরিক ঐকমত্য যাচাই ব্যবস্থা',
       desc: language === 'en' ? 'Dual-stage citizen checks prevent fake reports' : 'ভুয়া তথ্য রোধে মাল্টি-ইউজার কনফার্মেশন',
     },
     {
-      icon: '🩺',
+      icon: Activity,
       tag: 'HEALTH PROTOCOL',
       tagColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
       title: language === 'en' ? 'Live Medical Hotline 16263' : 'লাইভ স্বাস্থ্য বাতায়ন ১৬২৬৩',
       desc: language === 'en' ? 'Integrated ambulance routing for casualties' : 'জরুরি অ্যাম্বুলেন্স ও হাসপাতাল নির্দেশনা',
     },
     {
-      icon: '🚦',
+      icon: MapPin,
       tag: 'TRAFFIC RADAR',
       tagColor: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
       title: language === 'en' ? 'Waterlogging & Cave-in Warning' : 'জলাবদ্ধতা ও সড়ক ধস সতর্কতা',
       desc: language === 'en' ? 'Live commute detour alerts across VIP corridors' : 'মিরপুর, ধানমন্ডি ও কুড়িল রুটে রিয়েল-টাইম ডাইভারশন',
     },
     {
-      icon: '🏅',
+      icon: Users,
       tag: 'REPUTATION',
       tagColor: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/30',
       title: language === 'en' ? 'Citizen Gamification Points' : 'নাগরিক সেফটি রেপুটেশন পয়েন্ট',
       desc: language === 'en' ? 'Earn civic badges and verified trust tiers' : 'সত্য রিপোর্ট যাচাইয়ে সম্মানসূচক ব্যাজ ও পয়েন্ট',
     },
     {
-      icon: '🇧🇩',
+      icon: Eye,
       tag: 'NATIONWIDE',
       tagColor: 'bg-green-500/20 text-green-300 border-green-500/30',
       title: language === 'en' ? 'For A Safer Bangladesh' : 'একটি নিরাপদ বাংলাদেশের প্রত্যয়',
@@ -132,43 +132,48 @@ export default function MovingTickerSection() {
       {/* Marquee Track 1 (Left to Right) */}
       <div className="relative overflow-hidden mb-4">
         <div className="animate-marquee gap-4">
-          {track1.map((item, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-3.5 px-5 py-3.5 rounded-2xl bg-[#130C24]/90 border border-white/10 hover:border-purple-400/50 backdrop-blur-xl shadow-lg transition duration-200 shrink-0 group min-w-[290px] sm:min-w-[340px]"
-            >
-              <div className="text-2xl p-2 rounded-xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform">
-                {item.icon}
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className={`text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-full border ${item.tagColor}`}>
-                    {item.tag}
-                  </span>
+          {track1.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={idx}
+                className="flex items-center gap-3.5 px-5 py-3.5 rounded-2xl bg-[#130C24]/90 border border-white/10 hover:border-purple-400/50 backdrop-blur-xl shadow-lg transition duration-200 shrink-0 group min-w-[290px] sm:min-w-[340px]"
+              >
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform text-sky-400">
+                  <Icon className="w-5 h-5" />
                 </div>
-                <h4 className="text-xs sm:text-sm font-bold text-white group-hover:text-sky-300 transition-colors mt-0.5 truncate">
-                  {item.title}
-                </h4>
-                <p className="text-[11px] text-slate-400 truncate">
-                  {item.desc}
-                </p>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-full border ${item.tagColor}`}>
+                      {item.tag}
+                    </span>
+                  </div>
+                  <h4 className="text-xs sm:text-sm font-bold text-white group-hover:text-sky-300 transition-colors mt-0.5 truncate">
+                    {item.title}
+                  </h4>
+                  <p className="text-[11px] text-slate-400 truncate">
+                    {item.desc}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* Marquee Track 2 (Reverse Right to Left) */}
       <div className="relative overflow-hidden">
         <div className="animate-marquee-reverse gap-4">
-          {track2.map((item, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-3.5 px-5 py-3.5 rounded-2xl bg-[#130C24]/90 border border-white/10 hover:border-sky-400/50 backdrop-blur-xl shadow-lg transition duration-200 shrink-0 group min-w-[290px] sm:min-w-[340px]"
-            >
-              <div className="text-2xl p-2 rounded-xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform">
-                {item.icon}
-              </div>
+          {track2.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={idx}
+                className="flex items-center gap-3.5 px-5 py-3.5 rounded-2xl bg-[#130C24]/90 border border-white/10 hover:border-sky-400/50 backdrop-blur-xl shadow-lg transition duration-200 shrink-0 group min-w-[290px] sm:min-w-[340px]"
+              >
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform text-purple-400">
+                  <Icon className="w-5 h-5" />
+                </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <span className={`text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-full border ${item.tagColor}`}>
@@ -183,7 +188,8 @@ export default function MovingTickerSection() {
                 </p>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       </div>
     </section>

@@ -167,7 +167,7 @@ export default function HowItWorks() {
             href="/report/new"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-emergency hover:bg-emergency-hover text-white font-extrabold text-sm shadow-[0_0_25px_rgba(239,68,68,0.4)] transition transform hover:scale-105 active:scale-95 border border-emergency/50"
           >
-            <span>🚨 {t.hero.primaryCta}</span>
+            <span>{t.hero.primaryCta}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

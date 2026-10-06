@@ -20,7 +20,8 @@ import {
   ExternalLink,
   ChevronRight,
   ShieldCheck,
-  Send
+  Send,
+  Users
 } from 'lucide-react';
 
 export default function OrganizationDashboard() {
@@ -221,7 +222,10 @@ export default function OrganizationDashboard() {
                       <StatusBadge status={report.status} size="sm" />
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap font-bold text-white">
-                      👥 {report.confirmationsCount}
+                      <span className="flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-sky-400" />
+                        <span>{report.confirmationsCount}</span>
+                      </span>
                     </td>
                     <td className="py-3 px-6 whitespace-nowrap text-right space-x-1.5">
                       {report.status !== 'IN_PROGRESS' && report.status !== 'RESOLVED' && (
@@ -245,7 +249,7 @@ export default function OrganizationDashboard() {
                           href={`/report/${report.id}`}
                           className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 font-bold text-[11px] transition inline-block"
                         >
-                          View Proof ✓
+                          View Proof
                         </Link>
                       )}
                     </td>

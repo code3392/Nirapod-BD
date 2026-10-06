@@ -315,7 +315,7 @@ export function createPinpointIcon(
 
         <!-- Floating Pinpoint Badge -->
         <div style="position: absolute; top: -22px; left: 50%; transform: translateX(-50%); background: #0E081B; color: #38BDF8; font-family: monospace; font-weight: 900; font-size: 9px; padding: 2px 7px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.6); white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,0.85); pointer-events: none; letter-spacing: 0.5px;">
-          🎯 ${label}
+          ${label}
         </div>
       </div>
     `,

@@ -87,7 +87,7 @@ export default function ReportsDirectory() {
             href="/report/new"
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(239,68,68,0.4)] transition transform hover:scale-105 active:scale-95 shrink-0 self-start md:self-auto border border-emergency/50"
           >
-            <span>🚨 {t.nav.reportProblem}</span>
+            <span>{t.nav.reportProblem}</span>
           </Link>
         </div>
 
@@ -250,7 +250,7 @@ export default function ReportsDirectory() {
                 href="/report/new"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs shadow-[0_0_20px_rgba(239,68,68,0.4)] transition transform hover:scale-105 active:scale-95"
               >
-                <span>🚨 Report a Problem</span>
+                <span>Report a Problem</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -372,7 +372,10 @@ export default function ReportsDirectory() {
                         <StatusBadge status={report.status} size="sm" />
                       </td>
                       <td className="p-4 whitespace-nowrap font-bold text-white">
-                        👥 {report.confirmationsCount}
+                        <span className="flex items-center gap-1.5">
+                          <Users className="w-3.5 h-3.5 text-sky-400" />
+                          <span>{report.confirmationsCount}</span>
+                        </span>
                       </td>
                       <td className="p-4 whitespace-nowrap text-slate-400 font-mono text-[11px]">
                         {new Date(report.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}

@@ -92,9 +92,10 @@ export default function EmergencyAlertModal({
           <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
             <a
               href="tel:999"
-              className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-emergency text-white font-extrabold text-sm text-center shadow-md hover:bg-emergency-hover transition"
+              className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-emergency text-white font-extrabold text-sm text-center shadow-md hover:bg-emergency-hover transition flex items-center justify-center gap-1.5"
             >
-              📞 {t.emergencyWarning.call999}
+              <PhoneCall className="w-4 h-4" />
+              <span>{t.emergencyWarning.call999}</span>
             </a>
             <button
               onClick={onContinue}

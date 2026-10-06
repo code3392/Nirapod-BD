@@ -182,7 +182,7 @@ export default function LostAndFoundDirectory() {
           {/* Finding Section Location Helper & Active Filter Indicator */}
           <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs text-slate-400 border-t border-white/5">
             <div className="flex items-center gap-1.5">
-              <span className="text-sky-400 font-bold">💡 Finding Section:</span>
+              <span className="text-sky-400 font-bold">Finding Section:</span>
               <span>
                 {language === 'en'
                   ? 'Type where you lost your item above to instantly match recovered items reported by citizens in that area.'
@@ -192,7 +192,7 @@ export default function LostAndFoundDirectory() {
 
             {lostLocationQuery && (
               <div className="inline-flex items-center gap-1.5 bg-red-500/15 border border-red-500/30 text-red-300 px-3 py-1 rounded-full text-xs font-mono font-bold">
-                <span>📍 Filtering by location: &quot;{lostLocationQuery}&quot;</span>
+                <span>Filtering by location: &quot;{lostLocationQuery}&quot;</span>
                 <button
                   onClick={() => setLostLocationQuery('')}
                   className="hover:text-white underline ml-1"
@@ -289,8 +289,8 @@ export default function LostAndFoundDirectory() {
                           item.type === 'found' ? 'text-sky-300' : 'text-red-300'
                         }`}>
                           {item.type === 'found'
-                            ? (language === 'en' ? '📍 FOUND AT LOCATION:' : '📍 প্রাপ্তির স্থান:')
-                            : (language === 'en' ? '📍 LOST AT LOCATION:' : '📍 হারানোর স্থান:')}
+                            ? (language === 'en' ? 'FOUND AT LOCATION:' : 'প্রাপ্তির স্থান:')
+                            : (language === 'en' ? 'LOST AT LOCATION:' : 'হারানোর স্থান:')}
                         </span>
                         <p className="text-xs font-bold text-white break-words leading-tight mt-0.5">
                           {item.specificLocation}
@@ -352,7 +352,7 @@ export default function LostAndFoundDirectory() {
                       newItemType === 'lost' ? 'bg-emergency text-white border-emergency shadow-[0_0_12px_rgba(239,68,68,0.4)]' : 'bg-white/5 text-slate-300 border-white/10'
                     }`}
                   >
-                    🔴 I Lost Something
+                    I Lost Something
                   </button>
                   <button
                     type="button"
@@ -361,7 +361,7 @@ export default function LostAndFoundDirectory() {
                       newItemType === 'found' ? 'bg-sky-500 text-white border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.4)]' : 'bg-white/5 text-slate-300 border-white/10'
                     }`}
                   >
-                    🔵 I Found Something
+                    I Found Something
                   </button>
                 </div>
 
@@ -408,7 +408,7 @@ export default function LostAndFoundDirectory() {
                       </span>
                     </label>
                     <span className="text-[10px] font-mono text-slate-400 font-bold">
-                      {newItemType === 'found' ? '📍 Recovery Spot' : '📍 Incident Spot'}
+                      {newItemType === 'found' ? 'Recovery Spot' : 'Incident Spot'}
                     </span>
                   </div>
 

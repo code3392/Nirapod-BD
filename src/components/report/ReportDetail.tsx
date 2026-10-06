@@ -189,8 +189,9 @@ export default function ReportDetail({ report }: ReportDetailProps) {
               <h3 className="text-sm font-black text-navy uppercase tracking-wider">
                 {t.detail.officialResolutionTitle}
               </h3>
-              <span className="text-xs font-bold text-civic-blue bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
-                ✓ Repaired by {report.assignedOrganization?.name || 'Municipal Agency'}
+              <span className="text-xs font-bold text-civic-blue bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Repaired by {report.assignedOrganization?.name || 'Municipal Agency'}</span>
               </span>
             </div>
             <BeforeAfterSlider
@@ -252,7 +253,7 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             )}
             <div className="absolute top-4 left-4 pointer-events-none">
               <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20">
-                {isVideoMedia ? '🎥 Video Evidence' : t.detail.evidencePhoto}
+                {isVideoMedia ? 'Video Evidence' : t.detail.evidencePhoto}
               </span>
             </div>
           </div>
@@ -353,9 +354,10 @@ export default function ReportDetail({ report }: ReportDetailProps) {
             {(report.aiRisks || ['Public safety hazard', 'Vehicle disturbance']).map((risk, idx) => (
               <span
                 key={idx}
-                className="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg text-slate-300 font-medium"
+                className="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg text-slate-300 font-medium flex items-center gap-1.5"
               >
-                ⚠️ {risk}
+                <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
+                <span>{risk}</span>
               </span>
             ))}
           </div>

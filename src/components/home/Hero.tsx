@@ -85,7 +85,7 @@ export default function Hero() {
                 href="/report/new"
                 className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] shadow-lg text-base h-12 w-full min-[420px]:w-auto rounded-none bg-emergency hover:bg-emergency-hover px-7 font-extrabold text-white border border-emergency/50 group tracking-[-0.01em]"
               >
-                <span>🚨 {t.hero.primaryCta}</span>
+                <span>{t.hero.primaryCta}</span>
                 <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
               </Link>
 
@@ -93,7 +93,7 @@ export default function Hero() {
                 href="/map"
                 className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all duration-300 active:scale-[0.97] border shadow-sm text-base h-12 w-full min-[420px]:w-auto rounded-none border-white/25 bg-white/[0.05] px-7 font-semibold text-white hover:bg-white/10 hover:border-sky-400/50 backdrop-blur-md tracking-[-0.01em]"
               >
-                <span>🗺️ {t.hero.secondaryCta}</span>
+                <span>{t.hero.secondaryCta}</span>
                 <ArrowUpRight className="w-4 h-4 ml-1 text-slate-300" />
               </Link>
 

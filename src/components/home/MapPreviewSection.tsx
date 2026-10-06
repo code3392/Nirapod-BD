@@ -33,7 +33,6 @@ export default function MapPreviewSection() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(reports[0] || null);
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
   const [isLocating, setIsLocating] = useState<boolean>(false);
-  const [isMeshPopupDismissed, setIsMeshPopupDismissed] = useState<boolean>(false);
   const [locateFeedbackMessage, setLocateFeedbackMessage] = useState<string | null>(null);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -85,7 +84,7 @@ export default function MapPreviewSection() {
         center: [centerLat, centerLng],
         zoom: 12,
         zoomControl: false,
-        scrollWheelZoom: false,
+        scrollWheelZoom: true,
       });
 
       L.control.zoom({ position: 'topright' }).addTo(map);
@@ -118,8 +117,8 @@ export default function MapPreviewSection() {
         const place = await reverseGeocodeLocation(cLat, cLng, language);
         setLocateFeedbackMessage(
           language === 'en'
-            ? `🎯 Pinpoint locked at ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
-            : `🎯 পিনপয়েন্ট চিহ্নিত করা হয়েছে: ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
+            ? `Pinpoint locked at ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
+            : `পিনপয়েন্ট চিহ্নিত করা হয়েছে: ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
         );
         setTimeout(() => setLocateFeedbackMessage(null), 4000);
       });
@@ -223,10 +222,9 @@ export default function MapPreviewSection() {
     return `
       <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 195px;">
         <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 13px; color: #FFFFFF;">
-          <span>🎯</span>
           <span>${isManual ? (language === 'en' ? 'Pinpointed Location' : 'পিনপয়েন্ট অবস্থান') : (isVpn ? (language === 'en' ? 'Dhaka (VPN Detected)' : 'ঢাকা (ভিপিএন সক্রিয়)') : (language === 'en' ? 'Live GPS Pinpoint' : 'লাইভ জিপিএস পিনপয়েন্ট'))}</span>
         </div>
-        ${placeName ? `<p style="margin: 4px 0 2px 0; font-size: 11px; font-weight: 700; color: #38BDF8;">📍 ${placeName}</p>` : ''}
+        ${placeName ? `<p style="margin: 4px 0 2px 0; font-size: 11px; font-weight: 700; color: #38BDF8;">${placeName}</p>` : ''}
         <p style="margin: 2px 0 6px 0; font-size: 10px; color: #94A3B8; font-family: monospace;">
           ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E
         </p>
@@ -239,7 +237,7 @@ export default function MapPreviewSection() {
           </span>
         </div>
         <p style="margin: 0; font-size: 9px; color: #64748B;">
-          ${language === 'en' ? '💡 Drag pin or click map to adjust' : '💡 পিন টেনে বা ম্যাপে ক্লিক করে অবস্থান বদলান'}
+          ${language === 'en' ? 'Drag pin or click map to adjust' : 'পিন টেনে বা ম্যাপে ক্লিক করে অবস্থান বদলান'}
         </p>
       </div>
     `;
@@ -302,8 +300,8 @@ export default function MapPreviewSection() {
       marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true, false)).openPopup();
       setLocateFeedbackMessage(
         language === 'en'
-          ? `🎯 Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
-          : `🎯 পিনপয়েন্ট সরানো হয়েছে: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
+          ? `Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
+          : `পিনপয়েন্ট সরানো হয়েছে: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
       );
       setTimeout(() => setLocateFeedbackMessage(null), 4000);
     });
@@ -323,8 +321,8 @@ export default function MapPreviewSection() {
     const areaLabel = language === 'bn' ? area.nameBn : area.name;
     setLocateFeedbackMessage(
       language === 'en'
-        ? `🎯 Pinpoint locked to ${areaLabel} (±10m). Drag pin or click map to adjust.`
-        : `🎯 ${areaLabel}-এ পিন লক করা হয়েছে (±১০ মি)। প্রয়োজনে পিন সরান বা ম্যাপে ক্লিক করুন।`
+        ? `Pinpoint locked to ${areaLabel} (±10m). Drag pin or click map to adjust.`
+        : `${areaLabel}-এ পিন লক করা হয়েছে (±১০ মি)। প্রয়োজনে পিন সরান বা ম্যাপে ক্লিক করুন।`
     );
     setTimeout(() => setLocateFeedbackMessage(null), 5000);
   };
@@ -350,14 +348,14 @@ export default function MapPreviewSection() {
       if (pos.isVpnDetected) {
         setLocateFeedbackMessage(
           language === 'en'
-            ? `🛡️ Foreign VPN/IP detected outside BD. Centered in Dhaka (±15m). Tap quick areas or drag pin!`
-            : `🛡️ ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। ম্যাপ ঢাকায় লক করা হয়েছে (±১৫ মি)। নিচের এলাকা চাপুন বা পিন সরান!`
+            ? `Foreign VPN/IP detected outside BD. Centered in Dhaka (±15m). Tap quick areas or drag pin!`
+            : `ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। ম্যাপ ঢাকায় লক করা হয়েছে (±১৫ মি)। নিচের এলাকা চাপুন বা পিন সরান!`
         );
       } else {
         setLocateFeedbackMessage(
           language === 'en'
-            ? `🎯 Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
-            : `🎯 পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
+            ? `Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
+            : `পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
         );
       }
       setTimeout(() => setLocateFeedbackMessage(null), 5000);
@@ -369,11 +367,11 @@ export default function MapPreviewSection() {
       setLocateFeedbackMessage(
         isPermissionDenied
           ? (language === 'en'
-              ? '⚠️ Browser location permission blocked. Click anywhere on the map to pinpoint your location!'
-              : '⚠️ ব্রাউজারে লোকেশন অনুমতি বন্ধ রয়েছে। পিন বসাতে ম্যাপে ক্লিক করুন!')
+              ? 'Browser location permission blocked. Click anywhere on the map to pinpoint your location!'
+              : 'ব্রাউজারে লোকেশন অনুমতি বন্ধ রয়েছে। পিন বসাতে ম্যাপে ক্লিক করুন!')
           : (language === 'en'
-              ? '📍 GPS sensor unavailable on this device. Click anywhere on the map to pinpoint your location!'
-              : '📍 জিপিএস সেন্সর পাওয়া যায়নি। পিন বসাতে ম্যাপে যে কোনো জায়গায় ক্লিক করুন!')
+              ? 'GPS sensor unavailable on this device. Click anywhere on the map to pinpoint your location!'
+              : 'জিপিএস সেন্সর পাওয়া যায়নি। পিন বসাতে ম্যাপে যে কোনো জায়গায় ক্লিক করুন!')
       );
       setTimeout(() => setLocateFeedbackMessage(null), 6000);
     }
@@ -477,18 +475,6 @@ export default function MapPreviewSection() {
                   <LocateFixed className="w-3.5 h-3.5 text-sky-400" />
                   <span className="hidden sm:inline">Center Dhaka</span>
                 </button>
-
-                {/* Status pill to reopen mesh popup if dismissed */}
-                {filteredReports.length === 0 && isMeshPopupDismissed && (
-                  <button
-                    onClick={() => setIsMeshPopupDismissed(false)}
-                    className="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 hover:text-white border border-sky-400/30 text-xs flex items-center gap-1.5 transition font-bold"
-                    title="View Dhaka Safety Mesh info"
-                  >
-                    <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-                    <span>Mesh Active</span>
-                  </button>
-                )}
               </div>
 
               {/* Legend Indicators */}
@@ -531,53 +517,6 @@ export default function MapPreviewSection() {
               >
                 <X className="w-3.5 h-3.5" />
               </button>
-            </div>
-          )}
-
-          {/* Zero Reports Active Overlay */}
-          {filteredReports.length === 0 && !isMeshPopupDismissed && (
-            <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none z-[1001] animate-in fade-in duration-200">
-              <div className="relative bg-[#150D28]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl max-w-md text-center space-y-4 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.85)] ring-1 ring-sky-500/20">
-                {/* Close 'X' Button */}
-                <button
-                  type="button"
-                  onClick={() => setIsMeshPopupDismissed(true)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/15 text-slate-400 hover:text-white border border-white/10 transition shadow-sm hover:scale-110 active:scale-95"
-                  aria-label="Close popup"
-                  title="Close popup"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-
-                <div className="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-400 mx-auto flex items-center justify-center border border-sky-400/30 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
-                  <ShieldCheck className="w-6 h-6 animate-pulse" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-display font-bold uppercase tracking-widest text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-400/30 inline-block mb-1.5 tabular-nums">
-                    Live Telemetry • 0 Active Threats
-                  </span>
-                  <h4 className="text-base font-black text-white">Dhaka Safety Mesh Active</h4>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Zero unverified hazards currently logged under this filter. Real reports submitted by verified citizens appear directly on this live map.
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
-                  <Link
-                    href="/report/new"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-emergency hover:bg-emergency-hover text-white font-extrabold text-xs transition shadow-[0_0_20px_rgba(239,68,68,0.4)] transform hover:scale-105 active:scale-95"
-                  >
-                    <span>🚨 Log First Community Hazard</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => setIsMeshPopupDismissed(true)}
-                    className="w-full sm:w-auto px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-bold text-xs transition hover:scale-105 active:scale-95"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
             </div>
           )}
 

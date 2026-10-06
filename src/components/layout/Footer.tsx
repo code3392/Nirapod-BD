@@ -28,11 +28,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/map" className="hover:text-sky-400 transition-colors flex items-center gap-1.5">
-                  <span>{t.nav.safetyMap}</span>
-                  <span className="text-[9px] font-mono bg-emergency px-1.5 py-0.2 rounded-full text-white font-extrabold animate-pulse">
-                    Live
-                  </span>
+                <Link href="/map" className="hover:text-sky-400 transition-colors">
+                  {t.nav.safetyMap}
                 </Link>
               </li>
               <li>

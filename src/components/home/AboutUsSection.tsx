@@ -66,38 +66,6 @@ export default function AboutUsSection() {
             </p>
           </div>
         </div>
-
-        {/* Root Platform Authority Card */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#0E081B] via-[#130C24] to-[#0E081B] border border-white/15 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl ring-1 ring-sky-500/15">
-          <div className="flex items-center gap-4 text-center md:text-left">
-            <div className="w-14 h-14 rounded-2xl bg-sky-500/15 text-sky-400 border border-sky-400/30 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
-              <ShieldCheck className="w-7 h-7" />
-            </div>
-            <div>
-              <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
-                <span className="text-[10px] font-mono font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                  Super Admin Authority
-                </span>
-                <span className="text-xs font-mono text-slate-300">smdsami59@gmail.com</span>
-              </div>
-              <p className="text-sm font-bold text-white">
-                {language === 'en' ? 'Direct Platform Ownership & Moderation Protocol' : 'প্ল্যাটফর্ম সার্বিক তত্ত্বাবধান ও সমন্বয়'}
-              </p>
-              <p className="text-xs text-slate-400">
-                {language === 'en' ? 'Independent Civic Non-Profit Technology Initiative for Bangladesh' : 'বাংলাদেশের জন্য একটি স্বাধীন অলাভজনক সামাজিক প্রযুক্তি উদ্যোগ'}
-              </p>
-            </div>
-          </div>
-
-          <Link
-            href="/community"
-            className="px-7 py-3.5 rounded-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-black text-xs uppercase tracking-wider transition transform hover:scale-105 shadow-[0_0_20px_rgba(56,189,248,0.35)] shrink-0 flex items-center gap-2"
-          >
-            <span>{language === 'en' ? 'Join Community Hub' : 'কমিউনিটি হাবে যোগ দিন'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
       </div>
     </section>
   );

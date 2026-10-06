@@ -23,7 +23,8 @@ import {
   ChevronRight,
   Filter,
   Radio,
-  Crosshair
+  Crosshair,
+  Moon
 } from 'lucide-react';
 import { 
   getAccuratePosition, 
@@ -130,6 +131,7 @@ export default function SafetyMap() {
         center: [mapCenter.lat, mapCenter.lng],
         zoom: 12,
         zoomControl: false,
+        scrollWheelZoom: true,
       });
 
       // Add Zoom control to top-right
@@ -154,8 +156,8 @@ export default function SafetyMap() {
         const place = await reverseGeocodeLocation(cLat, cLng, language);
         setLocatedMessage(
           language === 'en'
-            ? `🎯 Pinpoint locked at ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
-            : `🎯 পিনপয়েন্ট চিহ্নিত করা হয়েছে: ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
+            ? `Pinpoint locked at ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
+            : `পিনপয়েন্ট চিহ্নিত করা হয়েছে: ${place || `${cLat.toFixed(4)}°N, ${cLng.toFixed(4)}°E`}`
         );
         setTimeout(() => setLocatedMessage(null), 4500);
       });
@@ -260,10 +262,9 @@ export default function SafetyMap() {
     return `
       <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 6px 4px; min-width: 195px;">
         <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 13px; color: #FFFFFF;">
-          <span>🎯</span>
           <span>${isManual ? (language === 'en' ? 'Pinpointed Location' : 'পিনপয়েন্ট অবস্থান') : (isVpn ? (language === 'en' ? 'Dhaka (VPN Detected)' : 'ঢাকা (ভিপিএন সক্রিয়)') : (language === 'en' ? 'Live GPS Pinpoint' : 'লাইভ জিপিএস পিনপয়েন্ট'))}</span>
         </div>
-        ${placeName ? `<p style="margin: 4px 0 2px 0; font-size: 11px; font-weight: 700; color: #38BDF8;">📍 ${placeName}</p>` : ''}
+        ${placeName ? `<p style="margin: 4px 0 2px 0; font-size: 11px; font-weight: 700; color: #38BDF8;">${placeName}</p>` : ''}
         <p style="margin: 2px 0 6px 0; font-size: 10px; color: #94A3B8; font-family: monospace;">
           ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E
         </p>
@@ -276,7 +277,7 @@ export default function SafetyMap() {
           </span>
         </div>
         <p style="margin: 0; font-size: 9px; color: #64748B;">
-          ${language === 'en' ? '💡 Drag pin or click map to adjust' : '💡 পিন টেনে বা ম্যাপে ক্লিক করে অবস্থান বদলান'}
+          ${language === 'en' ? 'Drag pin or click map to adjust' : 'পিন টেনে বা ম্যাপে ক্লিক করে অবস্থান বদলান'}
         </p>
       </div>
     `;
@@ -341,8 +342,8 @@ export default function SafetyMap() {
       marker.bindPopup(buildPopupHtml(nLat, nLng, 10, place, true, false)).openPopup();
       setLocatedMessage(
         language === 'en'
-          ? `🎯 Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
-          : `🎯 পিনপয়েন্ট সরানো হয়েছে: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
+          ? `Pinpoint moved: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
+          : `পিনপয়েন্ট সরানো হয়েছে: ${place || `${nLat.toFixed(4)}°N, ${nLng.toFixed(4)}°E`}`
       );
       setTimeout(() => setLocatedMessage(null), 4000);
     });
@@ -364,8 +365,8 @@ export default function SafetyMap() {
     const areaLabel = language === 'bn' ? area.nameBn : area.name;
     setLocatedMessage(
       language === 'en'
-        ? `🎯 Pinpoint locked to ${areaLabel} (±10m). Drag pin or click map to adjust.`
-        : `🎯 ${areaLabel}-এ পিন লক করা হয়েছে (±১০ মি)। প্রয়োজনে পিন সরান বা ম্যাপে ক্লিক করুন।`
+        ? `Pinpoint locked to ${areaLabel} (±10m). Drag pin or click map to adjust.`
+        : `${areaLabel}-এ পিন লক করা হয়েছে (±১০ মি)। প্রয়োজনে পিন সরান বা ম্যাপে ক্লিক করুন।`
     );
     setTimeout(() => setLocatedMessage(null), 5000);
   };
@@ -394,14 +395,14 @@ export default function SafetyMap() {
       if (pos.isVpnDetected) {
         setLocatedMessage(
           language === 'en'
-            ? `🛡️ Foreign VPN/IP detected outside BD. Centered in Dhaka (±15m). Tap quick areas or drag pin!`
-            : `🛡️ ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। ম্যাপ ঢাকায় লক করা হয়েছে (±১৫ মি)। নিচের এলাকা চাপুন বা পিন সরান!`
+            ? `Foreign VPN/IP detected outside BD. Centered in Dhaka (±15m). Tap quick areas or drag pin!`
+            : `ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। ম্যাপ ঢাকায় লক করা হয়েছে (±১৫ মি)। নিচের এলাকা চাপুন বা পিন সরান!`
         );
       } else {
         setLocatedMessage(
           language === 'en'
-            ? `🎯 Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
-            : `🎯 পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
+            ? `Pinpoint locked: ${place} (±${pos.accuracy}m). Drag pin to adjust.`
+            : `পিনপয়েন্ট লক করা হয়েছে: ${place} (±${pos.accuracy} মি)। প্রয়োজনে পিন সরান।`
         );
       }
       setTimeout(() => setLocatedMessage(null), 5000);
@@ -413,11 +414,11 @@ export default function SafetyMap() {
       setLocatedMessage(
         isPermissionDenied
           ? (language === 'en'
-              ? '⚠️ Browser location permission blocked. Click anywhere on the map to pinpoint your location!'
-              : '⚠️ ব্রাউজারে লোকেশন অনুমতি বন্ধ রয়েছে। পিন বসাতে ম্যাপে ক্লিক করুন!')
+              ? 'Browser location permission blocked. Click anywhere on the map to pinpoint your location!'
+              : 'ব্রাউজারে লোকেশন অনুমতি বন্ধ রয়েছে। পিন বসাতে ম্যাপে ক্লিক করুন!')
           : (language === 'en'
-              ? '📍 GPS sensor unavailable on this device. Click anywhere on the map to pinpoint your location!'
-              : '📍 জিপিএস সেন্সর পাওয়া যায়নি। পিন বসাতে ম্যাপে যে কোনো জায়গায় ক্লিক করুন!')
+              ? 'GPS sensor unavailable on this device. Click anywhere on the map to pinpoint your location!'
+              : 'জিপিএস সেন্সর পাওয়া যায়নি। পিন বসাতে ম্যাপে যে কোনো জায়গায় ক্লিক করুন!')
       );
       setTimeout(() => setLocatedMessage(null), 6000);
     }
@@ -474,40 +475,40 @@ export default function SafetyMap() {
               <button
                 type="button"
                 onClick={() => handleStyleChange('dark')}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                   mapStyle === 'dark'
                     ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
                     : 'text-slate-400 hover:text-white'
                 }`}
                 title="Obsidian Dark Map"
               >
-                <span>🌙</span>
+                <Moon className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Dark</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleStyleChange('streets')}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                   mapStyle === 'streets'
                     ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
                     : 'text-slate-400 hover:text-white'
                 }`}
                 title="Streets Map"
               >
-                <span>🗺️</span>
+                <MapIcon className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Streets</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleStyleChange('satellite')}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                   mapStyle === 'satellite'
                     ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
                     : 'text-slate-400 hover:text-white'
                 }`}
                 title="High-Res Satellite Imagery"
               >
-                <span>🛰️</span>
+                <Layers className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Satellite</span>
               </button>
             </div>
@@ -548,14 +549,14 @@ export default function SafetyMap() {
         {showCategoryFilter && (
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pointer-events-auto no-scrollbar bg-[#150D28]/95 backdrop-blur-2xl p-2 rounded-2xl border border-white/15 animate-in fade-in slide-in-from-top-2 duration-200">
             {[
-              { id: 'all', label: 'All Hazards', icon: '🌐' },
-              { id: 'road_traffic', label: 'Road / Traffic', icon: '🚗' },
-              { id: 'waterlogging', label: 'Waterlogging', icon: '💧' },
-              { id: 'waste', label: 'Waste', icon: '🗑️' },
-              { id: 'electrical', label: 'Electrical', icon: '⚡' },
-              { id: 'streetlight', label: 'Streetlight', icon: '💡' },
-              { id: 'infrastructure', label: 'Infrastructure', icon: '🏗️' },
-              { id: 'fire', label: 'Fire', icon: '🔥' },
+              { id: 'all', label: 'All Hazards' },
+              { id: 'road_traffic', label: 'Road / Traffic' },
+              { id: 'waterlogging', label: 'Waterlogging' },
+              { id: 'waste', label: 'Waste' },
+              { id: 'electrical', label: 'Electrical' },
+              { id: 'streetlight', label: 'Streetlight' },
+              { id: 'infrastructure', label: 'Infrastructure' },
+              { id: 'fire', label: 'Fire' },
             ].map((cat) => (
               <button
                 key={cat.id}
@@ -566,7 +567,6 @@ export default function SafetyMap() {
                     : 'bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10'
                 }`}
               >
-                <span>{cat.icon}</span>
                 <span>{cat.label}</span>
               </button>
             ))}
@@ -575,8 +575,8 @@ export default function SafetyMap() {
 
         {/* Quick Dhaka Area 1-Click Pinpoint Toolbar */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pointer-events-auto no-scrollbar bg-[#150D28]/95 backdrop-blur-2xl px-3 py-1.5 rounded-2xl border border-white/15 shadow-lg">
-          <span className="text-[10px] uppercase font-mono font-black text-sky-400 shrink-0 flex items-center gap-1 mr-1">
-            <span>📍</span>
+          <span className="text-[10px] uppercase font-mono font-black text-sky-400 shrink-0 flex items-center gap-1.5 mr-1">
+            <MapPin className="w-3 h-3 text-sky-400" />
             <span>{language === 'en' ? 'Quick Area:' : 'দ্রুত এলাকা:'}</span>
           </span>
           {DHAKA_QUICK_CHIPS.map((area) => (
@@ -601,7 +601,7 @@ export default function SafetyMap() {
               onClick={() => setLocatedMessage(null)}
               className="ml-1 p-0.5 rounded-full text-slate-400 hover:text-white"
             >
-              ✕
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
@@ -683,10 +683,11 @@ export default function SafetyMap() {
               </Link>
               <button
                 onClick={() => verifyReport(activeReport.id, 'confirm')}
-                className="py-2.5 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-bold text-xs transition border border-sky-400/30"
+                className="py-2.5 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-bold text-xs transition border border-sky-400/30 flex items-center gap-1.5"
                 title="Confirm this hazard report"
               >
-                ✓ Confirm
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Confirm</span>
               </button>
             </div>
           </div>
@@ -739,8 +740,9 @@ export default function SafetyMap() {
                       {report.locationName}
                     </p>
                     <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10 text-[11px]">
-                      <span className="text-sky-400 font-bold">
-                        👥 {report.confirmationsCount} votes
+                      <span className="text-sky-400 font-bold flex items-center gap-1">
+                        <Users className="w-3 h-3 text-sky-400" />
+                        <span>{report.confirmationsCount} votes</span>
                       </span>
                       <SeverityBadge severity={report.severity} size="sm" showIcon={false} />
                     </div>

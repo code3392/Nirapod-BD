@@ -35,10 +35,19 @@ import {
   ShieldCheck,
   FileCheck,
   Radio,
-  ExternalLink,
   Flame,
   AlertOctagon,
-  Crosshair
+  Crosshair,
+  ExternalLink,
+  Car,
+  Trash2,
+  Droplets,
+  Lightbulb,
+  Zap,
+  User,
+  Building2,
+  PlusCircle,
+  X
 } from 'lucide-react';
 import { 
   getAccuratePosition, 
@@ -101,13 +110,28 @@ export default function ReportForm() {
   const [workProofComment, setWorkProofComment] = useState<string>('Repaired and verified clear by neighborhood team.');
   const [workProofSuccess, setWorkProofSuccess] = useState<boolean>(false);
 
+  const renderCategoryIcon = (id: CategoryId) => {
+    switch (id) {
+      case 'road_traffic': return <Car className="w-5 h-5 text-amber-400" />;
+      case 'waste': return <Trash2 className="w-5 h-5 text-sky-400" />;
+      case 'waterlogging': return <Droplets className="w-5 h-5 text-blue-400" />;
+      case 'streetlight': return <Lightbulb className="w-5 h-5 text-yellow-400" />;
+      case 'electrical': return <Zap className="w-5 h-5 text-red-400" />;
+      case 'fire': return <Flame className="w-5 h-5 text-rose-500" />;
+      case 'medical': return <Hospital className="w-5 h-5 text-rose-400" />;
+      case 'missing_person': return <User className="w-5 h-5 text-indigo-400" />;
+      case 'infrastructure': return <Building2 className="w-5 h-5 text-purple-400" />;
+      default: return <AlertTriangle className="w-5 h-5 text-slate-400" />;
+    }
+  };
+
   // Sample media presets for testing
   const sampleMediaItems = [
     {
       type: 'image' as const,
       category: 'road_traffic' as CategoryId,
       url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-      label: '📷 Pothole (Photo)',
+      label: 'Pothole (Photo)',
       detected: 'Road / Traffic Hazard',
       risks: ['Vehicle wheel damage', 'Motorcycle crash hazard', 'Traffic bottleneck'],
       suggestedSev: 'high' as SeverityLevel,
@@ -117,7 +141,7 @@ export default function ReportForm() {
       type: 'video' as const,
       category: 'waterlogging' as CategoryId,
       url: 'https://assets.mixkit.co/videos/preview/mixkit-rain-falling-on-the-water-of-a-lake-17482-large.mp4',
-      label: '🎥 Water Flow (Video)',
+      label: 'Water Flow (Video)',
       detected: 'Urban Waterlogging / Blocked Drain',
       risks: ['Submerged manhole danger', 'Traffic standstill', 'Contaminated water'],
       suggestedSev: 'high' as SeverityLevel,
@@ -127,7 +151,7 @@ export default function ReportForm() {
       type: 'video' as const,
       category: 'electrical' as CategoryId,
       url: 'https://assets.mixkit.co/videos/preview/mixkit-hands-of-an-electrician-fixing-cables-42171-large.mp4',
-      label: '🎥 Cable Hazard (Video)',
+      label: 'Cable Hazard (Video)',
       detected: 'Overhead High-Voltage Risk',
       risks: ['Electrocution danger', 'Short circuit spark', 'Transformer blowout'],
       suggestedSev: 'emergency' as SeverityLevel,
@@ -137,7 +161,7 @@ export default function ReportForm() {
       type: 'image' as const,
       category: 'waste' as CategoryId,
       url: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
-      label: '📷 Waste Spill (Photo)',
+      label: 'Waste Spill (Photo)',
       detected: 'Unsanitary Waste Spill',
       risks: ['Disease vector breeding', 'Drain obstruction', 'Public foul odor'],
       suggestedSev: 'medium' as SeverityLevel,
@@ -472,7 +496,7 @@ export default function ReportForm() {
                 onClick={() => setShowWorkProofModal(false)}
                 className="p-1 rounded-lg text-slate-400 hover:text-white transition"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -492,20 +516,22 @@ export default function ReportForm() {
                     <button
                       type="button"
                       onClick={() => setWorkProofType('image')}
-                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1.5 ${
                         workProofType === 'image' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'
                       }`}
                     >
-                      📷 Photo Evidence
+                      <Camera className="w-3.5 h-3.5 text-sky-400" />
+                      <span>Photo Evidence</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setWorkProofType('video')}
-                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1.5 ${
                         workProofType === 'video' ? 'bg-purple-600 text-white border-purple-500' : 'bg-white/5 border-white/10 text-slate-300'
                       }`}
                     >
-                      🎥 Video Evidence
+                      <Video className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Video Evidence</span>
                     </button>
                   </div>
                 </div>
@@ -835,9 +861,9 @@ export default function ReportForm() {
                         }`}
                       >
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">
-                            {cat.icon}
-                          </span>
+                          <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-white/10 transition-transform">
+                            {renderCategoryIcon(cat.id)}
+                          </div>
                           {isEmergencyCategory && (
                             <span className="text-[9px] uppercase font-mono font-black px-1.5 py-0.5 rounded-full bg-emergency text-white shadow-sm">
                               999
@@ -1105,9 +1131,10 @@ export default function ReportForm() {
                             {aiRisks.map((risk, idx) => (
                               <span
                                 key={idx}
-                                className="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg text-slate-200 font-medium"
+                                className="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg text-slate-200 font-medium flex items-center gap-1.5"
                               >
-                                ⚠️ {risk}
+                                <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
+                                <span>{risk}</span>
                               </span>
                             ))}
                           </div>

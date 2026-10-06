@@ -129,7 +129,7 @@ export default function SafetyCirclesView() {
     const lng = 90.3667;
     const mapUrl = `https://maps.google.com/?q=${lat},${lng}`;
     const text = encodeURIComponent(
-      `🚨 EMERGENCY SOS ALERT! I need immediate help. My current location: ${mapUrl}. Sent via Nirapod BD Personal Security Circle.`
+      `EMERGENCY SOS ALERT! I need immediate help. My current location: ${mapUrl}. Sent via Nirapod BD Personal Security Circle.`
     );
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
@@ -188,7 +188,7 @@ export default function SafetyCirclesView() {
               className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-emergency hover:bg-emergency-hover text-white font-black text-sm shadow-[0_0_25px_rgba(239,68,68,0.5)] transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-red-500/40"
             >
               <AlertTriangle className="w-5 h-5 fill-white text-emergency animate-pulse" />
-              <span>{language === 'en' ? '🚨 1-Tap SOS Dispatch' : '🚨 ১-ট্যাপ এসওএস অ্যালার্ট'}</span>
+              <span>{language === 'en' ? '1-Tap SOS Dispatch' : '১-ট্যাপ এসওএস অ্যালার্ট'}</span>
             </button>
 
             <button

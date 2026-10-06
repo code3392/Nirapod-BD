@@ -41,10 +41,10 @@ export default function NirapodAiAssistant() {
         : "আসসালামু আলাইকুম! আমি নিরাপদ এআই সহকারী। নাগরিক সমস্যা রিপোর্ট, জরুরি নম্বর, কমিউনিটি নিয়ম বা হারানো বিজ্ঞপ্তি সম্পর্কে যেকোনো প্রশ্ন আমাকে করতে পারেন।",
       timestamp: 'Just now',
       quickLinks: [
-        { label: '🚨 Report Problem', url: '/report/new' },
-        { label: '🗺️ Safety Map', url: '/map' },
-        { label: '🔎 Lost & Found', url: '/lost-and-found' },
-        { label: '👥 Community Hub', url: '/community' },
+        { label: 'Report Problem', url: '/report/new' },
+        { label: 'Safety Map', url: '/map' },
+        { label: 'Lost & Found', url: '/lost-and-found' },
+        { label: 'Community Hub', url: '/community' },
       ],
     },
   ]);

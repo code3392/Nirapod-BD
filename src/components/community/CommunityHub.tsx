@@ -33,13 +33,13 @@ import {
 
 const MAIN_COMMUNITY_ID = 'main-community';
 
-const CATEGORY_META: Record<PersonalGroup['category'], { labelEn: string; labelBn: string; icon: string; color: string }> = {
-  family: { labelEn: 'Family & Relatives', labelBn: 'পরিবার ও স্বজন', icon: '👨‍👩‍👧', color: 'from-blue-600 to-indigo-600' },
-  neighborhood: { labelEn: 'Neighborhood Watch', labelBn: 'পাড়া ও মহল্লা', icon: '🏘️', color: 'from-sky-500 to-blue-600' },
-  office: { labelEn: 'Workplace & Office', labelBn: 'কর্মক্ষেত্র ও অফিস', icon: '🏢', color: 'from-slate-700 to-slate-900' },
-  friends: { labelEn: 'Friends & Commute', labelBn: 'বন্ধু ও যাতায়াত', icon: '🚴', color: 'from-blue-500 to-cyan-600' },
-  volunteer: { labelEn: 'Emergency Volunteers', labelBn: 'জরুরি স্বেচ্ছাসেবক', icon: '🤝', color: 'from-red-600 to-rose-700' },
-  other: { labelEn: 'Custom Circle', labelBn: 'অন্যান্য সার্কেল', icon: '🛡️', color: 'from-blue-600 to-sky-700' },
+const CATEGORY_META: Record<PersonalGroup['category'], { labelEn: string; labelBn: string; icon: React.ElementType; color: string }> = {
+  family: { labelEn: 'Family & Relatives', labelBn: 'পরিবার ও স্বজন', icon: Users, color: 'from-blue-600 to-indigo-600' },
+  neighborhood: { labelEn: 'Neighborhood Watch', labelBn: 'পাড়া ও মহল্লা', icon: Home, color: 'from-sky-500 to-blue-600' },
+  office: { labelEn: 'Workplace & Office', labelBn: 'কর্মক্ষেত্র ও অফিস', icon: Briefcase, color: 'from-slate-700 to-slate-900' },
+  friends: { labelEn: 'Friends & Commute', labelBn: 'বন্ধু ও যাতায়াত', icon: Heart, color: 'from-blue-500 to-cyan-600' },
+  volunteer: { labelEn: 'Emergency Volunteers', labelBn: 'জরুরি স্বেচ্ছাসেবক', icon: ShieldAlert, color: 'from-red-600 to-rose-700' },
+  other: { labelEn: 'Custom Circle', labelBn: 'অন্যান্য সার্কেল', icon: ShieldCheck, color: 'from-blue-600 to-sky-700' },
 };
 
 export default function CommunityHub() {
@@ -328,8 +328,8 @@ export default function CommunityHub() {
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <span className="text-xl group-hover:scale-110 transition-transform shrink-0">
-                            {meta.icon}
+                          <span className="p-1 rounded-lg bg-white/5 shrink-0">
+                            {React.createElement(meta.icon, { className: "w-4 h-4 text-sky-300 group-hover:scale-110 transition-transform" })}
                           </span>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
@@ -382,7 +382,7 @@ export default function CommunityHub() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-sky-500/20 text-sky-300 border border-sky-400/30 flex items-center justify-center font-bold text-sm">
                   {isMainCommunity ? <Globe className="w-5 h-5 text-sky-400" /> : (
-                    <span>{CATEGORY_META[currentPersonalGroup?.category || 'other'].icon}</span>
+                    React.createElement(CATEGORY_META[currentPersonalGroup?.category || 'other'].icon, { className: "w-5 h-5 text-sky-400" })
                   )}
                 </div>
                 <div>
@@ -628,12 +628,12 @@ export default function CommunityHub() {
                   onChange={(e) => setNewGroupCategory(e.target.value as PersonalGroup['category'])}
                   className="w-full px-4 py-2.5 rounded-xl border border-white/15 bg-[#0E081B] text-white text-xs focus:border-sky-400 focus:outline-none"
                 >
-                  <option value="family">👨‍👩‍👧 Family & Relatives</option>
-                  <option value="neighborhood">🏘️ Neighborhood Watch</option>
-                  <option value="office">🏢 Workplace & Office</option>
-                  <option value="friends">🚴 Friends & Commute</option>
-                  <option value="volunteer">🤝 Emergency Volunteers</option>
-                  <option value="other">🛡️ Custom Circle</option>
+                  <option value="family">Family & Relatives</option>
+                  <option value="neighborhood">Neighborhood Watch</option>
+                  <option value="office">Workplace & Office</option>
+                  <option value="friends">Friends & Commute</option>
+                  <option value="volunteer">Emergency Volunteers</option>
+                  <option value="other">Custom Circle</option>
                 </select>
               </div>
 

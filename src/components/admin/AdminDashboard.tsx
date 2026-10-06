@@ -258,7 +258,9 @@ export default function AdminDashboard() {
             <CheckCircle2 className="w-4 h-4 text-civic-blue" />
             <span>{actionMessage}</span>
           </div>
-          <button onClick={() => setActionMessage(null)} className="text-slate-400 hover:text-white">✕</button>
+          <button onClick={() => setActionMessage(null)} className="text-slate-400 hover:text-white" aria-label="Close">
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 
@@ -636,7 +638,7 @@ export default function AdminDashboard() {
                     Reason: <em>{log.reason}</em>
                   </p>
                   <p className="text-[10px] text-slate-400">
-                    Authorized by: <strong className="text-navy">{log.issuedByEmail || log.authorizedBy}</strong> • Email Dispatch: <span className="text-civic-blue font-bold">Delivered ✓</span>
+                    Authorized by: <strong className="text-navy">{log.issuedByEmail || log.authorizedBy}</strong> • Email Dispatch: <span className="text-civic-blue font-bold">Delivered</span>
                   </p>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono shrink-0">
@@ -804,7 +806,9 @@ export default function AdminDashboard() {
                 <UserX className="w-5 h-5 text-emergency" />
                 <h3 className="font-black text-navy text-base">Authorize Account Suspension</h3>
               </div>
-              <button onClick={() => setSuspensionModalUser(null)} className="text-slate-400 hover:text-slate-600">✕</button>
+              <button onClick={() => setSuspensionModalUser(null)} className="text-slate-400 hover:text-slate-600" aria-label="Close">
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
             <div className="p-3 bg-slate-50 rounded-xl text-xs space-y-1">

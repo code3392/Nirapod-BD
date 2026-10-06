@@ -182,7 +182,6 @@ export default function Navbar() {
       label: t.nav.safetyMap,
       desc: language === 'en' ? 'Interactive live hazard map' : 'রিয়েল-টাইম লাইভ বিপদ ম্যাপ',
       icon: MapPin,
-      badge: 'Live',
     },
     {
       href: '/reports',
@@ -418,7 +417,6 @@ export default function Navbar() {
           >
             <MapPin className="w-3.5 h-3.5 text-sky-400" />
             <span>{t.nav.safetyMap}</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emergency animate-ping shrink-0" />
           </Link>
 
           {/* 3. Reports */}

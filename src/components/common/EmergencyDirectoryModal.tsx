@@ -39,10 +39,10 @@ export default function EmergencyDirectoryModal({ isOpen, onClose }: EmergencyDi
 
   const categories = [
     { id: 'all', labelEn: 'All Hotlines', labelBn: 'সকল হটলাইন' },
-    { id: 'emergency', labelEn: '🚨 Life Safety & 999', labelBn: '🚨 জরুরি ৯৯৯' },
-    { id: 'utility', labelEn: '⚡ Utilities (WASA/Power/Gas)', labelBn: '⚡ ওয়াসা/বিদ্যুৎ/গ্যাস' },
-    { id: 'health', labelEn: '🏥 Healthcare 16263', labelBn: '🏥 স্বাস্থ্য বাতায়ন' },
-    { id: 'children_women', labelEn: '🛡️ Women & Child', labelBn: '🛡️ নারী ও শিশু' },
+    { id: 'emergency', labelEn: 'Life Safety & 999', labelBn: 'জরুরি ৯৯৯' },
+    { id: 'utility', labelEn: 'Utilities (WASA/Power/Gas)', labelBn: 'ওয়াসা/বিদ্যুৎ/গ্যাস' },
+    { id: 'health', labelEn: 'Healthcare 16263', labelBn: 'স্বাস্থ্য বাতায়ন' },
+    { id: 'children_women', labelEn: 'Women & Child', labelBn: 'নারী ও শিশু' },
   ];
 
   const filteredProviders = BANGLADESH_EMERGENCY_PROVIDERS.filter((provider) => {

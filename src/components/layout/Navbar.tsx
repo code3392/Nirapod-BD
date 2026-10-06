@@ -633,15 +633,6 @@ export default function Navbar() {
                     </Link>
                   )}
 
-                  <Link
-                    href="/safety-circles"
-                    onClick={() => setProfileDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 rounded-2xl transition"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-sky-400" />
-                    <span>{language === 'en' ? 'Family Safety Circles' : 'ব্যক্তিগত নিরাপত্তা সার্কেল'}</span>
-                  </Link>
-
                   <div className="my-1 border-t border-white/10" />
 
                   <button

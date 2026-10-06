@@ -31,7 +31,9 @@ import {
   reverseGeocodeLocation, 
   createPinpointIcon,
   DHAKA_QUICK_CHIPS,
-  DhakaQuickArea
+  DhakaQuickArea,
+  searchBangladeshLocation,
+  SearchLocationResult
 } from '@/lib/location';
 
 export default function SafetyMap() {
@@ -47,6 +49,7 @@ export default function SafetyMap() {
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 23.8103, lng: 90.4125 });
   const [mapStyle, setMapStyle] = useState<'dark' | 'streets' | 'satellite'>('dark');
   const [showCategoryFilter, setShowCategoryFilter] = useState<boolean>(false);
+  const [locationSuggestions, setLocationSuggestions] = useState<SearchLocationResult[]>([]);
 
   // Map DOM container ref for Leaflet
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -379,29 +382,98 @@ export default function SafetyMap() {
     }
   };
 
+  const handleSearchInputChange = async (query: string) => {
+    if (!query.trim() || query.length < 2) {
+      setLocationSuggestions([]);
+      return;
+    }
+    const results = await searchBangladeshLocation(query, language);
+    setLocationSuggestions(results);
+  };
+
+  const handleSelectSearchedLocation = async (loc: SearchLocationResult) => {
+    setLocationSuggestions([]);
+    setSearchQuery(language === 'bn' ? loc.nameBn : loc.name);
+    setUserLocation({ lat: loc.lat, lng: loc.lng, accuracy: 15 });
+    setMapCenter({ lat: loc.lat, lng: loc.lng });
+
+    if (!leafletMapRef.current) return;
+    const L = (await import('leaflet')).default;
+    leafletMapRef.current.flyTo([loc.lat, loc.lng], 15, { animate: true, duration: 1.2 });
+    await pinUserOnMap(L, leafletMapRef.current, loc.lat, loc.lng, 15, true);
+  };
+
+  const handleExecuteSearch = async (query: string) => {
+    if (!query.trim()) return;
+    const results = await searchBangladeshLocation(query, language);
+    if (results.length > 0) {
+      await handleSelectSearchedLocation(results[0]);
+    }
+  };
+
   return (
     <div className="relative w-full h-[calc(100vh-80px)] flex flex-col overflow-hidden bg-[#090514] text-white">
       {/* Top Floating Control Bar */}
       <div className="absolute top-4 left-4 right-4 z-20 pointer-events-none flex flex-col gap-2.5">
         <div className="flex flex-wrap items-center justify-between gap-3 pointer-events-auto">
           {/* Search Box & Category Filter Button */}
-          <div className="flex items-center gap-2 flex-1 max-w-lg">
-            <div className="relative flex-1 bg-[#150D28]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/15">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder={language === 'en' ? 'Search Dhaka hazards (e.g. Mirpur, potholes)...' : 'ঝুঁকি বা এলাকা খুঁজুন...'}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold bg-transparent text-white placeholder:text-slate-500 focus:outline-none"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+          <div className="flex items-center gap-2 flex-1 max-w-lg relative">
+            <div className="relative flex-1">
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  await handleExecuteSearch(searchQuery);
+                }}
+                className="relative w-full bg-[#150D28]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/15"
+              >
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder={language === 'en' ? 'Search area or hazards (e.g. Savar, Mirpur)...' : 'এলাকা বা ঝুঁকি খুঁজুন (যেমন: সাভার, মিরপুর)...'}
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    handleSearchInputChange(e.target.value);
+                  }}
+                  className="w-full pl-10 pr-10 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold bg-transparent text-white placeholder:text-slate-500 focus:outline-none"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setLocationSuggestions([]);
+                    }}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </form>
+
+              {/* Location Autocomplete Suggestions Dropdown */}
+              {locationSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#150D28]/98 backdrop-blur-2xl rounded-2xl border border-sky-400/40 shadow-2xl overflow-hidden z-[2000] divide-y divide-white/10 animate-in fade-in zoom-in-95 duration-150">
+                  {locationSuggestions.map((item, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleSelectSearchedLocation(item)}
+                      className="w-full px-4 py-2.5 text-left flex items-center justify-between hover:bg-sky-500/15 transition text-xs group"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <MapPin className="w-3.5 h-3.5 text-sky-400 shrink-0 group-hover:scale-110 transition-transform" />
+                        <div className="min-w-0">
+                          <span className="font-bold text-white block truncate">{language === 'bn' ? item.nameBn : item.name}</span>
+                          <span className="text-[10px] text-slate-400 block truncate">{item.displayName}</span>
+                        </div>
+                      </div>
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 shrink-0 ml-2">
+                        Jump to Map →
+                      </span>
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
 

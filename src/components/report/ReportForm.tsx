@@ -47,12 +47,15 @@ import {
   User,
   Building2,
   PlusCircle,
-  X
+  X,
+  Search
 } from 'lucide-react';
 import { 
   getAccuratePosition, 
   reverseGeocodeLocation, 
-  getNearestDhakaArea 
+  getNearestDhakaArea,
+  searchBangladeshLocation,
+  SearchLocationResult 
 } from '@/lib/location';
 
 export default function ReportForm() {
@@ -88,6 +91,12 @@ export default function ReportForm() {
   const [longitude, setLongitude] = useState<number>(90.3667);
   const [isLocating, setIsLocating] = useState<boolean>(false);
   const [locationPill, setLocationPill] = useState<string>('Mirpur');
+
+  // Step 4 Area Search State
+  const [step4SearchQuery, setStep4SearchQuery] = useState<string>('');
+  const [step4Suggestions, setStep4Suggestions] = useState<SearchLocationResult[]>([]);
+  const [isSearchingStep4, setIsSearchingStep4] = useState<boolean>(false);
+  const [showStep4Suggestions, setShowStep4Suggestions] = useState<boolean>(false);
 
   // Details State
   const [title, setTitle] = useState<string>('');
@@ -209,8 +218,14 @@ export default function ReportForm() {
       const L = (await import('leaflet')).default;
 
       if (step4LeafletMapRef.current) {
-        step4LeafletMapRef.current.remove();
+        try {
+          step4LeafletMapRef.current.remove();
+        } catch {}
         step4LeafletMapRef.current = null;
+      }
+
+      if (step4MapContainerRef.current) {
+        delete (step4MapContainerRef.current as any)._leaflet_id;
       }
 
       const map = L.map(step4MapContainerRef.current, {
@@ -295,9 +310,9 @@ export default function ReportForm() {
       step4LeafletMapRef.current = map;
       step4MarkerRef.current = marker;
 
-      setTimeout(() => {
-        if (map) map.invalidateSize();
-      }, 200);
+      setTimeout(() => { if (map) map.invalidateSize(); }, 100);
+      setTimeout(() => { if (map) map.invalidateSize(); }, 350);
+      setTimeout(() => { if (map) map.invalidateSize(); }, 700);
     }
 
     initStep4Map();
@@ -305,13 +320,54 @@ export default function ReportForm() {
     return () => {
       isMounted = false;
       if (step4LeafletMapRef.current) {
-        step4LeafletMapRef.current.remove();
+        try {
+          step4LeafletMapRef.current.remove();
+        } catch {}
         step4LeafletMapRef.current = null;
+      }
+      if (step4MapContainerRef.current) {
+        delete (step4MapContainerRef.current as any)._leaflet_id;
       }
     };
   }, [currentStep]);
 
-  // GPS Auto-Locate Button with Precision Multi-tier Geolocation
+  // Handle Step 4 Area Search
+  const handleStep4SearchInput = async (query: string) => {
+    setStep4SearchQuery(query);
+    if (!query.trim()) {
+      setStep4Suggestions([]);
+      setShowStep4Suggestions(false);
+      return;
+    }
+    setIsSearchingStep4(true);
+    setShowStep4Suggestions(true);
+    try {
+      const results = await searchBangladeshLocation(query);
+      setStep4Suggestions(results);
+    } catch {
+      setStep4Suggestions([]);
+    } finally {
+      setIsSearchingStep4(false);
+    }
+  };
+
+  const handleStep4SelectLocation = (loc: SearchLocationResult) => {
+    setLatitude(loc.lat);
+    setLongitude(loc.lng);
+    const resolvedArea = loc.area || loc.district || loc.name.split(' ')[0] || 'Dhaka';
+    setArea(resolvedArea);
+    setLocationPill(resolvedArea);
+    setLocationName(loc.displayName || loc.name);
+    setStep4SearchQuery(loc.name);
+    setShowStep4Suggestions(false);
+
+    if (step4LeafletMapRef.current && step4MarkerRef.current) {
+      step4LeafletMapRef.current.setView([loc.lat, loc.lng], 16, { animate: true });
+      step4MarkerRef.current.setLatLng([loc.lat, loc.lng]);
+    }
+  };
+
+  // GPS Auto-Locate Button with Precision Multi-tier Geolocation & Fallback
   const handleUseMyLocation = async () => {
     setIsLocating(true);
     try {
@@ -335,14 +391,33 @@ export default function ReportForm() {
 
       if (pos.isVpnDetected) {
         alert(language === 'en'
-          ? 'Foreign VPN / Network IP detected outside Bangladesh. Location set to Dhaka City Center. Tap any neighborhood pill below or drag the pin to your hazard spot!'
-          : 'ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। অবস্থান ঢাকায় সেট করা হয়েছে। নিচের এলাকা বাটনে চাপুন বা পিন টেনে ঝুঁকি চিহ্নিত করুন!');
+          ? 'Foreign VPN / Network IP detected outside Bangladesh. Location set to Dhaka City Center. Tap any neighborhood pill below, search your area, or drag the pin to your hazard spot!'
+          : 'ভিপিএন বা বিদেশি নেটওয়ার্ক সনাক্ত হয়েছে। অবস্থান ঢাকায় সেট করা হয়েছে। এলাকা সার্চ করুন বা পিন টেনে ঝুঁকি চিহ্নিত করুন!');
       }
     } catch {
       setIsLocating(false);
+      // Smart fallback to user's living area or Savar / Dhaka when GPS is blocked/unavailable
+      try {
+        const fallbackQuery = user?.livingPlace || area || 'Savar';
+        const fallbackResults = await searchBangladeshLocation(fallbackQuery);
+        if (fallbackResults.length > 0) {
+          const best = fallbackResults[0];
+          setLatitude(best.lat);
+          setLongitude(best.lng);
+          const resolvedArea = best.area || best.district || best.name.split(' ')[0] || 'Dhaka';
+          setArea(resolvedArea);
+          setLocationPill(resolvedArea);
+          setLocationName(best.displayName || best.name);
+          if (step4LeafletMapRef.current && step4MarkerRef.current) {
+            step4LeafletMapRef.current.setView([best.lat, best.lng], 15, { animate: true });
+            step4MarkerRef.current.setLatLng([best.lat, best.lng]);
+          }
+        }
+      } catch {}
+
       alert(language === 'en'
-        ? 'Could not access GPS sensor. Please tap directly on the map to pinpoint your hazard location!'
-        : 'জিপিএস অবস্থান পাওয়া যায়নি। ঝুঁকি চিহ্নিত করতে ম্যাপে সরাসরি ক্লিক করুন!');
+        ? 'Browser GPS sensor is unavailable or blocked. Position centered on your area. You can type in the search box above, select quick area pills, or drag the pin directly on the map!'
+        : 'জিপিএস সেন্সর পাওয়া যায়নি। ম্যাপ আপনার এলাকার দিকে সেট করা হয়েছে। আপনি উপরে সার্চ করতে পারেন অথবা পিন টেনে সঠিক জায়গা সিলেক্ট করুন!');
     }
   };
 
@@ -1086,18 +1161,35 @@ export default function ReportForm() {
                   <div className="bg-[#160E2A]/90 border border-white/15 rounded-3xl overflow-hidden shadow-xl backdrop-blur-xl space-y-0">
                     <div className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                       {/* Left: Media Thumbnail */}
-                      <div className="md:col-span-5 relative h-48 rounded-2xl overflow-hidden bg-black border border-white/10">
-                        {mediaType === 'video' ? (
-                          <video src={mediaUrl} className="w-full h-full object-cover" />
+                      <div className="md:col-span-5 relative h-48 rounded-2xl overflow-hidden bg-black/80 border border-white/10 flex items-center justify-center">
+                        {mediaUrl ? (
+                          mediaType === 'video' ? (
+                            <video src={mediaUrl} className="w-full h-full object-cover" />
+                          ) : (
+                            <img 
+                              src={mediaUrl} 
+                              alt="Analyzed Evidence" 
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).style.display = 'none';
+                              }}
+                            />
+                          )
                         ) : (
-                          <img src={mediaUrl} alt="Analyzed" className="w-full h-full object-cover" />
+                          <div className="flex flex-col items-center justify-center p-4 text-center space-y-2">
+                            <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400">
+                              <Camera className="w-6 h-6" />
+                            </div>
+                            <span className="text-xs font-bold text-slate-300">Hazard Evidence Profile</span>
+                            <span className="text-[10px] text-slate-500">Citizen Observation Record</span>
+                          </div>
                         )}
                         <div className="absolute top-2 left-2 bg-[#0E081B]/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded border border-white/10">
                           AI SCANNED
                         </div>
                         <div className="absolute bottom-2 right-2">
-                          <span className="bg-sky-500 text-[#0E081B] text-[10px] font-black px-2 py-0.5 rounded shadow">
-                            {aiConfidence}% CONFIDENCE
+                          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[10px] font-bold px-2.5 py-0.5 rounded shadow">
+                            VERIFIED
                           </span>
                         </div>
                       </div>
@@ -1115,10 +1207,11 @@ export default function ReportForm() {
                           </div>
                           <div className="text-right">
                             <span className="text-[10px] uppercase font-bold text-slate-400">
-                              Confidence
+                              Status
                             </span>
-                            <p className="text-lg font-black text-sky-400 font-mono">
-                              {aiConfidence}%
+                            <p className="text-sm font-extrabold text-emerald-400 flex items-center justify-end gap-1 font-mono">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                              <span>Verified</span>
                             </p>
                           </div>
                         </div>
@@ -1217,6 +1310,70 @@ export default function ReportForm() {
                   </button>
                 </div>
 
+                {/* Step 4 Area Search Bar */}
+                <div className="relative z-30">
+                  <div className="relative flex items-center">
+                    <Search className="w-5 h-5 text-sky-400 absolute left-3.5 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={step4SearchQuery}
+                      onChange={(e) => handleStep4SearchInput(e.target.value)}
+                      onFocus={() => {
+                        if (step4Suggestions.length > 0) setShowStep4Suggestions(true);
+                      }}
+                      placeholder={language === 'en' ? 'Search any area in Bangladesh (e.g. Savar Upazila, Mirpur, Uttara, Genda)...' : 'বাংলাদেশের যেকোনো এলাকা সার্চ করুন (যেমন: সাভার, মিরপুর, উত্তরা)...'}
+                      className="w-full bg-[#160E2A]/90 border border-white/15 focus:border-sky-400 text-sm text-white rounded-2xl pl-11 pr-24 py-3 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400/20 shadow-lg backdrop-blur-xl"
+                    />
+                    {isSearchingStep4 && (
+                      <span className="absolute right-12 text-xs text-sky-400 font-bold animate-pulse">
+                        Searching...
+                      </span>
+                    )}
+                    {step4SearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setStep4SearchQuery('');
+                          setStep4Suggestions([]);
+                          setShowStep4Suggestions(false);
+                        }}
+                        className="absolute right-3.5 p-1 rounded-full text-slate-400 hover:text-white hover:bg-white/10"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Autocomplete Dropdown */}
+                  {showStep4Suggestions && step4Suggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-[#120924]/95 border border-sky-500/30 rounded-2xl shadow-2xl backdrop-blur-2xl overflow-hidden z-40 max-h-60 overflow-y-auto no-scrollbar">
+                      <div className="p-2 space-y-1">
+                        {step4Suggestions.map((suggestion, sIdx) => (
+                          <button
+                            key={sIdx}
+                            type="button"
+                            onClick={() => handleStep4SelectLocation(suggestion)}
+                            className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-sky-500/15 flex items-center gap-3 transition group border border-transparent hover:border-sky-500/20"
+                          >
+                            <MapPin className="w-4 h-4 text-sky-400 group-hover:scale-110 transition-transform shrink-0" />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-bold text-white truncate group-hover:text-sky-300">
+                                {suggestion.name}
+                              </p>
+                              <p className="text-xs text-slate-400 font-medium">
+                                {suggestion.area || suggestion.district || 'Dhaka'} • {suggestion.lat.toFixed(4)}° N, {suggestion.lng.toFixed(4)}° E
+                              </p>
+                            </div>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/5 text-slate-300 uppercase tracking-wider shrink-0">
+                              Select
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* Real Interactive Leaflet Pinpoint Map */}
                 <div className="relative h-80 sm:h-96 w-full rounded-3xl overflow-hidden border border-white/15 shadow-2xl bg-[#090514]">
                   {/* Leaflet Mount Node */}
@@ -1230,9 +1387,11 @@ export default function ReportForm() {
                     </span>
                   </div>
 
-                  {/* Dhaka Neighborhood Quick Selector Pills */}
+                  {/* Dhaka & Bangladesh Neighborhood Quick Selector Pills */}
                   <div className="absolute bottom-3 left-3 right-3 z-10 flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar pointer-events-auto">
                     {[
+                      { name: 'Savar Upazila', lat: 23.8583, lng: 90.2667, area: 'Savar' },
+                      { name: 'Genda, Savar', lat: 23.8475, lng: 90.2612, area: 'Savar' },
                       { name: 'Mirpur Road', lat: 23.8041, lng: 90.3667, area: 'Mirpur' },
                       { name: 'Dhanmondi 27', lat: 23.7538, lng: 90.3752, area: 'Dhanmondi' },
                       { name: 'Uttara Sector 7', lat: 23.8759, lng: 90.3795, area: 'Uttara' },

@@ -324,3 +324,134 @@ export function createPinpointIcon(
     popupAnchor: [0, -44],
   });
 }
+
+export interface SearchLocationResult {
+  name: string;
+  nameBn: string;
+  lat: number;
+  lng: number;
+  displayName: string;
+  district?: string;
+  area?: string;
+}
+
+export const BANGLADESH_PRESET_LOCATIONS: SearchLocationResult[] = [
+  // Upazilas & Thanas in Dhaka District
+  { name: 'Savar Upazila', nameBn: 'সাভার উপজেলা', lat: 23.8583, lng: 90.2667, displayName: 'Savar Upazila, Dhaka', district: 'Dhaka' },
+  { name: 'Savar Bazar', nameBn: 'সাভার বাজার', lat: 23.8436, lng: 90.2574, displayName: 'Savar Bazar, Dhaka', district: 'Dhaka' },
+  { name: 'Genda', nameBn: 'গেন্ডা', lat: 23.8372, lng: 90.2685, displayName: 'Genda, Savar, Dhaka', district: 'Dhaka' },
+  { name: 'Ashulia', nameBn: 'আশুলিয়া', lat: 23.9015, lng: 90.3242, displayName: 'Ashulia, Dhaka', district: 'Dhaka' },
+  { name: 'Baipail', nameBn: 'বাইপাইল', lat: 23.9317, lng: 90.2974, displayName: 'Baipail, Savar, Dhaka', district: 'Dhaka' },
+  { name: 'Dhamrai Upazila', nameBn: 'ধামরাই উপজেলা', lat: 23.9184, lng: 90.2116, displayName: 'Dhamrai, Dhaka', district: 'Dhaka' },
+  { name: 'Keraniganj', nameBn: 'কেরানীগঞ্জ', lat: 23.6844, lng: 90.3125, displayName: 'Keraniganj, Dhaka', district: 'Dhaka' },
+  { name: 'Nawabganj', nameBn: 'নবাবগঞ্জ', lat: 23.6681, lng: 90.1654, displayName: 'Nawabganj, Dhaka', district: 'Dhaka' },
+  { name: 'Dohar', nameBn: 'দোহার', lat: 23.5947, lng: 90.1344, displayName: 'Dohar, Dhaka', district: 'Dhaka' },
+  { name: 'Tongi', nameBn: 'টঙ্গী', lat: 23.8967, lng: 90.4000, displayName: 'Tongi, Gazipur', district: 'Gazipur' },
+  { name: 'Gazipur Sadar', nameBn: 'গাজীপুর সদর', lat: 23.9999, lng: 90.4203, displayName: 'Gazipur Sadar', district: 'Gazipur' },
+  { name: 'Narayanganj Sadar', nameBn: 'নারায়ণগঞ্জ সদর', lat: 23.6238, lng: 90.5000, displayName: 'Narayanganj Sadar', district: 'Narayanganj' },
+
+  // Dhaka Metropolitan City Thanas & Areas
+  { name: 'Mirpur-10', nameBn: 'মিরপুর-১০', lat: 23.8067, lng: 90.3683, displayName: 'Mirpur-10, Dhaka', district: 'Dhaka' },
+  { name: 'Mirpur-1', nameBn: 'মিরপুর-১', lat: 23.7956, lng: 90.3537, displayName: 'Mirpur-1, Dhaka', district: 'Dhaka' },
+  { name: 'Mirpur-2', nameBn: 'মিরপুর-২', lat: 23.8041, lng: 90.3601, displayName: 'Mirpur-2, Dhaka', district: 'Dhaka' },
+  { name: 'Pallabi', nameBn: 'পল্লবী', lat: 23.8245, lng: 90.3644, displayName: 'Pallabi, Mirpur, Dhaka', district: 'Dhaka' },
+  { name: 'Dhanmondi 27', nameBn: 'ধানমন্ডি ২৭', lat: 23.7538, lng: 90.3756, displayName: 'Dhanmondi 27, Dhaka', district: 'Dhaka' },
+  { name: 'Dhanmondi 32', nameBn: 'ধানমন্ডি ৩২', lat: 23.7516, lng: 90.3789, displayName: 'Dhanmondi 32, Dhaka', district: 'Dhaka' },
+  { name: 'Gulshan-1', nameBn: 'গুলশান-১', lat: 23.7808, lng: 90.4168, displayName: 'Gulshan-1, Dhaka', district: 'Dhaka' },
+  { name: 'Gulshan-2', nameBn: 'গুলশান-২', lat: 23.7925, lng: 90.4078, displayName: 'Gulshan-2, Dhaka', district: 'Dhaka' },
+  { name: 'Banani', nameBn: 'বনানী', lat: 23.7937, lng: 90.4043, displayName: 'Banani, Dhaka', district: 'Dhaka' },
+  { name: 'Uttara Sector 3', nameBn: 'উত্তরা সেক্টর ৩', lat: 23.8705, lng: 90.3952, displayName: 'Uttara Sector 3, Dhaka', district: 'Dhaka' },
+  { name: 'Uttara Sector 7', nameBn: 'উত্তরা সেক্টর ৭', lat: 23.8759, lng: 90.3795, displayName: 'Uttara Sector 7, Dhaka', district: 'Dhaka' },
+  { name: 'Mohammadpur', nameBn: 'মোহাম্মদপুর', lat: 23.7658, lng: 90.3584, displayName: 'Mohammadpur, Dhaka', district: 'Dhaka' },
+  { name: 'Farmgate', nameBn: 'ফার্মগেট', lat: 23.7561, lng: 90.3872, displayName: 'Farmgate, Dhaka', district: 'Dhaka' },
+  { name: 'Motijheel', nameBn: 'মতিঝিল', lat: 23.7330, lng: 90.4172, displayName: 'Motijheel, Dhaka', district: 'Dhaka' },
+  { name: 'Old Dhaka', nameBn: 'পুরান ঢাকা', lat: 23.7104, lng: 90.4074, displayName: 'Old Dhaka, Dhaka', district: 'Dhaka' },
+  { name: 'Bashundhara R/A', nameBn: 'বসুন্ধরা আ/এ', lat: 23.8191, lng: 90.4326, displayName: 'Bashundhara R/A, Dhaka', district: 'Dhaka' },
+  { name: 'Badda', nameBn: 'বাড্ডা', lat: 23.7806, lng: 90.4267, displayName: 'Badda, Dhaka', district: 'Dhaka' },
+  { name: 'Hatirjheel', nameBn: 'হাতিরঝিল', lat: 23.7712, lng: 90.4116, displayName: 'Hatirjheel, Dhaka', district: 'Dhaka' },
+  { name: 'Shahbagh', nameBn: 'শাহবাগ', lat: 23.7388, lng: 90.3957, displayName: 'Shahbagh, Dhaka', district: 'Dhaka' },
+  { name: 'Jatrabari', nameBn: 'যাত্রাবাড়ী', lat: 23.7118, lng: 90.4344, displayName: 'Jatrabari, Dhaka', district: 'Dhaka' },
+
+  // Major Divisional Headquarters & Metros
+  { name: 'Chattogram (Chittagong)', nameBn: 'চট্টগ্রাম', lat: 22.3569, lng: 91.7832, displayName: 'Chattogram City', district: 'Chattogram' },
+  { name: 'Sylhet', nameBn: 'সিলেট', lat: 24.8949, lng: 91.8687, displayName: 'Sylhet City', district: 'Sylhet' },
+  { name: 'Rajshahi', nameBn: 'রাজশাহী', lat: 24.3745, lng: 88.6042, displayName: 'Rajshahi City', district: 'Rajshahi' },
+  { name: 'Khulna', nameBn: 'খুলনা', lat: 22.8456, lng: 89.5403, displayName: 'Khulna City', district: 'Khulna' },
+  { name: 'Barishal', nameBn: 'বরিশাল', lat: 22.7010, lng: 90.3535, displayName: 'Barishal City', district: 'Barishal' },
+  { name: 'Rangpur', nameBn: 'রংপুর', lat: 25.7439, lng: 89.2752, displayName: 'Rangpur City', district: 'Rangpur' },
+  { name: 'Mymensingh', nameBn: 'ময়মনসিংহ', lat: 24.7471, lng: 90.4203, displayName: 'Mymensingh City', district: 'Mymensingh' },
+  { name: 'Cumilla (Comilla)', nameBn: 'কুমিল্লা', lat: 23.4607, lng: 91.1809, displayName: 'Cumilla City', district: 'Cumilla' },
+  { name: "Cox's Bazar", nameBn: "কক্সবাজার", lat: 21.4272, lng: 92.0058, displayName: "Cox's Bazar", district: "Cox's Bazar" },
+  { name: 'Bogura', nameBn: 'বগুড়া', lat: 24.8465, lng: 89.3777, displayName: 'Bogura City', district: 'Bogura' },
+];
+
+/**
+ * Searches locations across Bangladesh:
+ * 1. Checks fast preset Bangladesh locations (zero latency match)
+ * 2. Fetches live OpenStreetMap Nominatim results bounded to Bangladesh
+ */
+export async function searchBangladeshLocation(query: string, language: 'en' | 'bn' = 'en'): Promise<SearchLocationResult[]> {
+  const cleanQuery = query.trim().toLowerCase();
+  if (!cleanQuery) return [];
+
+  // Match against preset locations
+  const localMatches = BANGLADESH_PRESET_LOCATIONS.filter((loc) => {
+    const n = loc.name.toLowerCase();
+    const nb = loc.nameBn.toLowerCase();
+    const d = (loc.district || '').toLowerCase();
+    const dn = loc.displayName.toLowerCase();
+    return n.includes(cleanQuery) || nb.includes(cleanQuery) || d.includes(cleanQuery) || dn.includes(cleanQuery);
+  });
+
+  // Query Nominatim for live location results in Bangladesh
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=bd&limit=5&addressdetails=1`,
+      {
+        headers: { 'Accept-Language': language === 'bn' ? 'bn,en' : 'en' },
+        signal: controller.signal,
+      }
+    );
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        const remoteResults: SearchLocationResult[] = data
+          .map((item: any) => {
+            const lat = Number(item.lat);
+            const lng = Number(item.lon);
+            if (!isInsideBangladesh(lat, lng)) return null;
+            const detectedArea = item.address?.suburb || item.address?.neighbourhood || item.address?.town || item.address?.city || item.address?.county || item.address?.state_district || 'Dhaka';
+            return {
+              name: item.name || item.display_name.split(',')[0],
+              nameBn: item.name || item.display_name.split(',')[0],
+              lat,
+              lng,
+              displayName: item.display_name.split(',').slice(0, 3).join(', ').trim(),
+              district: item.address?.state_district || item.address?.city || 'Bangladesh',
+              area: detectedArea,
+            };
+          })
+          .filter(Boolean) as SearchLocationResult[];
+
+        // Combine unique results
+        const combined = [...localMatches];
+        for (const rem of remoteResults) {
+          const alreadyExists = combined.some((c) => Math.abs(c.lat - rem.lat) < 0.01 && Math.abs(c.lng - rem.lng) < 0.01);
+          if (!alreadyExists) {
+            combined.push(rem);
+          }
+        }
+        return combined.slice(0, 6);
+      }
+    }
+  } catch {
+    // If network fails, return local matches
+  }
+
+  return localMatches.slice(0, 6);
+}

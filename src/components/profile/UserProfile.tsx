@@ -33,8 +33,9 @@ import {
   Radio,
   ShieldAlert,
   Users,
-  X,
   Camera,
+  Trash2,
+  X,
   Video
 } from 'lucide-react';
 
@@ -162,22 +163,68 @@ export default function UserProfile() {
       {/* Profile Overview Card (Dark Purplish-Black) */}
       <div className="bg-[#130C24]/85 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/10 text-white ring-1 ring-purple-500/15">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {/* Avatar with Calm Purple Ring */}
-          <div className="relative">
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-purple-400/80 shadow-lg"
-            />
-            {user.isSuperAdmin ? (
-              <div className="absolute -bottom-2 -right-2 bg-amber-500 text-[#0E081B] text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-[#130C24] shadow font-mono">
-                SUPER ADMIN
-              </div>
-            ) : (
-              <div className="absolute -bottom-2 -right-2 bg-purple-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-[#130C24] shadow font-mono">
-                GUARDIAN
-              </div>
-            )}
+          {/* Avatar with Calm Purple Ring & Add/Edit Picture Button */}
+          <div className="flex flex-col items-center sm:items-start gap-2.5 shrink-0">
+            <div className="relative">
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-purple-400/80 shadow-lg bg-[#0E081B]"
+              />
+              {user.isSuperAdmin ? (
+                <div className="absolute -bottom-2 -right-2 bg-amber-500 text-[#0E081B] text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-[#130C24] shadow font-mono">
+                  SUPER ADMIN
+                </div>
+              ) : (
+                <div className="absolute -bottom-2 -right-2 bg-purple-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border-2 border-[#130C24] shadow font-mono">
+                  GUARDIAN
+                </div>
+              )}
+            </div>
+
+            {/* Profile Picture Upload/Edit Button */}
+            <div className="flex items-center gap-1.5">
+              <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 hover:text-white border border-purple-400/40 text-xs font-bold transition shadow-sm active:scale-95">
+                <Camera className="w-3.5 h-3.5 text-purple-300" />
+                <span>
+                  {Boolean(user.avatar && !user.avatar.includes('api.dicebear.com') && !user.avatar.includes('ui-avatars.com'))
+                    ? (language === 'en' ? 'Edit Picture' : 'ছবি পরিবর্তন')
+                    : (language === 'en' ? 'Add Picture' : 'ছবি যুক্ত করুন')}
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        const base64 = event.target?.result as string;
+                        if (base64) {
+                          updateUserProfile({ avatar: base64 });
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </label>
+
+              {Boolean(user.avatar && !user.avatar.includes('api.dicebear.com') && !user.avatar.includes('ui-avatars.com')) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const defaultAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}&backgroundColor=0A2540&textColor=ffffff`;
+                    updateUserProfile({ avatar: defaultAvatar });
+                  }}
+                  className="p-1.5 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-300 border border-white/10 transition"
+                  title={language === 'en' ? 'Remove Picture' : 'ছবি সরান'}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* User Details */}
